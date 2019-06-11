@@ -10,28 +10,6 @@ import XCTest
 import RxSwift
 import Posts
 
-final class RemotePostsLoader {
-    let url: URL
-    let client: HTTPClient
-
-    init(url: URL, client: HTTPClient) {
-        self.url = url
-        self.client = client
-    }
-
-    func load() -> Observable<[PostItem]> {
-        client.get(fromURL: url)
-        return .just([])
-    }
-}
-
-final class HTTPClient {
-    var requestedURLs = [URL]()
-    func get(fromURL url: URL) {
-        requestedURLs.append(url)
-    }
-}
-
 class RemotePostsLoaderTests: XCTestCase {
     
     func test_load_requestsDataFromURL() {
@@ -47,10 +25,17 @@ class RemotePostsLoaderTests: XCTestCase {
     
     // MARK: - Helpers
 
-    private func makeSUT(url: URL = URL(string: "https://some-url.com")!) -> (sut: RemotePostsLoader, client: HTTPClient) {
-        let client = HTTPClient()
+    private func makeSUT(url: URL = URL(string: "https://some-url.com")!) -> (sut: RemotePostsLoader, client: HTTPClientMock) {
+        let client = HTTPClientMock()
         let sut = RemotePostsLoader(url: url, client: client)
         
         return (sut, client)
+    }
+    
+    final class HTTPClientMock: HTTPClient {
+        var requestedURLs = [URL]()
+        func get(fromURL url: URL) {
+            requestedURLs.append(url)
+        }
     }
 }
