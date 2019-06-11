@@ -13,13 +13,18 @@ final public  class RemotePostsLoader {
     private let url: URL
     private let client: HTTPClient
     
+    public enum Error: Swift.Error {
+        case connectivity
+    }
+
     public init(url: URL, client: HTTPClient) {
         self.url = url
         self.client = client
     }
     
-    public func load() -> Observable<[PostItem]> {
-        client.get(fromURL: url)
-        return .just([])
+    public func load() -> Observable<Result<[PostItem]>> {
+        return client.get(fromURL: url).map { _ in
+            .failure(Error.connectivity)
+        }
     }
 }

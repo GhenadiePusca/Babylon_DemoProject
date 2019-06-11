@@ -8,7 +8,12 @@
 
 import RxSwift
 
+public enum Result<T> {
+    case success(T)
+    case failure(Error)
+}
+
 protocol PostsLoader {
-    typealias LoadResult = Observable<[PostItem]>
-    func load() -> LoadResult
+    typealias LoadResult = Result<[PostItem]>
+    func load() -> Observable<LoadResult>
 }

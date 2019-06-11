@@ -7,7 +7,9 @@
 //
 
 import Foundation
+import RxSwift
 
 public protocol HTTPClient {
-    func get(fromURL url: URL)
+    typealias GetResult = Result<(Data, HTTPURLResponse)>
+    func get(fromURL url: URL) -> Observable<GetResult>
 }
