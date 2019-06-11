@@ -9,5 +9,6 @@
 import RxSwift
 
 protocol PostsLoader {
-    func load() -> Observable<[PostItem]>
+    typealias LoadResult = Observable<[PostItem]>
+    func load() -> LoadResult
 }
