@@ -15,6 +15,7 @@ final public  class RemotePostsLoader {
     
     public enum Error: Swift.Error {
         case connectivity
+        case invalidData
     }
 
     public init(url: URL, client: HTTPClient) {
@@ -23,8 +24,12 @@ final public  class RemotePostsLoader {
     }
     
     public func load() -> Observable<Result<[PostItem]>> {
-        return client.get(fromURL: url).map { _ in
-            .failure(Error.connectivity)
+        return client.get(fromURL: url).map { result in
+            if case .failure = result {
+                return .failure(Error.connectivity)
+            }
+            
+            return .failure(Error.invalidData)
         }
     }
 }

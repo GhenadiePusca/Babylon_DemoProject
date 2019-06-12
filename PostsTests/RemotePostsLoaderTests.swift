@@ -47,6 +47,28 @@ class RemotePostsLoaderTests: XCTestCase {
         disposable.dispose()
     }
     
+    func test_load_deliversErrorOnNon200StatusCode() {
+        let (sut, client) = makeSUT()
+        
+        let exp = expectation(description: "wait for completion")
+        var captureErrors = [RemotePostsLoader.Error]()
+        
+        let disposable = sut.load().subscribe(onNext: { result in
+            guard case let .failure(error) = result else {
+                return
+            }
+            captureErrors.append(error as! RemotePostsLoader.Error)
+            exp.fulfill()
+        })
+        
+        client.completeWith(statusCode: 500)
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        XCTAssertEqual(captureErrors, [.invalidData])
+        
+        disposable.dispose()
+    }
     // MARK: - Helpers
 
     private func makeSUT(url: URL = URL(string: "https://some-url.com")!) -> (sut: RemotePostsLoader, client: HTTPClientMock) {
@@ -73,6 +95,15 @@ class RemotePostsLoaderTests: XCTestCase {
         
         func completeWith(error: Error, idx: Int = 0) {
             messages[idx].obs.onNext(.failure(error))
+        }
+        
+        func completeWith(statusCode: Int, idx: Int = 0) {
+            let data = Data()
+            let response = HTTPURLResponse(url: messages[idx].url,
+                                           statusCode: statusCode,
+                                           httpVersion: nil,
+                                           headerFields: nil)!
+            messages[idx].obs.onNext(.success((data, response)))
         }
     }
 }
