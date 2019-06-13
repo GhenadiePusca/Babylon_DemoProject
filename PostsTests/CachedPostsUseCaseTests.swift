@@ -31,6 +31,7 @@ class PostsStore {
     private(set) var receivedCommands = [Command]()
     
     var onDeletionResult: SingleEvent<Void> = .error(NSError(domain: "not provided", code: 1))
+    var onSaveResult: SingleEvent<Void> = .error(NSError(domain: "not provided", code: 1))
     
     func deleteCachedPosts() -> Single<Void> {
         receivedCommands.append(.delete)
@@ -45,7 +46,13 @@ class PostsStore {
     
     func savePosts(_ items: [PostItem]) -> Single<Void> {
         receivedCommands.append(.insert(items))
-        return .just(())
+        return .create(subscribe: { [weak self] single in
+            let disposable = Disposables.create {}
+            guard let self = self else { return disposable }
+            
+            single(self.onSaveResult)
+            return disposable
+        })
     }
 }
 
@@ -87,6 +94,40 @@ class CachedPostsUseCaseTests: XCTestCase {
         XCTAssertEqual(store.receivedCommands, [.delete, .insert(items)])
     }
     
+    func test_save_failsOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let deletionError = anyNSError()
+        
+        expect(sut,
+               toCompleteWithResult: .error(deletionError),
+               withStub: {
+                store.onDeletionResult = .error(deletionError)
+        })
+    }
+    
+    func test_save_failsOnSaveError() {
+        let (sut, store) = makeSUT()
+        let insertionError = anyNSError()
+        
+        expect(sut,
+               toCompleteWithResult: .error(insertionError),
+               withStub: {
+                store.onDeletionResult = .success(())
+                store.onSaveResult = .error(insertionError)
+        })
+    }
+    
+    func test_save_succedsOnSuccesfulSave() {
+        let (sut, store) = makeSUT()
+        
+        expect(sut,
+               toCompleteWithResult: .success(()),
+               withStub: {
+                store.onDeletionResult = .success(())
+                store.onSaveResult = .success(())
+        })
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT() -> (sut: LocalPostsLoader, store: PostsStore) {
@@ -105,7 +146,7 @@ class CachedPostsUseCaseTests: XCTestCase {
         
         stub()
 
-        sut.save([anyItem()]).subscribe { result in
+        _ = sut.save([anyItem()]).subscribe { result in
             switch (result, expectedResult) {
             case (.success, .success):
                 break
