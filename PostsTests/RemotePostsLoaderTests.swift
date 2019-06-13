@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import RxTest
 import RxSwift
 import Posts
 
@@ -17,14 +16,13 @@ class RemotePostsLoaderTests: XCTestCase {
     }
     
     func test_load_requestsDataFromURL() {
-        let testURL = URL(string: "https://some-url.com")!
-        let (sut, client) = makeSUT(url: testURL)
+        let (sut, client) = makeSUT(url: TestingConstants.testURL)
 
         _ = sut.load()
         
         XCTAssertEqual(client.requestedURLs,
-                       [testURL],
-                       "Expected to call \(testURL), but called \(client.requestedURLs)")
+                       [TestingConstants.testURL],
+                       "Expected to call \(TestingConstants.testURL), but called \(client.requestedURLs)")
     }
     
     func test_load_deliversErrorOnClientGetError() {
@@ -45,7 +43,9 @@ class RemotePostsLoaderTests: XCTestCase {
             expectLoad(toCompleteWithResult: .error(RemotePostsLoader.Error.invalidData),
                        sut: sut,
                        stub: {
-                        client.loadResult = .success((Data(), RemotePostsLoaderTests.createHTTPResponse(code)))
+                        let emptyData = Data()
+                        let invalidStatusCodeResponse = RemotePostsLoaderTests.createHTTPResponse(code)
+                        client.loadResult = .success((emptyData, invalidStatusCodeResponse))
             })
         }
     }
@@ -103,30 +103,27 @@ class RemotePostsLoaderTests: XCTestCase {
                             line: UInt = #line,
                             stub: @escaping () -> Void) {
 
-        let scheduler = TestScheduler(initialClock: 0)
-        var receivedResult: SingleEvent<[PostItem]>?
+        stub()
 
-        scheduler.scheduleAt(0, action: stub)
-        scheduler.scheduleAt(1) {
-            _ = sut.load().subscribe {
-                receivedResult = $0
-            }
-        }
-        scheduler.scheduleAt(3, action: {
+        let exp = expectation(description: "Waiting for completion")
+
+        _ = sut.load().subscribe { receivedResult in
             switch (receivedResult, expectedResult) {
-            case let (.some(.success(receivedItems)), .success(expectedItems)):
+            case let (.success(receivedItems), .success(expectedItems)):
                 XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
-            case let (.some(.error(receivedError)), .error(expectedError)):
+            case let (.error(receivedError), .error(expectedError)):
                 XCTAssertEqual(receivedError as? RemotePostsLoader.Error,
                                expectedError as? RemotePostsLoader.Error,
                                file: file,
                                line: line)
             default:
-                XCTFail("Expected to receive \(expectedResult), got \(String(describing: receivedResult))")
+                XCTFail("Expected to receive \(expectedResult), got \(String(describing: receivedResult))", file: file, line: line)
             }
-        })
 
-        scheduler.start()
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 1.0)
     }
     
     private func makePostItems() -> (items: [PostItem], json: [[String: Any]]) {
@@ -173,10 +170,12 @@ class RemotePostsLoaderTests: XCTestCase {
         
         func get(fromURL url: URL) -> Single<GetResult> {
             requestedURLs.append(url)
+
             return Single<GetResult>.create(subscribe: { [weak self] single in
-                guard let self = self else { return Disposables.create {}}
+                let disposable = Disposables.create {}
+                guard let self = self else { return disposable}
                 single(self.loadResult)
-                return Disposables.create {}
+                return disposable
             })
         }
     }

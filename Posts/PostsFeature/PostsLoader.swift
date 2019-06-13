@@ -8,11 +8,6 @@
 
 import RxSwift
 
-public enum Result<T> {
-    case success(T)
-    case failure(Error)
-}
-
 public protocol PostsLoader {
     typealias LoadResult = Single<[PostItem]>
     func load() -> LoadResult
