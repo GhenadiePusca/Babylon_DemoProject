@@ -10,11 +10,31 @@ import XCTest
 
 class URLSessionHTTPClientTests: XCTestCase {
 
+    override func setUp() {
+        super.setUp()
+
+        URLProtocolStub.startInterceptingRequests()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        URLProtocolStub.stopInterceptingRequests()
+    }
+
     private class URLProtocolStub: URLProtocol {
         private static var stubs = [URL: Stub]()
 
         private struct Stub {
             let error: Error?
+        }
+
+        static func startInterceptingRequests() {
+            URLProtocolStub.registerClass(URLProtocolStub.self)
+        }
+
+        static func stopInterceptingRequests() {
+            URLProtocolStub.unregisterClass(URLProtocolStub.self)
         }
 
         override class func canInit(with request: URLRequest) -> Bool {
