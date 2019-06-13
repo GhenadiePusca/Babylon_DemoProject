@@ -22,38 +22,9 @@ class LocalPostsLoader {
     }
 }
 
-class PostsStore {
-    enum Command: Equatable {
-        case delete
-        case insert([PostItem])
-    }
-    
-    private(set) var receivedCommands = [Command]()
-    
-    var onDeletionResult: SingleEvent<Void> = .error(NSError(domain: "not provided", code: 1))
-    var onSaveResult: SingleEvent<Void> = .error(NSError(domain: "not provided", code: 1))
-    
-    func deleteCachedPosts() -> Single<Void> {
-        receivedCommands.append(.delete)
-        return .create(subscribe: { [weak self] single in
-            let disposable = Disposables.create {}
-            guard let self = self else { return disposable }
-
-            single(self.onDeletionResult)
-            return disposable
-        })
-    }
-    
-    func savePosts(_ items: [PostItem]) -> Single<Void> {
-        receivedCommands.append(.insert(items))
-        return .create(subscribe: { [weak self] single in
-            let disposable = Disposables.create {}
-            guard let self = self else { return disposable }
-            
-            single(self.onSaveResult)
-            return disposable
-        })
-    }
+protocol PostsStore {
+    func deleteCachedPosts() -> Single<Void>
+    func savePosts(_ items: [PostItem]) -> Single<Void>
 }
 
 class CachedPostsUseCaseTests: XCTestCase {
@@ -130,9 +101,10 @@ class CachedPostsUseCaseTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT() -> (sut: LocalPostsLoader, store: PostsStore) {
-        let store = PostsStore()
+    private func makeSUT() -> (sut: LocalPostsLoader, store: PostsStoreSpy) {
+        let store = PostsStoreSpy()
         let sut = LocalPostsLoader(store: store)
+        trackForMemoryLeaks(store)
         trackForMemoryLeaks(sut)
         return (sut, store)
     }
@@ -168,5 +140,33 @@ class CachedPostsUseCaseTests: XCTestCase {
     
     private func anyNSError() -> NSError {
         return NSError(domain: "err", code: 1)
+    }
+    
+    private class PostsStoreSpy: PostsStore {
+        enum Command: Equatable {
+            case delete
+            case insert([PostItem])
+        }
+        
+        private(set) var receivedCommands = [Command]()
+        
+        var onDeletionResult: SingleEvent<Void> = .error(NSError(domain: "not provided", code: 1))
+        var onSaveResult: SingleEvent<Void> = .error(NSError(domain: "not provided", code: 1))
+        
+        func deleteCachedPosts() -> Single<Void> {
+            receivedCommands.append(.delete)
+            return .create(subscribe: { single in
+                single(self.onDeletionResult)
+                return Disposables.create {}
+            })
+        }
+        
+        func savePosts(_ items: [PostItem]) -> Single<Void> {
+            receivedCommands.append(.insert(items))
+            return .create(subscribe: { single in
+                single(self.onSaveResult)
+                return Disposables.create {}
+            })
+        }
     }
 }
