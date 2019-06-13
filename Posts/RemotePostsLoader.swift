@@ -9,7 +9,7 @@
 import RxSwift
 import Foundation
 
-final public  class RemotePostsLoader {
+final public  class RemotePostsLoader: PostsLoader {
     private let url: URL
     private let client: HTTPClient
     
@@ -23,13 +23,30 @@ final public  class RemotePostsLoader {
         self.client = client
     }
     
-    public func load() -> Observable<Result<[PostItem]>> {
-        return client.get(fromURL: url).map { result in
-            if case .failure = result {
-                return .failure(Error.connectivity)
-            }
-            
-            return .failure(Error.invalidData)
-        }
+    public func load() -> Observable<[PostItem]> {
+        return client.get(fromURL: url).catchError { _ in
+            throw Error.connectivity
+            }.map({ result in
+                if result.response.statusCode == 200,
+                    let resultContainer = try? JSONDecoder().decode(FailableCodableArray<Item>.self, from: result.data) {
+                    return resultContainer.elements.map { $0.postItem }
+                } else {
+                    throw Error.invalidData
+                }
+            })
+    }
+}
+
+private struct Item: Decodable {
+    let id: Int
+    let userId: Int
+    let title: String
+    let body: String
+    
+    var postItem: PostItem {
+        return PostItem(id: id,
+                        userId: userId,
+                        title: title,
+                        body: body)
     }
 }

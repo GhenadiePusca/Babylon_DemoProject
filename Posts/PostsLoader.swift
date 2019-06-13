@@ -13,7 +13,6 @@ public enum Result<T> {
     case failure(Error)
 }
 
-protocol PostsLoader {
-    typealias LoadResult = Result<[PostItem]>
-    func load() -> Observable<LoadResult>
+public protocol PostsLoader {
+    func load() -> Observable<[PostItem]>
 }

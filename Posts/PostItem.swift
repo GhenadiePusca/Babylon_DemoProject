@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct PostItem {
+public struct PostItem: Equatable {
     public let id: Int
     public let userId: Int
     public let title: String
