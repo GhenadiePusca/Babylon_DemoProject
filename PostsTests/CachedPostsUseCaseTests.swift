@@ -133,7 +133,7 @@ class CachedPostsUseCaseTests: XCTestCase {
     private func makeSUT() -> (sut: LocalPostsLoader, store: PostsStore) {
         let store = PostsStore()
         let sut = LocalPostsLoader(store: store)
-        
+        trackForMemoryLeaks(sut)
         return (sut, store)
     }
     
