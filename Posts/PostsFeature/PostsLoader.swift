@@ -14,5 +14,6 @@ public enum Result<T> {
 }
 
 public protocol PostsLoader {
-    func load() -> Observable<[PostItem]>
+    typealias LoadResult = Single<[PostItem]>
+    func load() -> LoadResult
 }
