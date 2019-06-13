@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		278B5982AEED81D44121CA12 /* Pods_PostsUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 920954FBA9EFC1F93374FA33 /* Pods_PostsUITests.framework */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C93138C22B039FD00387108 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C93138B22B039FD00387108 /* Assets.xcassets */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
@@ -35,13 +34,6 @@
 			remoteGlobalIDString = 6C93137D22B039FC00387108;
 			remoteInfo = Posts;
 		};
-		6C9313A122B039FD00387108 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6C93137622B039FC00387108 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6C93137D22B039FC00387108;
-			remoteInfo = Posts;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -54,7 +46,6 @@
 		6C93139022B039FD00387108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C93139522B039FD00387108 /* PostsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C93139B22B039FD00387108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6C9313A022B039FD00387108 /* PostsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C9313B222B03A3900387108 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6C9313B422B03C7000387108 /* PostItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostItem.swift; sourceTree = "<group>"; };
 		6C9313B622B03D3600387108 /* PostsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsLoader.swift; sourceTree = "<group>"; };
@@ -93,14 +84,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6C93139D22B039FD00387108 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				278B5982AEED81D44121CA12 /* Pods_PostsUITests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -120,7 +103,6 @@
 			children = (
 				6C93137E22B039FC00387108 /* Posts.app */,
 				6C93139522B039FD00387108 /* PostsTests.xctest */,
-				6C9313A022B039FD00387108 /* PostsUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -252,26 +234,6 @@
 			productReference = 6C93139522B039FD00387108 /* PostsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		6C93139F22B039FD00387108 /* PostsUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6C9313AF22B039FD00387108 /* Build configuration list for PBXNativeTarget "PostsUITests" */;
-			buildPhases = (
-				325EA344757A133FC02CE8D0 /* [CP] Check Pods Manifest.lock */,
-				6C93139C22B039FD00387108 /* Sources */,
-				6C93139D22B039FD00387108 /* Frameworks */,
-				6C93139E22B039FD00387108 /* Resources */,
-				37F35CF86F724C4328223DD2 /* [CP] Embed Pods Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6C9313A222B039FD00387108 /* PBXTargetDependency */,
-			);
-			name = PostsUITests;
-			productName = PostsUITests;
-			productReference = 6C9313A022B039FD00387108 /* PostsUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -286,10 +248,6 @@
 						CreatedOnToolsVersion = 10.1;
 					};
 					6C93139422B039FD00387108 = {
-						CreatedOnToolsVersion = 10.1;
-						TestTargetID = 6C93137D22B039FC00387108;
-					};
-					6C93139F22B039FD00387108 = {
 						CreatedOnToolsVersion = 10.1;
 						TestTargetID = 6C93137D22B039FC00387108;
 					};
@@ -310,7 +268,6 @@
 			targets = (
 				6C93137D22B039FC00387108 /* Posts */,
 				6C93139422B039FD00387108 /* PostsTests */,
-				6C93139F22B039FD00387108 /* PostsUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -325,13 +282,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6C93139322B039FD00387108 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6C93139E22B039FD00387108 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -361,54 +311,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		325EA344757A133FC02CE8D0 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-PostsUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		37F35CF86F724C4328223DD2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PostsUITests/Pods-PostsUITests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/RxBlocking/RxBlocking.framework",
-				"${BUILT_PRODUCTS_DIR}/RxTest/RxTest.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxBlocking.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxTest.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PostsUITests/Pods-PostsUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9D774C905306E5A3C90C1A05 /* [CP] Embed Pods Frameworks */ = {
@@ -488,13 +390,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6C93139C22B039FD00387108 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -502,11 +397,6 @@
 			isa = PBXTargetDependency;
 			target = 6C93137D22B039FC00387108 /* Posts */;
 			targetProxy = 6C93139622B039FD00387108 /* PBXContainerItemProxy */;
-		};
-		6C9313A222B039FD00387108 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6C93137D22B039FC00387108 /* Posts */;
-			targetProxy = 6C9313A122B039FD00387108 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -709,48 +599,6 @@
 			};
 			name = Release;
 		};
-		6C9313B022B039FD00387108 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE78D1EF15C251089F17BBBB /* Pods-PostsUITests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = S7Q3D7C8SW;
-				INFOPLIST_FILE = PostsUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = pgh.PostsUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Posts;
-			};
-			name = Debug;
-		};
-		6C9313B122B039FD00387108 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FAC4EFC3A6E893882974B3F4 /* Pods-PostsUITests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = S7Q3D7C8SW;
-				INFOPLIST_FILE = PostsUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = pgh.PostsUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Posts;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -777,15 +625,6 @@
 			buildConfigurations = (
 				6C9313AD22B039FD00387108 /* Debug */,
 				6C9313AE22B039FD00387108 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6C9313AF22B039FD00387108 /* Build configuration list for PBXNativeTarget "PostsUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6C9313B022B039FD00387108 /* Debug */,
-				6C9313B122B039FD00387108 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

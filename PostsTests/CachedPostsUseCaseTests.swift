@@ -41,11 +41,12 @@ class CachedPostsUseCaseTests: XCTestCase {
     func test_save_onSuccessDeletionSavesItems() {
         let (sut, store) = makeSUT()
         let items = [anyItem(), anyItem()]
+        let localItems = items.map { LocalPostItem(id: $0.id, userId: $0.userId, title: $0.title, body: $0.body) }
         
         store.onDeletionResult = .success(())
         _ = sut.save(items).subscribe { _ in }
         
-        XCTAssertEqual(store.receivedCommands, [.delete, .insert(items)])
+        XCTAssertEqual(store.receivedCommands, [.delete, .insert(localItems)])
     }
     
     func test_save_failsOnDeletionError() {
@@ -128,7 +129,7 @@ class CachedPostsUseCaseTests: XCTestCase {
     private class PostsStoreSpy: PostsStore {
         enum Command: Equatable {
             case delete
-            case insert([PostItem])
+            case insert([LocalPostItem])
         }
         
         private(set) var receivedCommands = [Command]()
@@ -144,7 +145,7 @@ class CachedPostsUseCaseTests: XCTestCase {
             })
         }
         
-        func savePosts(_ items: [PostItem]) -> Single<Void> {
+        func savePosts(_ items: [LocalPostItem]) -> Single<Void> {
             receivedCommands.append(.insert(items))
             return .create(subscribe: { single in
                 single(self.onSaveResult)

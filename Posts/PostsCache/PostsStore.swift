@@ -10,5 +10,22 @@ import RxSwift
 
 public protocol PostsStore {
     func deleteCachedPosts() -> Single<Void>
-    func savePosts(_ items: [PostItem]) -> Single<Void>
+    func savePosts(_ items: [LocalPostItem]) -> Single<Void>
+}
+
+public struct LocalPostItem: Equatable {
+    public let id: Int
+    public let userId: Int
+    public let title: String
+    public let body: String
+    
+    public init(id: Int,
+                userId: Int,
+                title: String,
+                body: String) {
+        self.id = id
+        self.title = title
+        self.userId = userId
+        self.body = body
+    }
 }
