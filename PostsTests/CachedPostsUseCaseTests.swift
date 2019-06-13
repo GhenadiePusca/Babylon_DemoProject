@@ -10,23 +10,6 @@ import XCTest
 import Posts
 import RxSwift
 
-class LocalPostsLoader {
-    let store: PostsStore
-    
-    init(store: PostsStore) {
-        self.store = store
-    }
-    
-    func save(_ items: [PostItem]) -> Single<Void> {
-        return store.deleteCachedPosts().flatMap { self.store.savePosts(items) }
-    }
-}
-
-protocol PostsStore {
-    func deleteCachedPosts() -> Single<Void>
-    func savePosts(_ items: [PostItem]) -> Single<Void>
-}
-
 class CachedPostsUseCaseTests: XCTestCase {
     
     func test_init_cacheReminsIntactOnCreation() {
