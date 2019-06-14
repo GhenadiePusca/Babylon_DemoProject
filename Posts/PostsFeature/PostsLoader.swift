@@ -9,6 +9,6 @@
 import RxSwift
 
 public protocol PostsLoader {
-    typealias LoadResult = Single<[PostItem]>
-    func load() -> LoadResult
+    typealias LoadResult = [PostItem]
+    func load() -> Single<LoadResult>
 }
