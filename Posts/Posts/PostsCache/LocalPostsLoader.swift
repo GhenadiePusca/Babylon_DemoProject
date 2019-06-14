@@ -22,7 +22,10 @@ public class LocalPostsLoader {
     }
     
     public func load() -> Single<LoadResult> {
-        return store.retrieve().map { $0.toPostItems() }
+        return store.retrieve().catchError { error in
+            _ = self.store.deleteCachedPosts().subscribe { _ in }
+            return .error(error)
+        }.map { $0.toPostItems() }
     }
 }
 

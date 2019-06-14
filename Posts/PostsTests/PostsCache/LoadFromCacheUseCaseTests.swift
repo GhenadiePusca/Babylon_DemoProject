@@ -21,11 +21,21 @@ class LoadFromCacheUseCaseTests: XCTestCase {
     func test_load_requestsCacheRetrieval() {
         let (sut, store) = makeSUT()
         
-        _ = sut.load()
+        _ = sut.load().subscribe { _ in }
         
         XCTAssertEqual(store.receivedCommands, [.retrieve])
     }
     
+    func test_load_deletesTheCacheOnRetrievalError() {
+        let (sut, store) = makeSUT()
+        let retrievalEror = anyNSError()
+        
+        store.onRetrieveResult = .error(retrievalEror)
+        _ = sut.load().subscribe { _ in }
+        
+        XCTAssertEqual(store.receivedCommands, [.retrieve, .delete])
+    }
+
     func test_load_deliversErrorOnRetrievalError() {
         let (sut, store) = makeSUT()
         let retrievalEror = anyNSError()
