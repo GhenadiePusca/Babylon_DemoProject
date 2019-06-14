@@ -9,29 +9,16 @@
 import Foundation
 
 struct PostsMapper {
-    private struct Item: Decodable {
-        let id: Int
-        let userId: Int
-        let title: String
-        let body: String
-        
-        var postItem: PostItem {
-            return PostItem(id: id,
-                            userId: userId,
-                            title: title,
-                            body: body)
-        }
-    }
     
     private static let OK_HTTTP_RESPONSE = 200
     
-    internal static func mapSuccess(_ result: (data: Data, response: HTTPURLResponse)) throws -> [PostItem] {
+    internal static func mapSuccess(_ result: (data: Data, response: HTTPURLResponse)) throws -> [RemotePostItem] {
         guard result.response.statusCode == OK_HTTTP_RESPONSE,
-            let resultContainer = try? JSONDecoder().decode(FailableCodableArray<Item>.self,
+            let resultContainer = try? JSONDecoder().decode(FailableCodableArray<RemotePostItem>.self,
                                                             from: result.data) else {
                 throw RemotePostsLoader.Error.invalidData
         }
         
-        return resultContainer.elements.map { $0.postItem }
+        return resultContainer.elements
     }
 }

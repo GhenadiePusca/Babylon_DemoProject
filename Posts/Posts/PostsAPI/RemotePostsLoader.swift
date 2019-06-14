@@ -26,6 +26,20 @@ final public  class RemotePostsLoader: PostsLoader {
     public func load() -> Single<[PostItem]> {
         return client.get(fromURL: url).catchError { _ in
             throw Error.connectivity
-        }.map { try PostsMapper.mapSuccess($0) }
+        }.map { try PostsMapper.mapSuccess($0).toPostItems() }
+    }
+}
+
+private extension RemotePostItem {
+    var toPostItem: PostItem {
+        return PostItem(id: id,
+                             userId: userId,
+                             title: title,
+                             body: body)
+    }
+}
+private extension Array where Element == RemotePostItem {
+    func toPostItems() -> [PostItem] {
+        return map { $0.toPostItem }
     }
 }
