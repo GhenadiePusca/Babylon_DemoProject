@@ -10,6 +10,7 @@
 		3A2B640C3D61D9F0D4A89A93 /* Pods_PostsAPIEndToEndTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D0FABB317FE2ED48EE12C2 /* Pods_PostsAPIEndToEndTests.framework */; };
 		6C1C4DA922B3FD2E00B63203 /* RemotePostsLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C1C4DA822B3FD2D00B63203 /* RemotePostsLoaderTests.swift */; };
 		6C1C4DB122B4000700B63203 /* PostsAPIEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C1C4DB022B4000700B63203 /* PostsAPIEndToEndTests.swift */; };
+		6C1C4DB822B402E700B63203 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBF4FA722B2E3B20056B55F /* XCTestCase+MemoryLeakTracking.swift */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C93138C22B039FD00387108 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C93138B22B039FD00387108 /* Assets.xcassets */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
@@ -485,6 +486,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C1C4DB122B4000700B63203 /* PostsAPIEndToEndTests.swift in Sources */,
+				6C1C4DB822B402E700B63203 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,14 +13,17 @@ import RxSwift
 class PostsAPIEndToEndTests: XCTestCase {
     
     func test_getDataFromTestServerGetsFixedTestData() {
-        let client = URLSessionHTTPClient()
         let testURL = URL(string: "https://poststestapi.free.beeceptor.com/")!
+        
+        let client = URLSessionHTTPClient()
         let loader = RemotePostsLoader(url: testURL, client: client)
+        trackForMemoryLeaks(client)
+        trackForMemoryLeaks(loader)
         
         let exp = expectation(description: "Wait for load")
 
         let expectedPosts = expectedFixedPostItems()
-        loader.load().subscribe { result in
+        _ = loader.load().subscribe { result in
             switch result {
             case .success(let receivedPosts):
                 XCTAssertEqual(receivedPosts[0], expectedPosts[0])
