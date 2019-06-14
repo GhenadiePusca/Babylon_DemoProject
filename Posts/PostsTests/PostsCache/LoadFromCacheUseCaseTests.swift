@@ -25,16 +25,6 @@ class LoadFromCacheUseCaseTests: XCTestCase {
         
         XCTAssertEqual(store.receivedCommands, [.retrieve])
     }
-    
-    func test_load_deletesTheCacheOnRetrievalError() {
-        let (sut, store) = makeSUT()
-        let retrievalEror = anyNSError()
-        
-        store.onRetrieveResult = .error(retrievalEror)
-        _ = sut.load().subscribe { _ in }
-        
-        XCTAssertEqual(store.receivedCommands, [.retrieve, .delete])
-    }
 
     func test_load_deliversErrorOnRetrievalError() {
         let (sut, store) = makeSUT()
@@ -45,6 +35,26 @@ class LoadFromCacheUseCaseTests: XCTestCase {
                withStub: {
                 store.onRetrieveResult = .error(retrievalEror)
         })
+    }
+    
+    func test_load_hasNoSideEffectsOnError() {
+        let (sut, store) = makeSUT()
+        let retrievalEror = anyNSError()
+        
+        store.onRetrieveResult = .error(retrievalEror)
+        _ = sut.load().subscribe { _ in }
+        
+        XCTAssertEqual(store.receivedCommands, [.retrieve])
+    }
+    
+    func test_load_hasNoSideEffectsOnSuccesfulLoad() {
+        let (sut, store) = makeSUT()
+        let cachedPostItems = anyItems().map { $0.toLocal }
+        
+        store.onRetrieveResult = .success(cachedPostItems)
+        _ = sut.load().subscribe { _ in }
+        
+        XCTAssertEqual(store.receivedCommands, [.retrieve])
     }
     
     func test_load_deliversNoPostsOnEmptyCache() {
