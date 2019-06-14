@@ -16,6 +16,7 @@ class PostsStoreSpy: PostsStore {
     enum Command: Equatable {
         case delete
         case insert([LocalPostItem])
+        case retrieve
     }
     
     private(set) var receivedCommands = [Command]()
@@ -44,5 +45,9 @@ class PostsStoreSpy: PostsStore {
             single(self.onSaveResult)
             return Disposables.create {}
         })
+    }
+    
+    func retrieve() {
+        receivedCommands.append(.retrieve)
     }
 }

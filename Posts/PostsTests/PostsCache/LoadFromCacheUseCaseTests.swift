@@ -17,6 +17,16 @@ class LoadFromCacheUseCaseTests: XCTestCase {
         
         XCTAssertEqual(store.receivedCommands, [])
     }
+    
+    func test_load_requestsCacheRetrieval() {
+        let (sut, store) = makeSUT()
+        
+        sut.load()
+        
+        XCTAssertEqual(store.receivedCommands, [.retrieve])
+    }
+
+    // MARK: - Helpers
 
     private func makeSUT() -> (sut: LocalPostsLoader, store: PostsStoreSpy) {
         let store = PostsStoreSpy()

@@ -11,4 +11,5 @@ import RxSwift
 public protocol PostsStore {
     func deleteCachedPosts() -> Single<Void>
     func savePosts(_ items: [LocalPostItem]) -> Single<Void>
+    func retrieve()
 }

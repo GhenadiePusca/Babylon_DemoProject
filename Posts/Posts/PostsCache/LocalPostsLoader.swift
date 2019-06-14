@@ -18,6 +18,10 @@ public class LocalPostsLoader {
     public func save(_ items: [PostItem]) -> Single<Void> {
         return store.deleteCachedPosts().flatMap { self.store.savePosts(items.toLocal()) }
     }
+    
+    public func load() {
+        store.retrieve()
+    }
 }
 
 private extension PostItem {
