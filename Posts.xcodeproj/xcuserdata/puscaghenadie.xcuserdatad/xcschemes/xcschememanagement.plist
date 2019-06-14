@@ -7,11 +7,21 @@
 		<key>Posts.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>7</integer>
+			<integer>0</integer>
+		</dict>
+		<key>PostsAPIEndToEndTests.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>6C1C4DAD22B4000700B63203</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>6C93137D22B039FC00387108</key>
 		<dict>
 			<key>primary</key>
