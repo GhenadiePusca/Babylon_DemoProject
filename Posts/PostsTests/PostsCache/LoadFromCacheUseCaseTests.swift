@@ -21,18 +21,55 @@ class LoadFromCacheUseCaseTests: XCTestCase {
     func test_load_requestsCacheRetrieval() {
         let (sut, store) = makeSUT()
         
-        sut.load()
+        _ = sut.load()
         
         XCTAssertEqual(store.receivedCommands, [.retrieve])
+    }
+    
+    func test_load_deliversErrorOnRetrievalError() {
+        let (sut, store) = makeSUT()
+        let retrievalEror = anyNSError()
+
+        expect(sut,
+               toCompleteWithResult: .error(retrievalEror),
+               withStub: {
+                store.onRetrieveResult = .error(retrievalEror)
+        })
     }
 
     // MARK: - Helpers
 
-    private func makeSUT() -> (sut: LocalPostsLoader, store: PostsStoreSpy) {
+    private func makeSUT(file: StaticString = #file,
+                         line: UInt = #line) -> (sut: LocalPostsLoader, store: PostsStoreSpy) {
         let store = PostsStoreSpy()
         let sut = LocalPostsLoader(store: store)
-        trackForMemoryLeaks(store)
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(store, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, store)
+    }
+    
+    private func expect(_ sut: LocalPostsLoader,
+                        toCompleteWithResult expectedResult: SingleEvent<LocalPostsLoader.LoadResult>,
+                        withStub stub: () -> Void,
+                        file: StaticString = #file,
+                        line: UInt = #line) {
+        let exp = expectation(description: "Wait for completion")
+        
+        stub()
+        
+        _ = sut.load().subscribe { result in
+            switch (result, expectedResult) {
+            case let (.success(receivedItems), .success(expectedItems)):
+                XCTAssertEqual(receivedItems, expectedItems)
+            case let (.error(receivedError), .error(expectedError)):
+                XCTAssertEqual(receivedError as NSError?, expectedError as NSError?)
+            default:
+                XCTFail("expected \(expectedResult), got \(result)")
+            }
+            
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
     }
 }

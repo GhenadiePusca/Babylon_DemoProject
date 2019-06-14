@@ -9,7 +9,9 @@
 import RxSwift
 
 public protocol PostsStore {
+    typealias RetrieveResult = [LocalPostItem]
+
     func deleteCachedPosts() -> Single<Void>
     func savePosts(_ items: [LocalPostItem]) -> Single<Void>
-    func retrieve()
+    func retrieve() -> Single<RetrieveResult>
 }

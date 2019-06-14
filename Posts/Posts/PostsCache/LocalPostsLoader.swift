@@ -11,6 +11,8 @@ import RxSwift
 public class LocalPostsLoader {
     private let store: PostsStore
     
+    public typealias LoadResult = [PostItem]
+
     public init(store: PostsStore) {
         self.store = store
     }
@@ -19,8 +21,8 @@ public class LocalPostsLoader {
         return store.deleteCachedPosts().flatMap { self.store.savePosts(items.toLocal()) }
     }
     
-    public func load() {
-        store.retrieve()
+    public func load() -> Single<LoadResult> {
+        return store.retrieve().map { $0.toPostItems() }
     }
 }
 
@@ -32,8 +34,24 @@ private extension PostItem {
                              body: body)
     }
 }
+
+private extension LocalPostItem {
+    var toLocal: PostItem {
+        return PostItem(id: id,
+                        userId: userId,
+                        title: title,
+                        body: body)
+    }
+}
+
 private extension Array where Element == PostItem {
     func toLocal() -> [LocalPostItem] {
+        return map { $0.toLocal }
+    }
+}
+
+private extension Array where Element == LocalPostItem {
+    func toPostItems() -> [PostItem] {
         return map { $0.toLocal }
     }
 }

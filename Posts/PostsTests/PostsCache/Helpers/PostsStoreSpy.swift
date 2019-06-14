@@ -28,6 +28,7 @@ class PostsStoreSpy: PostsStore {
     
     var onDeletionResult: SingleEvent<Void> = .error(PostsStoreSpy.notSetError)
     var onSaveResult: SingleEvent<Void> = .error(PostsStoreSpy.notSetError)
+    var onRetrieveResult: SingleEvent<RetrieveResult> = .error(PostsStoreSpy.notSetError)
     
     // MAARK: - PostsStore protocol conformance
 
@@ -47,7 +48,11 @@ class PostsStoreSpy: PostsStore {
         })
     }
     
-    func retrieve() {
+    func retrieve() -> Single<RetrieveResult> {
         receivedCommands.append(.retrieve)
+        return .create(subscribe: { single in
+            single(self.onRetrieveResult)
+            return Disposables.create {}
+        })
     }
 }
