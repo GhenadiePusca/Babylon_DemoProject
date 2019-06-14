@@ -36,6 +36,18 @@ class LoadFromCacheUseCaseTests: XCTestCase {
                 store.onRetrieveResult = .error(retrievalEror)
         })
     }
+    
+    func test_load_deliverNoPostsOnEmptyCache() {
+        let (sut, store) = makeSUT()
+        let noPostItems = [PostItem]()
+        let noCachePostItems = [LocalPostItem]()
+        
+        expect(sut,
+               toCompleteWithResult: .success(noPostItems),
+               withStub: {
+                store.onRetrieveResult = .success(noCachePostItems)
+        })
+    }
 
     // MARK: - Helpers
 
