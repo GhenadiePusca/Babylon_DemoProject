@@ -23,7 +23,7 @@ final public  class RemotePostsLoader: PostsLoader {
         self.client = client
     }
     
-    public func load() -> Observable<[PostItem]> {
+    public func load() -> Single<[PostItem]> {
         return client.get(fromURL: url).catchError { _ in
             throw Error.connectivity
         }.map { try PostsMapper.mapSuccess($0) }

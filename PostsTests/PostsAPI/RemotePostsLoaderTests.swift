@@ -11,26 +11,27 @@ import RxSwift
 import Posts
 
 class RemotePostsLoaderTests: XCTestCase {
+    struct TestingConstants {
+        static let testURL = URL(string: "https://some-url.com")!
+    }
     
     func test_load_requestsDataFromURL() {
-        let testURL = URL(string: "https://some-url.com")!
-        let (sut, client) = makeSUT(url: testURL)
+        let (sut, client) = makeSUT(url: TestingConstants.testURL)
 
         _ = sut.load()
         
         XCTAssertEqual(client.requestedURLs,
-                       [testURL],
-                       "Expected to call \(testURL), but called \(client.requestedURLs)")
+                       [TestingConstants.testURL],
+                       "Expected to call \(TestingConstants.testURL), but called \(client.requestedURLs)")
     }
     
     func test_load_deliversErrorOnClientGetError() {
         let (sut, client) = makeSUT()
-        
-        expectLoad(toCompleteWithError: .connectivity,
+
+        expectLoad(toCompleteWithResult: .error(RemotePostsLoader.Error.connectivity),
                    sut: sut,
-                   onAction: {
-                    let error = NSError(domain: "test", code: 500, userInfo: nil)
-                    client.completeWith(error: error)
+                   stub: {
+                    client.loadResult = .error(NSError(domain: "test", code: 500, userInfo: nil))
         })
     }
 
@@ -38,13 +39,13 @@ class RemotePostsLoaderTests: XCTestCase {
         let (sut, client) = makeSUT()
 
         let invalidStatusCodes = [190, 199, 201, 299, 300, 301, 399, 400, 401, 499, 500]
-        invalidStatusCodes.enumerated().forEach { arg in
-            let (idx, code) = arg
-            
-            expectLoad(toCompleteWithError: .invalidData,
+        invalidStatusCodes.forEach { code in
+            expectLoad(toCompleteWithResult: .error(RemotePostsLoader.Error.invalidData),
                        sut: sut,
-                       onAction: {
-                        client.completeWith(statusCode: code, idx: idx)
+                       stub: {
+                        let emptyData = Data()
+                        let invalidStatusCodeResponse = RemotePostsLoaderTests.createHTTPResponse(code)
+                        client.loadResult = .success((emptyData, invalidStatusCodeResponse))
             })
         }
     }
@@ -52,23 +53,24 @@ class RemotePostsLoaderTests: XCTestCase {
     func test_load_deliversErrorOn200StatusCodeWithInvalidResponse() {
         let (sut, client) = makeSUT()
 
-        expectLoad(toCompleteWithError: .invalidData,
+        expectLoad(toCompleteWithResult: .error(RemotePostsLoader.Error.invalidData),
                    sut: sut,
-                   onAction: {
+                   stub: {
                     let invalidData = Data(bytes: "invalidData".utf8)
-                    client.completeWith(statusCode: 200, data: invalidData)
+                    let response = RemotePostsLoaderTests.createHTTPResponse(200)
+                    client.loadResult = .success((invalidData, response))
         })
     }
 
     func test_load_deliversDataOn200StatusCodeAndEmptyJSON() {
         let (sut, client) = makeSUT()
 
-        expectLoad(toCompleteWithData: [],
+        expectLoad(toCompleteWithResult: .success([]),
                    sut: sut,
-                   onAction: {
-                    let emptyJsonData = Data(bytes: "[]".utf8)
-                    client.completeWith(statusCode: 200,
-                                        data: emptyJsonData)
+                   stub: {
+                    let emptyJSONData = Data(bytes: "[]".utf8)
+                    let response = RemotePostsLoaderTests.createHTTPResponse(200)
+                    client.loadResult = .success((emptyJSONData,response))
         })
     }
     
@@ -76,13 +78,13 @@ class RemotePostsLoaderTests: XCTestCase {
         let (sut, client) = makeSUT()
         
         let (items, json) = makePostItems()
-        
-        expectLoad(toCompleteWithData: items,
+
+        expectLoad(toCompleteWithResult: .success(items),
                    sut: sut,
-                   onAction: {
+                   stub: {
                     let jsonData = try! JSONSerialization.data(withJSONObject: json)
-                    client.completeWith(statusCode: 200,
-                                        data: jsonData)
+                    let response = RemotePostsLoaderTests.createHTTPResponse(200)
+                    client.loadResult = .success((jsonData, response))
         })
     }
 
@@ -94,36 +96,33 @@ class RemotePostsLoaderTests: XCTestCase {
         
         return (sut, client)
     }
-    
-    private func expectLoad(toCompleteWithError expectedError: RemotePostsLoader.Error,
+
+    private func expectLoad(toCompleteWithResult expectedResult: SingleEvent<[PostItem]>,
                             sut: RemotePostsLoader,
                             file: StaticString = #file,
                             line: UInt = #line,
-                            onAction action: () -> Void) {
-        let exp = expectation(description: "Wait for completion")
-        _ = sut.load().subscribe(onError: { error in
-            XCTAssertEqual(error as! RemotePostsLoader.Error, expectedError)
+                            stub: @escaping () -> Void) {
+
+        stub()
+
+        let exp = expectation(description: "Waiting for completion")
+
+        _ = sut.load().subscribe { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case let (.success(receivedItems), .success(expectedItems)):
+                XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
+            case let (.error(receivedError), .error(expectedError)):
+                XCTAssertEqual(receivedError as? RemotePostsLoader.Error,
+                               expectedError as? RemotePostsLoader.Error,
+                               file: file,
+                               line: line)
+            default:
+                XCTFail("Expected to receive \(expectedResult), got \(String(describing: receivedResult))", file: file, line: line)
+            }
+
             exp.fulfill()
-        })
-        
-        action()
-        
-        wait(for: [exp], timeout: 1.0)
-    }
-    
-    private func expectLoad(toCompleteWithData expectedData: [PostItem],
-                            sut: RemotePostsLoader,
-                            file: StaticString = #file,
-                            line: UInt = #line,
-                            onAction action: () -> Void) {
-        let exp = expectation(description: "Wait for completion")
-        _ = sut.load().subscribe(onNext: { data in
-            XCTAssertEqual(data, expectedData)
-            exp.fulfill()
-        })
-        
-        action()
-        
+        }
+
         wait(for: [exp], timeout: 1.0)
     }
     
@@ -157,31 +156,27 @@ class RemotePostsLoaderTests: XCTestCase {
         return ([item1, item2], [item1JSON, item2JSON, invalidItemJSON])
     }
 
-    final class HTTPClientMock: HTTPClient {
-        typealias message = (url: URL, obs: PublishSubject<GetResult>)
+    private static func createHTTPResponse(_ statusCode: Int) -> HTTPURLResponse {
+        return HTTPURLResponse(url: TestingConstants.testURL,
+                               statusCode: statusCode,
+                               httpVersion: nil,
+                               headerFields: nil)!
+    }
 
-        var messages = [message]()
-        var requestedURLs: [URL] {
-            return messages.map { $0.url }
-        }
+    final class HTTPClientMock: HTTPClient {
+        var loadResult: SingleEvent<GetResult> = .error(NSError(domain: "test", code: 500, userInfo: nil))
+
+        var requestedURLs = [URL]()
         
-        func get(fromURL url: URL) -> Observable<GetResult> {
-            let obs = PublishSubject<GetResult>.init()
-            messages.append((url, obs))
-            
-            return obs
-        }
-        
-        func completeWith(error: Error, idx: Int = 0) {
-            messages[idx].obs.onError(error)
-        }
-        
-        func completeWith(statusCode: Int, data: Data = Data(), idx: Int = 0) {
-            let response = HTTPURLResponse(url: messages[idx].url,
-                                           statusCode: statusCode,
-                                           httpVersion: nil,
-                                           headerFields: nil)!
-            messages[idx].obs.onNext((data, response))
+        func get(fromURL url: URL) -> Single<GetResult> {
+            requestedURLs.append(url)
+
+            return Single<GetResult>.create(subscribe: { [weak self] single in
+                let disposable = Disposables.create {}
+                guard let self = self else { return disposable}
+                single(self.loadResult)
+                return disposable
+            })
         }
     }
 }

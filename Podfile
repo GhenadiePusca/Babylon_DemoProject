@@ -7,18 +7,10 @@ target 'Posts' do
   
   # Pods for Posts
   pod 'RxSwift', '~> 4.5'
-  pod 'RxCocoa', '~> 4.5'
 
   target 'PostsTests' do
     inherit! :search_paths
     # Pods for testing
-  end
-
-  target 'PostsUITests' do
-    inherit! :search_paths
-    # Pods for testing
-    pod 'RxBlocking', '~> 4.5'
-    pod 'RxTest', '~> 4.5'
   end
 
 end
