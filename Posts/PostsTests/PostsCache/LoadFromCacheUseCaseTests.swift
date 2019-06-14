@@ -37,7 +37,7 @@ class LoadFromCacheUseCaseTests: XCTestCase {
         })
     }
     
-    func test_load_deliverNoPostsOnEmptyCache() {
+    func test_load_deliversNoPostsOnEmptyCache() {
         let (sut, store) = makeSUT()
         let noPostItems = [PostItem]()
         let noCachePostItems = [LocalPostItem]()
@@ -46,6 +46,18 @@ class LoadFromCacheUseCaseTests: XCTestCase {
                toCompleteWithResult: .success(noPostItems),
                withStub: {
                 store.onRetrieveResult = .success(noCachePostItems)
+        })
+    }
+    
+    func test_load_deliversPostsOnCacheWithData() {
+        let (sut, store) = makeSUT()
+        let expectedPostItems = anyItems()
+        let cachedPostItems = expectedPostItems.map { $0.toLocal }
+        
+        expect(sut,
+               toCompleteWithResult: .success(expectedPostItems),
+               withStub: {
+                store.onRetrieveResult = .success(cachedPostItems)
         })
     }
 
@@ -72,11 +84,11 @@ class LoadFromCacheUseCaseTests: XCTestCase {
         _ = sut.load().subscribe { result in
             switch (result, expectedResult) {
             case let (.success(receivedItems), .success(expectedItems)):
-                XCTAssertEqual(receivedItems, expectedItems)
+                XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
             case let (.error(receivedError), .error(expectedError)):
-                XCTAssertEqual(receivedError as NSError?, expectedError as NSError?)
+                XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
             default:
-                XCTFail("expected \(expectedResult), got \(result)")
+                XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
             }
             
             exp.fulfill()
