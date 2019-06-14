@@ -10,7 +10,7 @@ import XCTest
 import Posts
 import RxSwift
 
-class CachedPostsUseCaseTests: XCTestCase {
+class CachePostsUseCaseTests: XCTestCase {
     
     func test_init_cacheReminsIntactOnCreation() {
         let (_, store) = makeSUT()
@@ -117,16 +117,10 @@ class CachedPostsUseCaseTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
     }
-
-    private func anyItem() -> PostItem {
-        return PostItem(id: 1, userId: 2, title: "any title", body: "any body")
-    }
-    
-    private func anyNSError() -> NSError {
-        return NSError(domain: "err", code: 1)
-    }
     
     private class PostsStoreSpy: PostsStore {
+        
+        // MARK: - Commands
         enum Command: Equatable {
             case delete
             case insert([LocalPostItem])
@@ -134,9 +128,15 @@ class CachedPostsUseCaseTests: XCTestCase {
         
         private(set) var receivedCommands = [Command]()
         
-        var onDeletionResult: SingleEvent<Void> = .error(NSError(domain: "not provided", code: 1))
-        var onSaveResult: SingleEvent<Void> = .error(NSError(domain: "not provided", code: 1))
+        // MARK: - Private
+        private static let notSetError = NSError(domain: "not provided", code: 1)
         
+        // MARK: - Stub properties
+
+        var onDeletionResult: SingleEvent<Void> = .error(PostsStoreSpy.notSetError)
+        var onSaveResult: SingleEvent<Void> = .error(PostsStoreSpy.notSetError)
+        
+        // MAARK: - PostsStore protocol conformance
         func deleteCachedPosts() -> Single<Void> {
             receivedCommands.append(.delete)
             return .create(subscribe: { single in
