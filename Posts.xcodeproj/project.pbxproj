@@ -158,7 +158,6 @@
 				6C93138B22B039FD00387108 /* Assets.xcassets */,
 				6C9313B222B03A3900387108 /* main.swift */,
 				6C93139022B039FD00387108 /* Info.plist */,
-				6C9313BC22B041BF00387108 /* HTTPClient.swift */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -241,6 +240,7 @@
 		C4E3701922B3977E002A33E3 /* PostsAPI */ = {
 			isa = PBXGroup;
 			children = (
+				6C9313BC22B041BF00387108 /* HTTPClient.swift */,
 				6C9313BA22B0419200387108 /* RemotePostsLoader.swift */,
 				6CFBFD0622B218AA00CC6E3B /* PostsMapper.swift */,
 				C4E3701A22B397E6002A33E3 /* URLSessionHTTPClient.swift */,
