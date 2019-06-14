@@ -12,7 +12,7 @@ import RxSwift
 
 class CachePostsUseCaseTests: XCTestCase {
     
-    func test_init_cacheReminsIntactOnCreation() {
+    func test_init_cacheRemainsIntactOnCreation() {
         let (_, store) = makeSUT()
         
         XCTAssertEqual(store.receivedCommands, [])
