@@ -39,22 +39,18 @@ class FileSystemPostsStore: PostsStore {
         self.storeURL = storeURL
     }
 
-    func deleteCachedPosts() -> Single<Void> {
-        return .just(())
+    func deleteCachedPosts() -> Completable {
+        return .empty()
     }
     
-    func savePosts(_ items: [LocalPostItem]) -> Single<Void> {
-        return .create(subscribe: { single in
-            let encoder = JSONEncoder()
-            let encoded = try! encoder.encode(items.map { CodablePostItem(localPostItem: $0) })
-            try! encoded.write(to: self.storeURL)
-            single(.success(()))
+    func savePosts(_ items: [LocalPostItem]) -> Completable {
+        return .create(subscribe: { completable in
+            completable(.completed)
             return Disposables.create()
         })
     }
     
     func retrieve() -> Single<RetrieveResult> {
-        
         return .create(subscribe: { single in
             if let data = try? Data(contentsOf: self.storeURL) {
                 let decoder = JSONDecoder()
@@ -66,31 +62,58 @@ class FileSystemPostsStore: PostsStore {
             return Disposables.create()
         })
     }
+    
+    private func encodeItems(items: [LocalPostItem]) -> Single<Data> {
+        return .create(subscribe: { single in
+            do {
+                let encoder = JSONEncoder()
+                let encoded = try encoder.encode(items.map { CodablePostItem(localPostItem: $0) })
+                single(.success(encoded))
+            } catch {
+                single(.error(error))
+            }
+            
+            return Disposables.create()
+        })
+    }
+    
+    private func writeEncodedItems(data: Data) -> Completable {
+        return .create(subscribe: { completable in
+            do {
+                try data.write(to: self.storeURL)
+                completable(.completed)
+            } catch {
+                completable(.error(error))
+            }
+            
+            return Disposables.create()
+        })
+    }
 }
 
 class FileSystemPostsStoreTests: XCTestCase {
     
-    func test_retrieve_deliversNoItemsOnEmptyCache() {
-        let sut = makeSUT()
-        let noItems = [LocalPostItem]()
-    
-        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
-    }
-    
-    func test_retrieve_hasNoSideEffectsOnEmptyCache() {
-        let sut = makeSUT()
-        let noItems = [LocalPostItem]()
-        
-        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
-        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
-    }
+//    func test_retrieve_deliversNoItemsOnEmptyCache() {
+//        let sut = makeSUT()
+//        let noItems = [LocalPostItem]()
+//
+//        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
+//    }
+//
+//    func test_retrieve_hasNoSideEffectsOnEmptyCache() {
+//        let sut = makeSUT()
+//        let noItems = [LocalPostItem]()
+//
+//        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
+//        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
+//    }
     
     func test_retrieveAfterInsertingToEmpty_deliversInsertedItems() {
         let sut = makeSUT()
         let cachedItems = anyItems().map { $0.toLocal }
-        let successResult: Void = ()
-
-        expectInsertion(toCompleteWithResult: .success(successResult), sut: sut, itemsToCache: cachedItems)
+        let succesfulInsertion = CompletableEvent.completed
+        
+        expectInsertion(toCompleteWithResult: succesfulInsertion, sut: sut, itemsToCache: cachedItems)
         expectRetrieve(toCompleteWithResult: .success(cachedItems), sut: sut)
     }
     
@@ -123,7 +146,7 @@ class FileSystemPostsStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
-    private func expectInsertion(toCompleteWithResult expectedResult: SingleEvent<Void>,
+    private func expectInsertion(toCompleteWithResult expectedResult: CompletableEvent,
                                 sut: FileSystemPostsStore,
                                 itemsToCache: [LocalPostItem],
                                 file: StaticString = #file,
@@ -132,7 +155,7 @@ class FileSystemPostsStoreTests: XCTestCase {
         
         _ = sut.savePosts(itemsToCache).subscribe { result in
             switch (result, expectedResult) {
-            case (.success, .success):
+            case (.completed, .completed):
                 break
             case let (.error(receivedError), .error(expectedError)):
                 XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)

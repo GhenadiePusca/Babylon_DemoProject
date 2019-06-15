@@ -26,31 +26,31 @@ class PostsStoreSpy: PostsStore {
     
     // MARK: - Stub properties
     
-    var onDeletionResult: SingleEvent<Void> = .error(PostsStoreSpy.notSetError)
-    var onSaveResult: SingleEvent<Void> = .error(PostsStoreSpy.notSetError)
+    var onDeletionResult: CompletableEvent = .error(PostsStoreSpy.notSetError)
+    var onSaveResult: CompletableEvent = .error(PostsStoreSpy.notSetError)
     var onRetrieveResult: SingleEvent<RetrieveResult> = .error(PostsStoreSpy.notSetError)
     
     // MAARK: - PostsStore protocol conformance
 
-    func deleteCachedPosts() -> Single<Void> {
-        receivedCommands.append(.delete)
-        return .create(subscribe: { single in
-            single(self.onDeletionResult)
+    func deleteCachedPosts() -> Completable {
+        return .create(subscribe: { completable in
+            self.receivedCommands.append(.delete)
+            completable(self.onDeletionResult)
             return Disposables.create {}
         })
     }
     
-    func savePosts(_ items: [LocalPostItem]) -> Single<Void> {
-        receivedCommands.append(.insert(items))
-        return .create(subscribe: { single in
-            single(self.onSaveResult)
+    func savePosts(_ items: [LocalPostItem]) -> Completable {
+        return .create(subscribe: { completable in
+            self.receivedCommands.append(.insert(items))
+            completable(self.onSaveResult)
             return Disposables.create {}
         })
     }
     
     func retrieve() -> Single<RetrieveResult> {
-        receivedCommands.append(.retrieve)
         return .create(subscribe: { single in
+            self.receivedCommands.append(.retrieve)
             single(self.onRetrieveResult)
             return Disposables.create {}
         })

@@ -17,8 +17,8 @@ public class LocalPostsLoader {
         self.store = store
     }
     
-    public func save(_ items: [PostItem]) -> Single<Void> {
-        return store.deleteCachedPosts().flatMap { self.store.savePosts(items.toLocal()) }
+    public func save(_ items: [PostItem]) -> Completable {
+        return store.deleteCachedPosts().andThen(store.savePosts(items.toLocal()))
     }
     
     public func load() -> Single<LoadResult> {

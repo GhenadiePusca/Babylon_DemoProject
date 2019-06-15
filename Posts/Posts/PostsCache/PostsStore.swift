@@ -11,7 +11,7 @@ import RxSwift
 public protocol PostsStore {
     typealias RetrieveResult = [LocalPostItem]
 
-    func deleteCachedPosts() -> Single<Void>
-    func savePosts(_ items: [LocalPostItem]) -> Single<Void>
+    func deleteCachedPosts() -> Completable
+    func savePosts(_ items: [LocalPostItem]) -> Completable
     func retrieve() -> Single<RetrieveResult>
 }

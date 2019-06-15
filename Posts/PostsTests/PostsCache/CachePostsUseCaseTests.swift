@@ -43,7 +43,7 @@ class CachePostsUseCaseTests: XCTestCase {
         let items = [anyItem(), anyItem()]
         let localItems = items.map { $0.toLocal }
         
-        store.onDeletionResult = .success(())
+        store.onDeletionResult = .completed
         _ = sut.save(items).subscribe { _ in }
         
         XCTAssertEqual(store.receivedCommands, [.delete, .insert(localItems)])
@@ -63,26 +63,26 @@ class CachePostsUseCaseTests: XCTestCase {
     func test_save_failsOnSaveError() {
         let (sut, store) = makeSUT()
         let insertionError = anyNSError()
-        let succesfulDeletion: Void = ()
+        let succesfulDeletion: CompletableEvent = .completed
         
         expect(sut,
                toCompleteWithResult: .error(insertionError),
                withStub: {
-                store.onDeletionResult = .success(succesfulDeletion)
+                store.onDeletionResult = succesfulDeletion
                 store.onSaveResult = .error(insertionError)
         })
     }
     
     func test_save_succedsOnSuccesfulSave() {
         let (sut, store) = makeSUT()
-        let succesfulSave: Void = ()
-        let succesfulDeletion: Void = ()
+        let succesfulSave: CompletableEvent = .completed
+        let succesfulDeletion: CompletableEvent = .completed
 
         expect(sut,
-               toCompleteWithResult: .success(succesfulSave),
+               toCompleteWithResult: succesfulSave,
                withStub: {
-                store.onDeletionResult = .success(succesfulDeletion)
-                store.onSaveResult = .success(succesfulSave)
+                store.onDeletionResult = succesfulDeletion
+                store.onSaveResult = succesfulSave
         })
     }
     
@@ -97,7 +97,7 @@ class CachePostsUseCaseTests: XCTestCase {
     }
     
     private func expect(_ sut: LocalPostsLoader,
-                        toCompleteWithResult expectedResult: SingleEvent<Void>,
+                        toCompleteWithResult expectedResult: CompletableEvent,
                         withStub stub: () -> Void,
                         file: StaticString = #file,
                         line: UInt = #line) {
@@ -107,7 +107,7 @@ class CachePostsUseCaseTests: XCTestCase {
 
         _ = sut.save([anyItem()]).subscribe { result in
             switch (result, expectedResult) {
-            case (.success, .success):
+            case (.completed, .completed):
                 break
             case let (.error(receivedError), .error(expectedError)):
                 XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
