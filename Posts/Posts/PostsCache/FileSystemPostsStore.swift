@@ -33,7 +33,7 @@ public class FileSystemPostsStore: PostsStore {
     }
     
     private let storeURL: URL
-    private lazy var queue = DispatchQueue(label: "\(type(of: self)).queue",
+    private let queue = DispatchQueue(label: "FileSystemPostsStore.queue",
         qos: .userInitiated)
     
     public init(storeURL: URL) {
@@ -41,24 +41,27 @@ public class FileSystemPostsStore: PostsStore {
     }
     
     public func deleteCachedPosts() -> Completable {
-        return deleteCache().subscribeOn(SerialDispatchQueueScheduler.init(queue: queue, internalSerialQueueName: "\(type(of: self)).queue"))
+        let url = self.storeURL
+        return FileSystemPostsStore.deleteCache(url).subscribeOn(SerialDispatchQueueScheduler.init(queue: queue, internalSerialQueueName: "\(type(of: self)).queue"))
     }
 
     public func savePosts(_ items: [LocalPostItem]) -> Completable {
-        return encodeItems(items).flatMapCompletable(writeEncodedData).subscribeOn(SerialDispatchQueueScheduler.init(queue: queue, internalSerialQueueName: "\(type(of: self)).queue"))
+        let url = self.storeURL
+        return FileSystemPostsStore.encodeItems(items).flatMapCompletable { FileSystemPostsStore.writeEncodedData($0, url) }.subscribeOn(SerialDispatchQueueScheduler.init(queue: queue, internalSerialQueueName: "\(type(of: self)).queue"))
     }
     
     public func retrieve() -> Single<RetrieveResult> {
-        return getCachedData().flatMap(decodeCachedData).ifEmpty(default: []).subscribeOn(ConcurrentDispatchQueueScheduler.init(queue: .global()))
+        let url = self.storeURL
+        return FileSystemPostsStore.getCachedData(url).flatMap(FileSystemPostsStore.decodeCachedData).ifEmpty(default: []).subscribeOn(ConcurrentDispatchQueueScheduler.init(queue: .global()))
     }
     
     // MARK: - Deletion helpers
 
-    private func deleteCache() -> Completable {
+    private static func deleteCache(_ url: URL) -> Completable {
         return .create(subscribe: { completable in
-            if FileManager.default.fileExists(atPath: self.storeURL.path) {
+            if FileManager.default.fileExists(atPath: url.path) {
                 do {
-                    try FileManager.default.removeItem(at: self.storeURL)
+                    try FileManager.default.removeItem(at: url)
                     completable(.completed)
                 } catch {
                     completable(.error(error))
@@ -73,10 +76,10 @@ public class FileSystemPostsStore: PostsStore {
     
     // MARK: - Retrieval helpers
     
-    private func getCachedData() -> Maybe<Data> {
+    private static func getCachedData(_ url: URL) -> Maybe<Data> {
         return .create(subscribe: { single in
             do {
-                let data = try Data(contentsOf: self.storeURL)
+                let data = try Data(contentsOf: url)
                 single(.success(data))
             } catch {
                 single(.completed)
@@ -86,7 +89,7 @@ public class FileSystemPostsStore: PostsStore {
         })
     }
     
-    private func decodeCachedData(_ data: Data) -> Maybe<RetrieveResult> {
+    private static func decodeCachedData(_ data: Data) -> Maybe<RetrieveResult> {
         return .create(subscribe: { single in
             do {
                 let decoder = JSONDecoder()
@@ -102,7 +105,7 @@ public class FileSystemPostsStore: PostsStore {
     
     // MARK: - Save helpers
     
-    private func encodeItems(_ items: [LocalPostItem]) -> Single<Data> {
+    private static func encodeItems(_ items: [LocalPostItem]) -> Single<Data> {
         return .create(subscribe: { single in
             do {
                 let encoder = JSONEncoder()
@@ -116,10 +119,10 @@ public class FileSystemPostsStore: PostsStore {
         })
     }
     
-    private func writeEncodedData(_ data: Data) -> Completable {
+    private static func writeEncodedData(_ data: Data, _ url: URL) -> Completable {
         return .create(subscribe: { completable in
             do {
-                try data.write(to: self.storeURL)
+                try data.write(to: url)
                 completable(.completed)
             } catch {
                 completable(.error(error))

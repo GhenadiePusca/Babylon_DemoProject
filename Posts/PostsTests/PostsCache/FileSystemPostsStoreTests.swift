@@ -29,6 +29,8 @@ protocol PostsStoreSpecs {
 
 class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
     
+    let disposeBag = DisposeBag()
+
     override func setUp() {
         super.setUp()
         
@@ -109,7 +111,7 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
     func test_insert_deliversErrorOnInsertionError() {
         let invalidURL = URL(string: "invalid://store")
         let sut = makeSUT(storeURL: invalidURL)
-        
+
         let itemsToCache = anyItems().map { $0.toLocal }
         expectInsertion(toCompleteWithResult: .error(anyNSError()), sut: sut, itemsToCache: itemsToCache)
     }
@@ -120,8 +122,9 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
         
         let itemsToCache = anyItems().map { $0.toLocal }
         let noItems = [LocalPostItem]()
-        _ = sut.savePosts(itemsToCache).subscribe()
+        let disposable = sut.savePosts(itemsToCache).observeOn(MainScheduler.instance).subscribe()
         expectRetrieval(toCompleteWithResult: .success(noItems), sut: sut)
+        disposable.dispose()
     }
 
     func test_delete_hasNoSideEffectsOnEmptyCache() {
@@ -149,6 +152,7 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
 //        let sut = makeSUT(storeURL: noDeletePermissionsURL)
 //
 //        expectDeletion(toCompleteWithResult: .error(anyNSError()), sut: sut)
+//        expectDeletion(toCompleteWithResult: .error(anyNSError()), sut: sut)
 //    }
     
     func test_storeSideEffects_runSerially() {
@@ -157,22 +161,22 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
         var operationsFinishOrder = [XCTestExpectation]()
 
         let op1 = expectation(description: "Wait for op1")
-        _ = sut.savePosts(anyItems().map { $0.toLocal }).subscribe { _ in
+        sut.savePosts(anyItems().map { $0.toLocal }).subscribe { _ in
             operationsFinishOrder.append(op1)
             op1.fulfill()
-        }
+        }.disposed(by: disposeBag)
         
         let op2 = expectation(description: "Wait for op2")
-        _ = sut.deleteCachedPosts().subscribe { _ in
+        sut.deleteCachedPosts().subscribe { _ in
             operationsFinishOrder.append(op2)
             op2.fulfill()
-        }
+        }.disposed(by: disposeBag)
         
         let op3 = expectation(description: "Wait for op3")
-        _ = sut.savePosts(anyItems().map { $0.toLocal }).subscribe { _ in
+        sut.savePosts(anyItems().map { $0.toLocal }).subscribe { _ in
             operationsFinishOrder.append(op3)
             op3.fulfill()
-        }
+        }.disposed(by: disposeBag)
         
         waitForExpectations(timeout: 5.0)
         
@@ -181,72 +185,12 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
     
     // MARK: - Helpers
     
-    private func makeSUT(storeURL: URL? = nil) -> PostsStore {
+    private func makeSUT(storeURL: URL? = nil,
+                         file: StaticString = #file,
+                         line: UInt = #line) -> PostsStore {
         let sut = FileSystemPostsStore(storeURL: storeURL ?? testStoreURL())
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(sut, file: file, line: line)
         return sut
-    }
-    
-    private func expectRetrieval(toCompleteWithResult expectedResult: SingleEvent<FileSystemPostsStore.RetrieveResult>,
-                                 sut: PostsStore,
-                                 file: StaticString = #file,
-                                 line: UInt = #line) {
-        let exp = expectation(description: "Wait for retrieval")
-        
-        _ = sut.retrieve().subscribe { result in
-            switch (result, expectedResult) {
-            case let (.success(receivedItems), .success(expectedItems)):
-                XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
-            case (.error, .error):
-                break
-            default:
-                XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
-            }
-            exp.fulfill()
-        }
-        
-        wait(for: [exp], timeout: 1.0)
-    }
-    
-    private func expectInsertion(toCompleteWithResult expectedResult: CompletableEvent,
-                                sut: PostsStore,
-                                itemsToCache: [LocalPostItem],
-                                file: StaticString = #file,
-                                line: UInt = #line) {
-        let exp = expectation(description: "Wait for retrieval")
-        
-        _ = sut.savePosts(itemsToCache).subscribe { result in
-            switch (result, expectedResult) {
-            case (.completed, .completed),
-                 (.error, .error):
-                break
-            default:
-                XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
-            }
-            exp.fulfill()
-        }
-        
-        wait(for: [exp], timeout: 1.0)
-    }
-    
-    private func expectDeletion(toCompleteWithResult expectedResult: CompletableEvent,
-                                sut: PostsStore,
-                                file: StaticString = #file,
-                                line: UInt = #line) {
-        let exp = expectation(description: "Wait for retrieval")
-        
-        _ = sut.deleteCachedPosts().subscribe{ result in
-            switch (result, expectedResult) {
-            case (.completed, .completed),
-                 (.error, .error):
-                break
-            default:
-                XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
-            }
-            exp.fulfill()
-        }
-        
-        wait(for: [exp], timeout: 1.0)
     }
     
     private func setEmptyCache() {
