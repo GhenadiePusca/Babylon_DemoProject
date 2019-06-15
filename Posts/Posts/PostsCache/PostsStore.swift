@@ -11,7 +11,12 @@ import RxSwift
 public protocol PostsStore {
     typealias RetrieveResult = [LocalPostItem]
 
+    /// The operation is executed on background thread
     func deleteCachedPosts() -> Completable
+    
+    /// The operation is executed on background thread
     func savePosts(_ items: [LocalPostItem]) -> Completable
+    
+    /// The operation is executed on background threadç
     func retrieve() -> Single<RetrieveResult>
 }
