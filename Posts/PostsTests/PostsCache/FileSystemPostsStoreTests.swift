@@ -40,7 +40,20 @@ class FileSystemPostsStore: PostsStore {
     }
 
     func deleteCachedPosts() -> Completable {
-        return .empty()
+        return .create(subscribe: { completable in
+            if FileManager.default.fileExists(atPath: self.storeURL.path) {
+                do {
+                    try FileManager.default.removeItem(at: self.storeURL)
+                    completable(.completed)
+                } catch {
+                    completable(.error(error))
+                }
+            } else {
+                completable(.completed)
+            }
+            
+            return Disposables.create()
+        })
     }
     
     func savePosts(_ items: [LocalPostItem]) -> Completable {
@@ -128,15 +141,15 @@ class FileSystemPostsStoreTests: XCTestCase {
         let sut = makeSUT()
         let noItems = [LocalPostItem]()
 
-        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(noItems), sut: sut)
     }
 
     func test_retrieve_hasNoSideEffectsOnEmptyCache() {
         let sut = makeSUT()
-        let noItems = [LocalPostItem]()
+        let noItems = PostsStore.RetrieveResult()
 
-        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
-        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(noItems), sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(noItems), sut: sut)
     }
     
     func test_retrieve_deliversItemsOnNonEmptyCache() {
@@ -145,7 +158,7 @@ class FileSystemPostsStoreTests: XCTestCase {
         let succesfulInsertion = CompletableEvent.completed
         
         expectInsertion(toCompleteWithResult: succesfulInsertion, sut: sut, itemsToCache: cachedItems)
-        expectRetrieve(toCompleteWithResult: .success(cachedItems), sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(cachedItems), sut: sut)
     }
     
     func test_retrieve_noSideEffectsOnSuccesfulRetrieve() {
@@ -154,8 +167,8 @@ class FileSystemPostsStoreTests: XCTestCase {
         let succesfulInsertion = CompletableEvent.completed
         
         expectInsertion(toCompleteWithResult: succesfulInsertion, sut: sut, itemsToCache: cachedItems)
-        expectRetrieve(toCompleteWithResult: .success(cachedItems), sut: sut)
-        expectRetrieve(toCompleteWithResult: .success(cachedItems), sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(cachedItems), sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(cachedItems), sut: sut)
     }
     
     func test_retrieve_deliversErorrOnInvalidData() {
@@ -164,7 +177,7 @@ class FileSystemPostsStoreTests: XCTestCase {
         
         try! "invaliData".write(to: testURL, atomically: false, encoding: .utf8)
         
-        expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
+        expectRetrieval(toCompleteWithResult: .error(anyNSError()), sut: sut)
     }
 
     func test_retrieve_noSideEffectsOnRetrievalError() {
@@ -173,8 +186,8 @@ class FileSystemPostsStoreTests: XCTestCase {
         
         try! "invaliData".write(to: testURL, atomically: false, encoding: .utf8)
         
-        expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
-        expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
+        expectRetrieval(toCompleteWithResult: .error(anyNSError()), sut: sut)
+        expectRetrieval(toCompleteWithResult: .error(anyNSError()), sut: sut)
     }
 
     func test_insert_overridesPreviouslyInsertedItems() {
@@ -186,7 +199,7 @@ class FileSystemPostsStoreTests: XCTestCase {
         let latestItems = [anyItem().toLocal]
         expectInsertion(toCompleteWithResult: .completed, sut: sut, itemsToCache: latestItems)
         
-        expectRetrieve(toCompleteWithResult: .success(latestItems), sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(latestItems), sut: sut)
     }
     
     func test_insert_deliversErrorOnInsertionError() {
@@ -197,6 +210,33 @@ class FileSystemPostsStoreTests: XCTestCase {
         expectInsertion(toCompleteWithResult: .error(anyNSError()), sut: sut, itemsToCache: firstCacheItems)
     }
 
+    func test_delete_hasNoSideEffectsOnEmptyCache() {
+        let sut = makeSUT()
+        let noItems = PostsStore.RetrieveResult()
+        
+        expectDeletion(toCompleteWithResult: .completed, sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(noItems), sut: sut)
+    }
+    
+    func test_delete_deletesPreviousInsertedCache() {
+        let sut = makeSUT()
+        let cachedItems = anyItems().map { $0.toLocal }
+        let noItemsAfterDelete = PostsStore.RetrieveResult()
+    
+        expectInsertion(toCompleteWithResult: .completed, sut: sut, itemsToCache: cachedItems)
+        expectDeletion(toCompleteWithResult: .completed, sut: sut)
+        expectRetrieval(toCompleteWithResult: .success(noItemsAfterDelete), sut: sut)
+    }
+
+     // Tried to delete caches directory, but the system will throw error
+    // only if trying to delete the directory second time, but not the first time
+//    func test_delete_deliverErrorOnDeletionError() {
+//        let noDeletePermissionsURL = cachesDirectory()
+//        let sut = makeSUT(storeURL: noDeletePermissionsURL)
+//
+//        expectDeletion(toCompleteWithResult: .error(anyNSError()), sut: sut)
+//    }
+    
     // MARK: - Helpers
     
     private func makeSUT(storeURL: URL? = nil) -> FileSystemPostsStore {
@@ -205,10 +245,10 @@ class FileSystemPostsStoreTests: XCTestCase {
         return sut
     }
     
-    private func expectRetrieve(toCompleteWithResult expectedResult: SingleEvent<FileSystemPostsStore.RetrieveResult>,
-                                sut: FileSystemPostsStore,
-                                file: StaticString = #file,
-                                line: UInt = #line) {
+    private func expectRetrieval(toCompleteWithResult expectedResult: SingleEvent<FileSystemPostsStore.RetrieveResult>,
+                                 sut: FileSystemPostsStore,
+                                 file: StaticString = #file,
+                                 line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
         
         _ = sut.retrieve().subscribe { result in
@@ -247,6 +287,25 @@ class FileSystemPostsStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
+    private func expectDeletion(toCompleteWithResult expectedResult: CompletableEvent,
+                                sut: FileSystemPostsStore,
+                                file: StaticString = #file,
+                                line: UInt = #line) {
+        let exp = expectation(description: "Wait for retrieval")
+        
+        _ = sut.deleteCachedPosts().subscribe{ result in
+            switch (result, expectedResult) {
+            case (.completed, .completed),
+                 (.error, .error):
+                break
+            default:
+                XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+    }
     private func setEmptyCache() {
         deleteCached()
     }
@@ -261,5 +320,9 @@ class FileSystemPostsStoreTests: XCTestCase {
 
     private func testStoreURL() -> URL {
         return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
+    }
+
+    private func cachesDirectory() -> URL {
+        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
     }
 }
