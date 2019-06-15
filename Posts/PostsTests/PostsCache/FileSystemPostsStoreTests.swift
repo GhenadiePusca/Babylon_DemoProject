@@ -166,6 +166,17 @@ class FileSystemPostsStoreTests: XCTestCase {
         
         expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
     }
+
+    func test_retrieve_noSideEffectsOnRetrievalError() {
+        let testURL = testStoreURL()
+        let sut = makeSUT(storeURL: testURL)
+        
+        try! "invaliData".write(to: testURL, atomically: false, encoding: .utf8)
+        
+        expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
+        expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
+    }
+
     // MARK: - Helpers
     
     private func makeSUT(storeURL: URL? = nil) -> FileSystemPostsStore {
