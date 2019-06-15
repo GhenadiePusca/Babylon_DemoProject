@@ -48,25 +48,25 @@ class FileSystemPostsStore: PostsStore {
     }
     
     func retrieve() -> Single<RetrieveResult> {
-        return getCachedData().flatMap(decodeCachedData).catchErrorJustReturn([])
+        return getCachedData().flatMap(decodeCachedData).ifEmpty(default: [])
     }
     
     // MARK: - Retrieval helpers
 
-    private func getCachedData() -> Single<Data> {
+    private func getCachedData() -> Maybe<Data> {
         return .create(subscribe: { single in
             do {
                 let data = try Data(contentsOf: self.storeURL)
                 single(.success(data))
             } catch {
-                single(.error(error))
+                single(.completed)
             }
             
             return Disposables.create()
         })
     }
     
-    private func decodeCachedData(_ data: Data) -> Single<RetrieveResult> {
+    private func decodeCachedData(_ data: Data) -> Maybe<RetrieveResult> {
         return .create(subscribe: { single in
             do {
                 let decoder = JSONDecoder()
@@ -139,7 +139,7 @@ class FileSystemPostsStoreTests: XCTestCase {
         expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
     }
     
-    func test_retrieveAfterInsertingToEmpty_deliversInsertedItems() {
+    func test_retrieve_deliversItemsOnNonEmptyCache() {
         let sut = makeSUT()
         let cachedItems = anyItems().map { $0.toLocal }
         let succesfulInsertion = CompletableEvent.completed
@@ -148,6 +148,23 @@ class FileSystemPostsStoreTests: XCTestCase {
         expectRetrieve(toCompleteWithResult: .success(cachedItems), sut: sut)
     }
     
+    func test_retrieveTwice_deliversSameItemsOnNonEmptyCache() {
+        let sut = makeSUT()
+        let cachedItems = anyItems().map { $0.toLocal }
+        let succesfulInsertion = CompletableEvent.completed
+        
+        expectInsertion(toCompleteWithResult: succesfulInsertion, sut: sut, itemsToCache: cachedItems)
+        expectRetrieve(toCompleteWithResult: .success(cachedItems), sut: sut)
+        expectRetrieve(toCompleteWithResult: .success(cachedItems), sut: sut)
+    }
+    
+    func test_retrieve_deliversErorrOnInvalidData() {
+        let sut = makeSUT()
+        
+        try! "invaliData".write(to: testStoreURL(), atomically: false, encoding: .utf8)
+        
+        expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
+    }
     // MARK: - Helpers
     
     private func makeSUT() -> FileSystemPostsStore {
@@ -166,8 +183,8 @@ class FileSystemPostsStoreTests: XCTestCase {
             switch (result, expectedResult) {
             case let (.success(receivedItems), .success(expectedItems)):
                 XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
-            case let (.error(receivedError), .error(expectedError)):
-                XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
+            case (.error, .error):
+                break
             default:
                 XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
             }
