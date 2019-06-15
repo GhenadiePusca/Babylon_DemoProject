@@ -239,14 +239,14 @@ class FileSystemPostsStoreTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(storeURL: URL? = nil) -> FileSystemPostsStore {
+    private func makeSUT(storeURL: URL? = nil) -> PostsStore {
         let sut = FileSystemPostsStore(storeURL: storeURL ?? testStoreURL())
         trackForMemoryLeaks(sut)
         return sut
     }
     
     private func expectRetrieval(toCompleteWithResult expectedResult: SingleEvent<FileSystemPostsStore.RetrieveResult>,
-                                 sut: FileSystemPostsStore,
+                                 sut: PostsStore,
                                  file: StaticString = #file,
                                  line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
@@ -267,7 +267,7 @@ class FileSystemPostsStoreTests: XCTestCase {
     }
     
     private func expectInsertion(toCompleteWithResult expectedResult: CompletableEvent,
-                                sut: FileSystemPostsStore,
+                                sut: PostsStore,
                                 itemsToCache: [LocalPostItem],
                                 file: StaticString = #file,
                                 line: UInt = #line) {
@@ -288,7 +288,7 @@ class FileSystemPostsStoreTests: XCTestCase {
     }
     
     private func expectDeletion(toCompleteWithResult expectedResult: CompletableEvent,
-                                sut: FileSystemPostsStore,
+                                sut: PostsStore,
                                 file: StaticString = #file,
                                 line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
