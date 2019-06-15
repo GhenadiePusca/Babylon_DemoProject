@@ -10,7 +10,24 @@ import XCTest
 import Posts
 import RxSwift
 
-class FileSystemPostsStoreTests: XCTestCase {
+protocol PostsStoreSpecs {
+    func test_retrieve_deliversNoItemsOnEmptyCache()
+    func test_retrieve_hasNoSideEffectsOnEmptyCache()
+    func test_retrieve_deliversItemsOnNonEmptyCache()
+    func test_retrieve_noSideEffectsOnSuccesfulRetrieve()
+    func test_retrieve_deliversErorrOnInvalidData()
+    func test_retrieve_noSideEffectsOnRetrievalError()
+
+    func test_insert_overridesPreviouslyInsertedItems()
+    func test_insert_deliversErrorOnInsertionError()
+    func test_insert_hasNoSideEffectsOnInsertionError()
+
+    func test_delete_hasNoSideEffectsOnEmptyCache()
+    func test_delete_deletesPreviousInsertedCache()
+    func test_storeSideEffects_runSerially()
+}
+
+class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
     
     override func setUp() {
         super.setUp()
@@ -93,8 +110,18 @@ class FileSystemPostsStoreTests: XCTestCase {
         let invalidURL = URL(string: "invalid://store")
         let sut = makeSUT(storeURL: invalidURL)
         
-        let firstCacheItems = anyItems().map { $0.toLocal }
-        expectInsertion(toCompleteWithResult: .error(anyNSError()), sut: sut, itemsToCache: firstCacheItems)
+        let itemsToCache = anyItems().map { $0.toLocal }
+        expectInsertion(toCompleteWithResult: .error(anyNSError()), sut: sut, itemsToCache: itemsToCache)
+    }
+    
+    func test_insert_hasNoSideEffectsOnInsertionError() {
+        let invalidURL = URL(string: "invalid://store")
+        let sut = makeSUT(storeURL: invalidURL)
+        
+        let itemsToCache = anyItems().map { $0.toLocal }
+        let noItems = [LocalPostItem]()
+        _ = sut.savePosts(itemsToCache).subscribe()
+        expectRetrieval(toCompleteWithResult: .success(noItems), sut: sut)
     }
 
     func test_delete_hasNoSideEffectsOnEmptyCache() {
