@@ -48,7 +48,7 @@ class FileSystemPostsStore: PostsStore {
     }
     
     func retrieve() -> Single<RetrieveResult> {
-        return getCachedData().flatMap(decodeCachedData)
+        return getCachedData().flatMap(decodeCachedData).catchErrorJustReturn([])
     }
     
     // MARK: - Retrieval helpers
@@ -112,20 +112,32 @@ class FileSystemPostsStore: PostsStore {
 
 class FileSystemPostsStoreTests: XCTestCase {
     
-//    func test_retrieve_deliversNoItemsOnEmptyCache() {
-//        let sut = makeSUT()
-//        let noItems = [LocalPostItem]()
-//
-//        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
-//    }
-//
-//    func test_retrieve_hasNoSideEffectsOnEmptyCache() {
-//        let sut = makeSUT()
-//        let noItems = [LocalPostItem]()
-//
-//        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
-//        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
-//    }
+    override func setUp() {
+        super.setUp()
+        
+        setEmptyCache()
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        
+        removeCachedItems()
+    }
+    
+    func test_retrieve_deliversNoItemsOnEmptyCache() {
+        let sut = makeSUT()
+        let noItems = [LocalPostItem]()
+
+        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
+    }
+
+    func test_retrieve_hasNoSideEffectsOnEmptyCache() {
+        let sut = makeSUT()
+        let noItems = [LocalPostItem]()
+
+        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
+        expectRetrieve(toCompleteWithResult: .success(noItems), sut: sut)
+    }
     
     func test_retrieveAfterInsertingToEmpty_deliversInsertedItems() {
         let sut = makeSUT()
@@ -187,6 +199,18 @@ class FileSystemPostsStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
+    private func setEmptyCache() {
+        deleteCached()
+    }
+    
+    private func removeCachedItems() {
+        deleteCached()
+    }
+
+    private func deleteCached() {
+        try? FileManager.default.removeItem(at: testStoreURL())
+    }
+
     private func testStoreURL() -> URL {
         return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
