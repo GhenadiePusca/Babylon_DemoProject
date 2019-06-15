@@ -15,10 +15,12 @@ class RemotePostsLoaderTests: XCTestCase {
         static let testURL = URL(string: "https://some-url.com")!
     }
     
+    let disposeBag = DisposeBag()
+
     func test_load_requestsDataFromURL() {
         let (sut, client) = makeSUT(url: TestingConstants.testURL)
 
-        _ = sut.load()
+        sut.load().subscribe().disposed(by: disposeBag)
         
         XCTAssertEqual(client.requestedURLs,
                        [TestingConstants.testURL],
@@ -107,7 +109,7 @@ class RemotePostsLoaderTests: XCTestCase {
 
         let exp = expectation(description: "Waiting for completion")
 
-        _ = sut.load().subscribe { receivedResult in
+        sut.load().subscribe { receivedResult in
             switch (receivedResult, expectedResult) {
             case let (.success(receivedItems), .success(expectedItems)):
                 XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
@@ -121,7 +123,7 @@ class RemotePostsLoaderTests: XCTestCase {
             }
 
             exp.fulfill()
-        }
+        }.disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1.0)
     }
@@ -171,11 +173,9 @@ class RemotePostsLoaderTests: XCTestCase {
         func get(fromURL url: URL) -> Single<GetResult> {
             requestedURLs.append(url)
 
-            return Single<GetResult>.create(subscribe: { [weak self] single in
-                let disposable = Disposables.create {}
-                guard let self = self else { return disposable}
+            return .create(subscribe: { single in
                 single(self.loadResult)
-                return disposable
+                return Disposables.create()
             })
         }
     }

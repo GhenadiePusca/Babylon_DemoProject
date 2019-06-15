@@ -21,9 +21,10 @@ class LoadFromCacheUseCaseTests: XCTestCase {
     func test_load_requestsCacheRetrieval() {
         let (sut, store) = makeSUT()
         
-        _ = sut.load().subscribe { _ in }
+        let disp = sut.load().subscribe()
         
         XCTAssertEqual(store.receivedCommands, [.retrieve])
+        disp.dispose()
     }
 
     func test_load_deliversErrorOnRetrievalError() {
@@ -42,9 +43,10 @@ class LoadFromCacheUseCaseTests: XCTestCase {
         let retrievalEror = anyNSError()
         
         store.onRetrieveResult = .error(retrievalEror)
-        _ = sut.load().subscribe { _ in }
+        let disp = sut.load().subscribe()
         
         XCTAssertEqual(store.receivedCommands, [.retrieve])
+        disp.dispose()
     }
     
     func test_load_hasNoSideEffectsOnSuccesfulLoad() {
@@ -52,9 +54,10 @@ class LoadFromCacheUseCaseTests: XCTestCase {
         let cachedPostItems = anyItems().map { $0.toLocal }
         
         store.onRetrieveResult = .success(cachedPostItems)
-        _ = sut.load().subscribe { _ in }
+        let disp = sut.load().subscribe()
         
         XCTAssertEqual(store.receivedCommands, [.retrieve])
+        disp.dispose()
     }
     
     func test_load_deliversNoPostsOnEmptyCache() {
@@ -101,19 +104,13 @@ class LoadFromCacheUseCaseTests: XCTestCase {
         
         stub()
         
-        _ = sut.load().subscribe { result in
-            switch (result, expectedResult) {
-            case let (.success(receivedItems), .success(expectedItems)):
-                XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
-            case let (.error(receivedError), .error(expectedError)):
-                XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
-            default:
-                XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
-            }
-            
+        let disp = sut.load().subscribe { result in
+            XCTAssertTrue(result.isSameAs(expectedResult),
+                          "expected \(expectedResult), got \(result)", file: file, line: line)
             exp.fulfill()
         }
         
         wait(for: [exp], timeout: 1.0)
+        disp.dispose()
     }
 }

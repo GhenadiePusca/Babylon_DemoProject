@@ -22,7 +22,7 @@ class CacheValidationUseCaseTests: XCTestCase {
         let retrievalEror = anyNSError()
         
         store.onRetrieveResult = .error(retrievalEror)
-        _ = sut.validateCache()
+        sut.validateCache()
         
         XCTAssertEqual(store.receivedCommands, [.retrieve, .delete])
     }
@@ -32,7 +32,7 @@ class CacheValidationUseCaseTests: XCTestCase {
         let cachedItems = anyItems().map { $0.toLocal }
         
         store.onRetrieveResult = .success(cachedItems)
-        _ = sut.validateCache()
+        sut.validateCache()
         
         XCTAssertEqual(store.receivedCommands, [.retrieve])
     }

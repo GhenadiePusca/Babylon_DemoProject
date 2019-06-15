@@ -18,23 +18,21 @@ extension PostsStoreSpecs where Self: XCTestCase {
                          line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
         
-        var capturedResult: SingleEvent<PostsStore.RetrieveResult>?
-        let disposable = sut.retrieve().observeOn(MainScheduler.instance).subscribe { [weak exp] result in
-            capturedResult = result
-            exp?.fulfill()
+        let disp = sut.retrieve().subscribe { result in
+            switch (result, expectedResult) {
+            case let (.success(receivedItems), .success(expectedItems)):
+                XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
+            case (.error, .error):
+                break
+            default:
+                XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
+            }
+            exp.fulfill()
         }
         
         wait(for: [exp], timeout: 1.0)
-        disposable.dispose()
         
-        switch (capturedResult, expectedResult) {
-        case let (.success(receivedItems)?, .success(expectedItems)):
-            XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
-        case (.error?, .error):
-            break
-        default:
-            XCTFail("expected \(expectedResult), got \(String(describing: capturedResult))", file: file, line: line)
-        }
+        disp.dispose()
     }
     
     func expectInsertion(toCompleteWithResult expectedResult: CompletableEvent,
@@ -44,22 +42,13 @@ extension PostsStoreSpecs where Self: XCTestCase {
                          line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
         
-        var capturedResult: CompletableEvent?
-        let disposable = sut.savePosts(itemsToCache).observeOn(MainScheduler.instance).subscribe { [weak exp] result in
-            capturedResult = result
-            exp?.fulfill()
+        let disp = sut.savePosts(itemsToCache).subscribe { result in
+            XCTAssertTrue(result.isSameEventAs(expectedResult), "expected \(expectedResult), got \(result)", file: file, line: line)
+            exp.fulfill()
         }
         
         wait(for: [exp], timeout: 1.0)
-        disposable.dispose()
-        
-        switch (capturedResult, expectedResult) {
-        case (.completed?, .completed),
-             (.error?, .error):
-            break
-        default:
-            XCTFail("expected \(expectedResult), got \(capturedResult)", file: file, line: line)
-        }
+        disp.dispose()
     }
     
     func expectDeletion(toCompleteWithResult expectedResult: CompletableEvent,
@@ -68,22 +57,13 @@ extension PostsStoreSpecs where Self: XCTestCase {
                         line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
         
-        var capturedResult: CompletableEvent?
-        let disposable = sut.deleteCachedPosts().observeOn(MainScheduler.instance).subscribe { [weak exp] result in
-            capturedResult = result
-            exp?.fulfill()
+        let disp = sut.deleteCachedPosts().subscribe { result in
+            XCTAssertTrue(result.isSameEventAs(expectedResult), "expected \(expectedResult), got \(result)", file: file, line: line)
+            exp.fulfill()
         }
         
         wait(for: [exp], timeout: 1.0)
-        disposable.dispose()
-        
-        switch (capturedResult, expectedResult) {
-        case (.completed?, .completed),
-             (.error?, .error):
-            break
-        default:
-            XCTFail("expected \(expectedResult), got \(capturedResult)", file: file, line: line)
-        }
+        disp.dispose()
     }
     
 }

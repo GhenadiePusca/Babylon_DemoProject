@@ -63,7 +63,9 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
         let cachedItems = anyItems().map { $0.toLocal }
         let succesfulInsertion = CompletableEvent.completed
         
-        expectInsertion(toCompleteWithResult: succesfulInsertion, sut: sut, itemsToCache: cachedItems)
+        expectInsertion(toCompleteWithResult: succesfulInsertion,
+                        sut: sut,
+                        itemsToCache: cachedItems)
         expectRetrieval(toCompleteWithResult: .success(cachedItems), sut: sut)
     }
     
@@ -72,7 +74,9 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
         let cachedItems = anyItems().map { $0.toLocal }
         let succesfulInsertion = CompletableEvent.completed
         
-        expectInsertion(toCompleteWithResult: succesfulInsertion, sut: sut, itemsToCache: cachedItems)
+        expectInsertion(toCompleteWithResult: succesfulInsertion,
+                        sut: sut,
+                        itemsToCache: cachedItems)
         expectRetrieval(toCompleteWithResult: .success(cachedItems), sut: sut)
         expectRetrieval(toCompleteWithResult: .success(cachedItems), sut: sut)
     }
@@ -100,10 +104,14 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
         let sut = makeSUT()
 
         let firstCacheItems = anyItems().map { $0.toLocal }
-        expectInsertion(toCompleteWithResult: .completed, sut: sut, itemsToCache: firstCacheItems)
+        expectInsertion(toCompleteWithResult: .completed,
+                        sut: sut,
+                        itemsToCache: firstCacheItems)
         
         let latestItems = [anyItem().toLocal]
-        expectInsertion(toCompleteWithResult: .completed, sut: sut, itemsToCache: latestItems)
+        expectInsertion(toCompleteWithResult: .completed,
+                        sut: sut,
+                        itemsToCache: latestItems)
         
         expectRetrieval(toCompleteWithResult: .success(latestItems), sut: sut)
     }
@@ -113,7 +121,9 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
         let sut = makeSUT(storeURL: invalidURL)
 
         let itemsToCache = anyItems().map { $0.toLocal }
-        expectInsertion(toCompleteWithResult: .error(anyNSError()), sut: sut, itemsToCache: itemsToCache)
+        expectInsertion(toCompleteWithResult: .error(anyNSError()),
+                        sut: sut,
+                        itemsToCache: itemsToCache)
     }
     
     func test_insert_hasNoSideEffectsOnInsertionError() {
@@ -122,9 +132,8 @@ class FileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
         
         let itemsToCache = anyItems().map { $0.toLocal }
         let noItems = [LocalPostItem]()
-        let disposable = sut.savePosts(itemsToCache).observeOn(MainScheduler.instance).subscribe()
+        sut.savePosts(itemsToCache).subscribe().disposed(by: disposeBag)
         expectRetrieval(toCompleteWithResult: .success(noItems), sut: sut)
-        disposable.dispose()
     }
 
     func test_delete_hasNoSideEffectsOnEmptyCache() {

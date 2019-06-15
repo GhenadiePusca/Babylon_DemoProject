@@ -17,3 +17,17 @@ extension SingleEvent {
         return true
     }
 }
+
+extension SingleEvent where Element: Equatable {
+    func isSameAs(_ other: SingleEvent) -> Bool {
+        switch (self, other) {
+        case let (.success(selfValue), .success(otherValue)):
+            return selfValue == otherValue
+        case let (.error(selfError), .error(otherError)):
+            return (selfError as NSError) == (otherError as NSError)
+        default:
+            return false
+            
+        }
+    }
+}
