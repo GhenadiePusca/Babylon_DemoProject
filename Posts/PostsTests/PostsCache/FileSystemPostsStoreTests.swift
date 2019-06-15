@@ -159,16 +159,17 @@ class FileSystemPostsStoreTests: XCTestCase {
     }
     
     func test_retrieve_deliversErorrOnInvalidData() {
-        let sut = makeSUT()
+        let testURL = testStoreURL()
+        let sut = makeSUT(storeURL: testURL)
         
-        try! "invaliData".write(to: testStoreURL(), atomically: false, encoding: .utf8)
+        try! "invaliData".write(to: testURL, atomically: false, encoding: .utf8)
         
         expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
     }
     // MARK: - Helpers
     
-    private func makeSUT() -> FileSystemPostsStore {
-        let sut = FileSystemPostsStore(storeURL: testStoreURL())
+    private func makeSUT(storeURL: URL? = nil) -> FileSystemPostsStore {
+        let sut = FileSystemPostsStore(storeURL: storeURL ?? testStoreURL())
         trackForMemoryLeaks(sut)
         return sut
     }
