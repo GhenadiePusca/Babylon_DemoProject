@@ -44,26 +44,45 @@ class FileSystemPostsStore: PostsStore {
     }
     
     func savePosts(_ items: [LocalPostItem]) -> Completable {
-        return .create(subscribe: { completable in
-            completable(.completed)
-            return Disposables.create()
-        })
+        return encodeItems(items).flatMapCompletable(writeEncodedData)
     }
     
     func retrieve() -> Single<RetrieveResult> {
+        return getCachedData().flatMap(decodeCachedData)
+    }
+    
+    // MARK: - Retrieval helpers
+
+    private func getCachedData() -> Single<Data> {
         return .create(subscribe: { single in
-            if let data = try? Data(contentsOf: self.storeURL) {
-                let decoder = JSONDecoder()
-                let decoded = try! decoder.decode(FailableDecodableArray<CodablePostItem>.self, from: data)
-                single(.success(decoded.elements.map { $0.toLocal }))
-            } else {
-                single(.success([]))
+            do {
+                let data = try Data(contentsOf: self.storeURL)
+                single(.success(data))
+            } catch {
+                single(.error(error))
             }
+            
             return Disposables.create()
         })
     }
     
-    private func encodeItems(items: [LocalPostItem]) -> Single<Data> {
+    private func decodeCachedData(_ data: Data) -> Single<RetrieveResult> {
+        return .create(subscribe: { single in
+            do {
+                let decoder = JSONDecoder()
+                let decoded = try decoder.decode(FailableDecodableArray<CodablePostItem>.self, from: data)
+                single(.success(decoded.elements.map { $0.toLocal }))
+            } catch {
+                single(.error(error))
+            }
+            
+            return Disposables.create()
+        })
+    }
+
+    // MARK: - Save helpers
+
+    private func encodeItems(_ items: [LocalPostItem]) -> Single<Data> {
         return .create(subscribe: { single in
             do {
                 let encoder = JSONEncoder()
@@ -77,7 +96,7 @@ class FileSystemPostsStore: PostsStore {
         })
     }
     
-    private func writeEncodedItems(data: Data) -> Completable {
+    private func writeEncodedData(_ data: Data) -> Completable {
         return .create(subscribe: { completable in
             do {
                 try data.write(to: self.storeURL)
