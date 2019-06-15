@@ -124,6 +124,34 @@ class FileSystemPostsStoreTests: XCTestCase {
 //        expectDeletion(toCompleteWithResult: .error(anyNSError()), sut: sut)
 //    }
     
+    func test_storeSideEffects_runSerially() {
+        let sut = makeSUT()
+        
+        var operationsFinishOrder = [XCTestExpectation]()
+
+        let op1 = expectation(description: "Wait for op1")
+        _ = sut.savePosts(anyItems().map { $0.toLocal }).subscribe { _ in
+            operationsFinishOrder.append(op1)
+            op1.fulfill()
+        }
+        
+        let op2 = expectation(description: "Wait for op2")
+        _ = sut.deleteCachedPosts().subscribe { _ in
+            operationsFinishOrder.append(op2)
+            op2.fulfill()
+        }
+        
+        let op3 = expectation(description: "Wait for op3")
+        _ = sut.savePosts(anyItems().map { $0.toLocal }).subscribe { _ in
+            operationsFinishOrder.append(op3)
+            op3.fulfill()
+        }
+        
+        waitForExpectations(timeout: 5.0)
+        
+        XCTAssertEqual(operationsFinishOrder, [op1, op2, op3], "Expected to run operations in order")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(storeURL: URL? = nil) -> PostsStore {
