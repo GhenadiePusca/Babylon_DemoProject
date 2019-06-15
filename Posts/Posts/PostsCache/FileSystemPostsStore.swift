@@ -33,12 +33,28 @@ public class FileSystemPostsStore: PostsStore {
     }
     
     private let storeURL: URL
+    private lazy var queue = DispatchQueue(label: "\(type(of: self)).queue",
+        qos: .userInitiated)
     
     public init(storeURL: URL) {
         self.storeURL = storeURL
     }
     
     public func deleteCachedPosts() -> Completable {
+        return deleteCache().subscribeOn(SerialDispatchQueueScheduler.init(queue: queue, internalSerialQueueName: "\(type(of: self)).queue"))
+    }
+
+    public func savePosts(_ items: [LocalPostItem]) -> Completable {
+        return encodeItems(items).flatMapCompletable(writeEncodedData).subscribeOn(SerialDispatchQueueScheduler.init(queue: queue, internalSerialQueueName: "\(type(of: self)).queue"))
+    }
+    
+    public func retrieve() -> Single<RetrieveResult> {
+        return getCachedData().flatMap(decodeCachedData).ifEmpty(default: []).subscribeOn(ConcurrentDispatchQueueScheduler.init(queue: .global()))
+    }
+    
+    // MARK: - Deletion helpers
+
+    private func deleteCache() -> Completable {
         return .create(subscribe: { completable in
             if FileManager.default.fileExists(atPath: self.storeURL.path) {
                 do {
@@ -53,14 +69,6 @@ public class FileSystemPostsStore: PostsStore {
             
             return Disposables.create()
         })
-    }
-    
-    public func savePosts(_ items: [LocalPostItem]) -> Completable {
-        return encodeItems(items).flatMapCompletable(writeEncodedData)
-    }
-    
-    public func retrieve() -> Single<RetrieveResult> {
-        return getCachedData().flatMap(decodeCachedData).ifEmpty(default: [])
     }
     
     // MARK: - Retrieval helpers
