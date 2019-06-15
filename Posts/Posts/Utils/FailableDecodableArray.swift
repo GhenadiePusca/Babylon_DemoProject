@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct FailableCodableArray<Element : Decodable> : Decodable {
+public struct FailableDecodableArray<Element : Decodable> : Decodable {
     
-    private(set) var elements: [Element]
+    public private(set) var elements: [Element]
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         
         var container = try decoder.unkeyedContainer()
         

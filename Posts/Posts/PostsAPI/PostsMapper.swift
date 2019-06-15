@@ -14,7 +14,7 @@ struct PostsMapper {
     
     internal static func mapSuccess(_ result: (data: Data, response: HTTPURLResponse)) throws -> [RemotePostItem] {
         guard result.response.statusCode == OK_HTTTP_RESPONSE,
-            let resultContainer = try? JSONDecoder().decode(FailableCodableArray<RemotePostItem>.self,
+            let resultContainer = try? JSONDecoder().decode(FailableDecodableArray<RemotePostItem>.self,
                                                             from: result.data) else {
                 throw RemotePostsLoader.Error.invalidData
         }

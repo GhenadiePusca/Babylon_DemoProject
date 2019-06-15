@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct FailableDecodable<Base : Decodable> : Decodable {
+public struct FailableDecodable<Base : Decodable> : Decodable {
     
-    let base: Base?
+    public let base: Base?
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         self.base = try? container.decode(Base.self)
     }

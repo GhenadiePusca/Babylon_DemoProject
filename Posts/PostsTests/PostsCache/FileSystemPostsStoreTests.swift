@@ -12,6 +12,27 @@ import RxSwift
 
 class FileSystemPostsStore: PostsStore {
     
+    private struct CodablePostItem: Codable {
+        let id: Int
+        let userId: Int
+        let title: String
+        let body: String
+        
+        public init(localPostItem: LocalPostItem) {
+            self.id = localPostItem.id
+            self.title = localPostItem.title
+            self.userId = localPostItem.userId
+            self.body = localPostItem.body
+        }
+        
+        var toLocal: LocalPostItem {
+            return LocalPostItem(id: id,
+                                 userId: userId,
+                                 title: title,
+                                 body: body)
+        }
+    }
+
     private let storeURL: URL
     
     init(storeURL: URL) {
@@ -23,11 +44,27 @@ class FileSystemPostsStore: PostsStore {
     }
     
     func savePosts(_ items: [LocalPostItem]) -> Single<Void> {
-        return .just(())
+        return .create(subscribe: { single in
+            let encoder = JSONEncoder()
+            let encoded = try! encoder.encode(items.map { CodablePostItem(localPostItem: $0) })
+            try! encoded.write(to: self.storeURL)
+            single(.success(()))
+            return Disposables.create()
+        })
     }
     
     func retrieve() -> Single<RetrieveResult> {
-        return .just([])
+        
+        return .create(subscribe: { single in
+            if let data = try? Data(contentsOf: self.storeURL) {
+                let decoder = JSONDecoder()
+                let decoded = try! decoder.decode(FailableDecodableArray<CodablePostItem>.self, from: data)
+                single(.success(decoded.elements.map { $0.toLocal }))
+            } else {
+                single(.success([]))
+            }
+            return Disposables.create()
+        })
     }
 }
 
