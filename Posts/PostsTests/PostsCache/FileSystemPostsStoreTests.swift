@@ -148,7 +148,7 @@ class FileSystemPostsStoreTests: XCTestCase {
         expectRetrieve(toCompleteWithResult: .success(cachedItems), sut: sut)
     }
     
-    func test_retrieveTwice_deliversSameItemsOnNonEmptyCache() {
+    func test_retrieve_noSideEffectsOnSuccesfulRetrieve() {
         let sut = makeSUT()
         let cachedItems = anyItems().map { $0.toLocal }
         let succesfulInsertion = CompletableEvent.completed
@@ -175,6 +175,26 @@ class FileSystemPostsStoreTests: XCTestCase {
         
         expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
         expectRetrieve(toCompleteWithResult: .error(anyNSError()), sut: sut)
+    }
+
+    func test_insert_overridesPreviouslyInsertedItems() {
+        let sut = makeSUT()
+
+        let firstCacheItems = anyItems().map { $0.toLocal }
+        expectInsertion(toCompleteWithResult: .completed, sut: sut, itemsToCache: firstCacheItems)
+        
+        let latestItems = [anyItem().toLocal]
+        expectInsertion(toCompleteWithResult: .completed, sut: sut, itemsToCache: latestItems)
+        
+        expectRetrieve(toCompleteWithResult: .success(latestItems), sut: sut)
+    }
+    
+    func test_insert_deliversErrorOnInsertionError() {
+        let invalidURL = URL(string: "invalid://store")
+        let sut = makeSUT(storeURL: invalidURL)
+        
+        let firstCacheItems = anyItems().map { $0.toLocal }
+        expectInsertion(toCompleteWithResult: .error(anyNSError()), sut: sut, itemsToCache: firstCacheItems)
     }
 
     // MARK: - Helpers
@@ -215,10 +235,9 @@ class FileSystemPostsStoreTests: XCTestCase {
         
         _ = sut.savePosts(itemsToCache).subscribe { result in
             switch (result, expectedResult) {
-            case (.completed, .completed):
+            case (.completed, .completed),
+                 (.error, .error):
                 break
-            case let (.error(receivedError), .error(expectedError)):
-                XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
             default:
                 XCTFail("expected \(expectedResult), got \(result)", file: file, line: line)
             }
