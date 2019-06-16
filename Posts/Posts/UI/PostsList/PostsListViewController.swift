@@ -47,29 +47,35 @@ final public class PostsListViewController: UIViewController {
                 cell.update(viewModel: vm)
             }
             .disposed(by: disposeBag)
+        
+        viewModel.isLoading.distinctUntilChanged().drive(onNext: { isLoading in
+            isLoading ? self.setActivityIndicator() : self.removeActivityIndicator()
+        }).disposed(by: disposeBag)
+        
+        viewModel.loadingFailed.distinctUntilChanged().drive(onNext: { failed in
+            if failed {
+                self.setErrorState()
+            }
+        }).disposed(by: disposeBag)
     }
     
+    private func setErrorState() {
+        postsTableView.isHidden = true
+        
+        let errorStateView = ErrorStateView()
+        errorStateView.onActionTriggered = { [weak self] in
+//            self?.viewModel.onReload?()
+            errorStateView.removeFromSuperview()
+            self?.postsTableView.isHidden = false
+        }
+        
+        errorStateView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubviewAligned(errorStateView)
+    }
+
     private func setuLayout() {
         postsTableView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(postsTableView)
-        
-        if #available(iOS 11, *) {
-            let guide = view.safeAreaLayoutGuide
-            NSLayoutConstraint.activate([
-                postsTableView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-                postsTableView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
-                postsTableView.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 1.0),
-                postsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-                ])
-            
-        } else {
-            NSLayoutConstraint.activate([
-                postsTableView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
-                postsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                postsTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                postsTableView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor, constant: Constants.standardSpacing)
-                ])
-        }
+        view.addSubviewAligned(postsTableView)
     }
     
     private func setupTableView() -> UITableView {
