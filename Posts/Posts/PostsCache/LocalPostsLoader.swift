@@ -8,10 +8,10 @@
 
 import RxSwift
 
-public class LocalPostsLoader {
+public class LocalPostsLoader: PostsLoader {
     private let store: PostsStore
     
-    public typealias LoadResult = [PostItem]
+    public typealias LoadResult = PostsLoader.LoadResult
 
     public init(store: PostsStore) {
         self.store = store

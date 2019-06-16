@@ -13,7 +13,6 @@ public struct FailableDecodableArray<Element : Decodable> : Decodable {
     public private(set) var elements: [Element]
     
     public init(from decoder: Decoder) throws {
-        
         var container = try decoder.unkeyedContainer()
         
         var elements = [Element]()

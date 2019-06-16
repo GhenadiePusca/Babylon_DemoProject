@@ -81,12 +81,12 @@ public class FileSystemPostsStore: PostsStore {
     // MARK: - Retrieval helpers
     
     private static func getCachedData(_ url: URL) -> Maybe<Data> {
-        return .create(subscribe: { single in
+        return .create(subscribe: { maybe in
             do {
                 let data = try Data(contentsOf: url)
-                single(.success(data))
+                maybe(.success(data))
             } catch {
-                single(.completed)
+                maybe(.completed)
             }
             
             return Disposables.create()
@@ -94,13 +94,13 @@ public class FileSystemPostsStore: PostsStore {
     }
     
     private static func decodeCachedData(_ data: Data) -> Maybe<RetrieveResult> {
-        return .create(subscribe: { single in
+        return .create(subscribe: { maybe in
             do {
                 let decoder = JSONDecoder()
                 let decoded = try decoder.decode(FailableDecodableArray<CodablePostItem>.self, from: data)
-                single(.success(decoded.elements.map { $0.toLocal }))
+                maybe(.success(decoded.elements.map { $0.toLocal }))
             } catch {
-                single(.error(error))
+                maybe(.error(error))
             }
             
             return Disposables.create()
