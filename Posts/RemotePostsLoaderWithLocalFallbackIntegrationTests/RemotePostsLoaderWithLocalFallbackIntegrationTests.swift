@@ -123,5 +123,4 @@ class RemotePostsLoaderWithLocalFallbackIntegrationTests: XCTestCase {
     private func testStoreURL() -> URL {
         return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
-
 }

@@ -9,7 +9,12 @@
 import Foundation
 import RxSwift
 
-public final class PostsRepo {
+public protocol PostsDataProvider {
+    var postItemsLoader: Observable<Loadable<[PostListItemModel]>> { get }
+    func loadPosts()
+}
+
+public final class PostsRepo: PostsDataProvider {
     private let postsLoader: PostsLoader
     private let disposeBag = DisposeBag()
     
@@ -22,7 +27,7 @@ public final class PostsRepo {
         self.postsLoader = postsLoader
     }
     
-    public func loadData() {
+    public func loadPosts() {
         postsLoaderSubject.onNext(.loading)
         postsLoader.load().subscribe(handlePostsResult).disposed(by: disposeBag)
     }

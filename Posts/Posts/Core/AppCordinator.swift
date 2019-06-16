@@ -11,12 +11,16 @@ import RxSwift
 
 final public class AppCoordinator {
     private let navController: UINavigationController
+    private let servicesProvider: ServicesProvider
     
-    public init(navController: UINavigationController) {
+    public init(navController: UINavigationController,
+                servicesProvider: ServicesProvider) {
         self.navController = navController
+        self.servicesProvider = servicesProvider
     }
     
     public func start() {
+        servicesProvider.postsDataRepo.loadPosts()
         navController.setViewControllers([postsListViewController()], animated: true)
     }
     
@@ -26,11 +30,7 @@ final public class AppCoordinator {
     }
     
     private func postListViewModel() -> PostsListViewModel {
-        let subject = PublishSubject<Loadable<[PostListItemModel]>>()
-        let item = PostListItemModel(postName: "abcd")
-        let testItems = [PostListItemModel](repeating: item, count: 10)
-        
-        let viewModel = PostsListViewModel(dataLoader: .just(.loaded(testItems)))
+        let viewModel = PostsListViewModel(dataLoader: servicesProvider.postsDataRepo.postItemsLoader)
         
         return viewModel
     }

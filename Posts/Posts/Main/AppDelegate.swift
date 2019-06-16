@@ -13,7 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     private lazy var navController = UINavigationController()
-    private lazy var appCoordinator = AppCoordinator(navController: navController)
+    private lazy var appCoordinator = AppCoordinator(navController: navController,
+                                                     servicesProvider: factory)
     private lazy var factory = Factory()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

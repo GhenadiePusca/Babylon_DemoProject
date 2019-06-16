@@ -8,28 +8,41 @@
 
 import Foundation
 
-struct Factory {
-    lazy var postsRepo = PostsRepo(postsLoader: remoteLoaderWithCacheFallaback)
-    
-    lazy var remoteLoaderWithCacheFallaback = RemotePostsLoaderWithLocalFallback(remoteLoader: remotePostsLoader,
-                                                                                 localPostsLoader: localPostsLoader)
-    
-    lazy var remotePostsLoader = RemotePostsLoader(url: remotePostsURL,
-                                                   client: urlSessionHttpClient)
-    lazy var localPostsLoader = LocalPostsLoader(store: fileSystemPostsStore)
+public protocol ServicesProvider {
+    var postsDataRepo: PostsDataProvider { get }
+}
 
-    lazy var urlSessionHttpClient = URLSessionHTTPClient()
-    lazy var fileSystemPostsStore = FileSystemPostsStore(storeURL: lcoalPostsURL)
+public struct Factory: ServicesProvider {
+    public let postsDataRepo: PostsDataProvider
     
-    var remotePostsURL: URL {
-        return URL(string: "http://jsonplaceholder.typicode.com/posts")!
+    public init() {
+        postsDataRepo = PostsRepo(postsLoader: Factory.remoteLoaderWithCacheFallaback)
     }
     
-    var lcoalPostsURL: URL {
+    // MARK: - Factory properties
+    private static var remoteLoaderWithCacheFallaback: RemotePostsLoaderWithLocalFallback { return RemotePostsLoaderWithLocalFallback(remoteLoader: remotePostsLoader,
+                                                                                    localPostsLoader: localPostsLoader) }
+    
+    private static var remotePostsLoader: PostsLoader { return RemotePostsLoader(url: remotePostsURL,
+                                                      client: urlSessionHttpClient) }
+    private static var localPostsLoader: PostsLoader & PostsPersister { return LocalPostsLoader(store: fileSystemPostsStore) }
+
+    private static var urlSessionHttpClient: HTTPClient { return URLSessionHTTPClient() }
+    private static var fileSystemPostsStore: PostsStore { return FileSystemPostsStore(storeURL: localPostsURL) }
+    
+    private static var remotePostsURL: URL {
+        return URL(string: "https://jsonplaceholder.typicode.com/posts")!
+    }
+    
+    private static var localPostsURL: URL {
         return localRootURL.appendingPathComponent("PostItems")
     }
     
-    private var localRootURL: URL {
-        return FileManager.default.urls(for: .applicationDirectory, in: .userDomainMask).first!.appendingPathComponent("PostsApp")
+    private static var localRootURL: URL {
+        let rootURL = FileManager.default.urls(for: .applicationDirectory, in: .userDomainMask).first!.appendingPathComponent("PostsApp")
+        try? FileManager.default.createDirectory(at: rootURL,
+                                            withIntermediateDirectories: true,
+                                            attributes: nil)
+        return rootURL
     }
 }
