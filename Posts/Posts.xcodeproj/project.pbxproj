@@ -42,6 +42,8 @@
 		6C5C56CD22B65DBA00582BB9 /* PostsRepoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56CC22B65DBA00582BB9 /* PostsRepoTests.swift */; };
 		6C5C56CF22B66C7F00582BB9 /* Loadable+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56CE22B66C7F00582BB9 /* Loadable+Equatable.swift */; };
 		6C5C56D322B66E3700582BB9 /* RemotePostsLoaderWithLocalFallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D222B66E3700582BB9 /* RemotePostsLoaderWithLocalFallbackTests.swift */; };
+		6C5C56D522B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */; };
+		6C5C56D722B6841A00582BB9 /* PostsPersister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D622B6841A00582BB9 /* PostsPersister.swift */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
 		6C9313B522B03C7000387108 /* PostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B422B03C7000387108 /* PostItem.swift */; };
@@ -128,6 +130,8 @@
 		6C5C56CC22B65DBA00582BB9 /* PostsRepoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsRepoTests.swift; sourceTree = "<group>"; };
 		6C5C56CE22B66C7F00582BB9 /* Loadable+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Loadable+Equatable.swift"; sourceTree = "<group>"; };
 		6C5C56D222B66E3700582BB9 /* RemotePostsLoaderWithLocalFallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePostsLoaderWithLocalFallbackTests.swift; sourceTree = "<group>"; };
+		6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePostsLoaderWithLocalFallback.swift; sourceTree = "<group>"; };
+		6C5C56D622B6841A00582BB9 /* PostsPersister.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPersister.swift; sourceTree = "<group>"; };
 		6C93137E22B039FC00387108 /* Posts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Posts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C93138122B039FC00387108 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C93139022B039FD00387108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -281,6 +285,7 @@
 		6C5C56D022B66E0F00582BB9 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -352,6 +357,7 @@
 				6CBF4FAC22B2E64A0056B55F /* PostsStore.swift */,
 				6C509D9022B4190100BC09AF /* LocalPostItem.swift */,
 				6C509D9D22B524FA00BC09AF /* FileSystemPostsStore.swift */,
+				6C5C56D622B6841A00582BB9 /* PostsPersister.swift */,
 			);
 			path = PostsCache;
 			sourceTree = "<group>";
@@ -781,6 +787,7 @@
 				6C5C56CB22B65DA800582BB9 /* PostsRepo.swift in Sources */,
 				6CFBFD0522B2172D00CC6E3B /* FailableDecodableArray.swift in Sources */,
 				6C5C56C122B651B700582BB9 /* PostsListViewModel.swift in Sources */,
+				6C5C56D522B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift in Sources */,
 				6C5C56C922B65AC400582BB9 /* UIView+Constraints.swift in Sources */,
 				6C5C56BD22B6517000582BB9 /* PostListItemModel.swift in Sources */,
 				6C5C56BF22B6519E00582BB9 /* PostListItemViewModel.swift in Sources */,
@@ -797,6 +804,7 @@
 				6CFBFD0722B218AA00CC6E3B /* PostsMapper.swift in Sources */,
 				6C509D9122B4190100BC09AF /* LocalPostItem.swift in Sources */,
 				6C5C56C722B6598400582BB9 /* ErrorStateView.swift in Sources */,
+				6C5C56D722B6841A00582BB9 /* PostsPersister.swift in Sources */,
 				6C93138222B039FC00387108 /* AppDelegate.swift in Sources */,
 				6C5C56B022B6341900582BB9 /* PostsListViewController.swift in Sources */,
 			);

@@ -8,7 +8,7 @@
 
 import RxSwift
 
-public class LocalPostsLoader: PostsLoader {
+public class LocalPostsLoader: PostsLoader, PostsPersister {
     private let store: PostsStore
     
     public typealias LoadResult = PostsLoader.LoadResult

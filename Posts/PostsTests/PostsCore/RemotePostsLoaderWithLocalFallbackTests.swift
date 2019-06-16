@@ -11,44 +11,6 @@ import XCTest
 import Posts
 import RxSwift
 
-protocol PostsPersister {
-    func save(_ items: [PostItem]) -> Completable
-}
-
-final class RemotePostsLoaderWithLocalFallback: PostsLoader {
-    
-    let remoteLoader: PostsLoader
-    let localPostsLoader: PostsLoader & PostsPersister
-    
-    init(remoteLoader: PostsLoader, localPostsLoader: PostsLoader & PostsPersister) {
-        self.remoteLoader = remoteLoader
-        self.localPostsLoader = localPostsLoader
-    }
-    
-    func load() -> Single<LoadResult> {
-        return remoteLoader.load().do(onSuccess: cacheFetchedItems).catchError(localCacheFallback)
-    }
-    
-    private func cacheFetchedItems(items: [PostItem]) {
-        localPostsLoader.save(items).subscribe().dispose()
-    }
-
-    private func localCacheFallback(remoteLoadError: Error) -> Single<LoadResult> {
-        return localPostsLoader.load().catchErrorJustReturn([]).flatMap(validateCachedItems)
-    }
-    
-    private func validateCachedItems(items: [PostItem]) -> Single<LoadResult> {
-        return .create { single in
-            if items.isEmpty {
-                single(.error(anyNSError()))
-            } else {
-                single(.success(items))
-            }
-            return Disposables.create()
-        }
-    }
-}
-
 class RemotePostsLoaderWithLocalFallbackTests: XCTestCase {
     let disposeBag = DisposeBag()
 
