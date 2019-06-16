@@ -23,19 +23,19 @@ class RemotePostsLoaderWithLocalFallbackIntegrationTests: XCTestCase {
         super.tearDown()
         removeCachedItems()
     }
-
-    func test_load_dataIsCachedOnSuccesfulLoad() {
-        let (sut, localLoder) = makeSUT()
-
+    
+    func test_load_hasCorrectBehaviourOnLoad() {
+        let (firstLoadSUT, localLoder) = makeSUT()
+        
         let remoteLoadExp = expectation(description: "Wait for load")
-        sut.load().subscribe { result in
+        firstLoadSUT.load().subscribe { result in
             remoteLoadExp.fulfill()
         }.disposed(by: disposeBag)
         
         wait(for: [remoteLoadExp], timeout: 5.0)
         
         // Sleep for 1 second, wait for the data to be written to cache
-        // After the load is complet the data si writen to cache as a side effect
+        // After the load is complet the data is writen to cache as a side effect
         sleep(1)
         let cacheLoadExp = expectation(description: "Wait for load")
         localLoder.load().subscribe { result in
@@ -50,13 +50,26 @@ class RemotePostsLoaderWithLocalFallbackIntegrationTests: XCTestCase {
         }.disposed(by: disposeBag)
         
         wait(for: [cacheLoadExp], timeout: 1.0)
-    }
-    
-    private func test_load_previousCachedDataIsReturnedOnNewLoadFail() {
         
+        let secondLoadExp = expectation(description: "wait for load")
+        let invalidURL = URL(string: "invalid://url.com")!
+        let (secondLoadSUT, _) = makeSUT(remoteURL: invalidURL)
+        secondLoadSUT.load().subscribe { result in
+            switch result {
+            case .success(let items):
+                XCTAssertEqual(items, self.expectedFixedPostItems())
+            default:
+                break
+            }
+            secondLoadExp.fulfill()
+        }.disposed(by: disposeBag)
+        
+        wait(for: [secondLoadExp], timeout: 5.0)
     }
     
-    private func makeSUT(remoteURL: URL? = nil) -> (sut: RemotePostsLoaderWithLocalFallback, local: LocalPostsLoader) {
+    private func makeSUT(remoteURL: URL? = nil,
+                         file: StaticString = #file,
+                         line: UInt = #line) -> (sut: RemotePostsLoaderWithLocalFallback, local: LocalPostsLoader) {
         let testURL = remoteURL ?? testRemoteURL()
         let remoteLoader = RemotePostsLoader(url: testURL,
                                              client: URLSessionHTTPClient())
@@ -65,7 +78,10 @@ class RemotePostsLoaderWithLocalFallbackIntegrationTests: XCTestCase {
         
         let sut = RemotePostsLoaderWithLocalFallback(remoteLoader: remoteLoader,
                                                      localPostsLoader: localLoder)
-        
+        trackForMemoryLeaks(sut, file: file, line: line)
+        trackForMemoryLeaks(fileSystemStore, file: file, line: line)
+        trackForMemoryLeaks(remoteLoader, file: file, line: line)
+        trackForMemoryLeaks(localLoder, file: file, line: line)
         return (sut, localLoder)
     }
     

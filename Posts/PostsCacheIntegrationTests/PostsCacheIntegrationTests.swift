@@ -67,12 +67,13 @@ class PostsCacheIntegrationTests: XCTestCase {
 
     // MARK: - Helpers
     
-    private func makeSUT() -> LocalPostsLoader {
+    private func makeSUT(file: StaticString = #file,
+                         line: UInt = #line) -> LocalPostsLoader {
         let testURL = testStoreURL()
         let fileSystemStore = FileSystemPostsStore(storeURL: testURL)
         let sut = LocalPostsLoader(store: fileSystemStore)
-        trackForMemoryLeaks(fileSystemStore)
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(fileSystemStore, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
         
         return sut
     }
