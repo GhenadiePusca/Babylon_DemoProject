@@ -27,6 +27,20 @@ class PostsCacheIntegrationTests: XCTestCase {
         removeCachedItems()
     }
     
+    func test_load_deliversNoItemsOnEmptyCache() {
+        let sut = makeSUT()
+        let noItemsResult: SingleEvent<LocalPostsLoader.LoadResult> = .success([])
+    
+        let exp = expectation(description: "Wait for load")
+        sut.load().subscribe { result in
+            XCTAssertTrue(result.isSameAs(noItemsResult),
+                          "Expected to load no items, got \(result)")
+            exp.fulfill()
+        }.disposed(by: disposeBag)
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT() -> LocalPostsLoader {

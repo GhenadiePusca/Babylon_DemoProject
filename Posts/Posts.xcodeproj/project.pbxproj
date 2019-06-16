@@ -22,6 +22,7 @@
 		6C509DA222B55E8800BC09AF /* CompletableEvent+TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C509DA122B55E8800BC09AF /* CompletableEvent+TestUtils.swift */; };
 		6C5C569F22B623CA00582BB9 /* PostsCacheIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C569E22B623CA00582BB9 /* PostsCacheIntegrationTests.swift */; };
 		6C5C56A622B625B100582BB9 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBF4FA722B2E3B20056B55F /* XCTestCase+MemoryLeakTracking.swift */; };
+		6C5C56A722B6261100582BB9 /* SingleEvent+TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3701722B39684002A33E3 /* SingleEvent+TestUtils.swift */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
 		6C9313B522B03C7000387108 /* PostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B422B03C7000387108 /* PostItem.swift */; };
@@ -625,6 +626,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C5C569F22B623CA00582BB9 /* PostsCacheIntegrationTests.swift in Sources */,
+				6C5C56A722B6261100582BB9 /* SingleEvent+TestUtils.swift in Sources */,
 				6C5C56A622B625B100582BB9 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
