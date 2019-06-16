@@ -12,83 +12,6 @@ import RxSwift
 import RxCocoa
 import RxTest
 
-enum Loadable<Value> {
-    case pending
-    case loading
-    case loaded(Value)
-    case failed(Error)
-}
-
-struct PostListItemModel {
-    let postName: String
-}
-
-struct PostListItemViewModel {
-    var postName: String {
-        return model.postName
-    }
-    
-    private let model: PostListItemModel
-    
-    init(model: PostListItemModel) {
-        self.model = model
-    }
-}
-
-extension PostListItemViewModel: Equatable {
-    public static func == (lhs: PostListItemViewModel, rhs: PostListItemViewModel) -> Bool {
-        return lhs.model.postName == rhs.model.postName
-    }
-}
-
-class PostsListViewModel {
-    let postsModels: Driver<[PostListItemViewModel]>
-    let isLoading: Driver<Bool>
-    let loadingFailed: Driver<Bool>
-    
-    private let models = BehaviorRelay<[PostListItemViewModel]>(value: [])
-    private let loading = BehaviorRelay<Bool>(value: false)
-    private let loadingFail = BehaviorRelay<Bool>(value: false)
-    private let disposeBag = DisposeBag()
-
-    init(dataLoader: Observable<Loadable<[PostListItemModel]>>) {
-        postsModels = models.asDriver()
-        isLoading = loading.asDriver()
-        loadingFailed = loadingFail.asDriver()
-
-        bindToDataLoader(loader: dataLoader)
-    }
-    
-    private func bindToDataLoader(loader: Observable<Loadable<[PostListItemModel]>>) {
-        loader.subscribe(onNext: handleState).disposed(by: disposeBag)
-    }
-    
-    private func handleState(_ state: Loadable<[PostListItemModel]>) {
-        switch state {
-        case .loading:
-            loading.accept(true)
-            loadingFail.accept(false)
-            handleData(data: [])
-        case .failed:
-            loading.accept(false)
-            loadingFail.accept(true)
-            handleData(data: [])
-        case .loaded(let items):
-            loading.accept(false)
-            loadingFail.accept(false)
-            handleData(data: items)
-        default:
-            loading.accept(false)
-            loadingFail.accept(false)
-            handleData(data: [])
-        }
-    }
-    
-    private func handleData(data: [PostListItemModel]) {
-        models.accept(data.map { PostListItemViewModel(model: $0) })
-    }
-}
-
 class PostsListViewModelTests: XCTestCase {
 
     let disposeBag = DisposeBag()
@@ -176,5 +99,11 @@ class PostsListViewModelTests: XCTestCase {
     
     private func loadItemsViewModel(items: [PostListItemModel]) -> [PostListItemViewModel] {
         return items.map { PostListItemViewModel(model: $0) }
+    }
+}
+
+extension PostListItemViewModel: Equatable {
+    public static func == (lhs: PostListItemViewModel, rhs: PostListItemViewModel) -> Bool {
+        return lhs.postName == rhs.postName
     }
 }
