@@ -56,15 +56,13 @@ class PostsListViewModelTests: XCTestCase {
         
         testScheduler.start()
         
-        let expectedLoadingEvents = [ next(0, false), next(1, false),
-                                      next(2, true), next(3, false),
-                                      next(4, true), next(5, false)
-        ]
+        let expectedLoadingEvents = [next(0, false), next(1, false),
+                                     next(2, true), next(3, false),
+                                     next(4, true), next(5, false)]
         
         let expectedFailureEvents = [next(0, false), next(1, false),
                                      next(2, false), next(3, true),
-                                     next(4, false), next(5, false)
-        ]
+                                     next(4, false), next(5, false)]
         
         let expectedDataEvents = [
             next(0, []),
@@ -81,15 +79,14 @@ class PostsListViewModelTests: XCTestCase {
     }
     
     // MARK: - Helpers
-    
     private func makeSUT(dataLoader: Observable<Loadable<[PostListItemModel]>>,
                          file: StaticString = #file,
                          line: UInt = #line) -> PostsListViewModel {
         let sut = PostsListViewModel(dataLoader: dataLoader)
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
-        
     }
+
     private func loadedItems() -> [PostListItemModel] {
         let post1 = PostListItemModel(postName: "item 1")
         let post2 = PostListItemModel(postName: "item 2")
