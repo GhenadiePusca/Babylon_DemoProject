@@ -33,8 +33,7 @@ public class FileSystemPostsStore: PostsStore {
     }
     
     private let storeURL: URL
-    private let queue = DispatchQueue(label: "FileSystemPostsStore.queue",
-        qos: .userInitiated)
+    private lazy var sideEffectsScheduler = SerialDispatchQueueScheduler.init(internalSerialQueueName: "\(type(of: self))")
     
     public init(storeURL: URL) {
         self.storeURL = storeURL
@@ -42,17 +41,22 @@ public class FileSystemPostsStore: PostsStore {
     
     public func deleteCachedPosts() -> Completable {
         let url = self.storeURL
-        return FileSystemPostsStore.deleteCache(url).subscribeOn(SerialDispatchQueueScheduler.init(queue: queue, internalSerialQueueName: "\(type(of: self)).queue"))
+        return FileSystemPostsStore.deleteCache(url).subscribeOn(sideEffectsScheduler)
     }
 
     public func savePosts(_ items: [LocalPostItem]) -> Completable {
         let url = self.storeURL
-        return FileSystemPostsStore.encodeItems(items).flatMapCompletable { FileSystemPostsStore.writeEncodedData($0, url) }.subscribeOn(SerialDispatchQueueScheduler.init(queue: queue, internalSerialQueueName: "\(type(of: self)).queue"))
+        return FileSystemPostsStore.encodeItems(items)
+                                   .flatMapCompletable { FileSystemPostsStore.writeEncodedData($0, url) }
+                                   .subscribeOn(sideEffectsScheduler)
     }
     
     public func retrieve() -> Single<RetrieveResult> {
         let url = self.storeURL
-        return FileSystemPostsStore.getCachedData(url).flatMap(FileSystemPostsStore.decodeCachedData).ifEmpty(default: []).subscribeOn(ConcurrentDispatchQueueScheduler.init(queue: .global()))
+        return FileSystemPostsStore.getCachedData(url)
+                                   .flatMap(FileSystemPostsStore.decodeCachedData)
+                                   .ifEmpty(default: [])
+                                   .subscribeOn(ConcurrentDispatchQueueScheduler(queue: .global()))
     }
     
     // MARK: - Deletion helpers
