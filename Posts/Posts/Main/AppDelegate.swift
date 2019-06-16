@@ -12,8 +12,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    private lazy var navController = UINavigationController()
+    private lazy var appCoordinator = AppCoordinator(navController: navController)
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        window = UIWindow()
+        window?.rootViewController = navController
+        window?.makeKeyAndVisible()
+        
+        appCoordinator.start()
+
         return true
     }
 }
