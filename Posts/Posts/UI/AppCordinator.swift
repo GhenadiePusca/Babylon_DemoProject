@@ -20,6 +20,12 @@ final public class AppCoordinator {
     }
     
     private func postsListViewController() -> UIViewController {
-        return PostsListViewController()
+        let vm = postListViewModel()
+        return PostsListViewController(viewModel: vm)
+    }
+    
+    private func postListViewModel() -> PostsListViewModel {
+        let viewModel = PostsListViewModel(dataLoader: .just(.pending))
+        return viewModel
     }
 }
