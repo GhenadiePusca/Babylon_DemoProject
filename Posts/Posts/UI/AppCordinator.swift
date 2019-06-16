@@ -8,14 +8,18 @@
 
 import UIKit
 
-final internal class AppCoordinator {
+final public class AppCoordinator {
     private let navController: UINavigationController
     
     public init(navController: UINavigationController) {
         self.navController = navController
     }
     
-    func start() {
-        
+    public func start() {
+        navController.setViewControllers([postsListViewController()], animated: true)
+    }
+    
+    private func postsListViewController() -> UIViewController {
+        return PostsListViewController()
     }
 }
