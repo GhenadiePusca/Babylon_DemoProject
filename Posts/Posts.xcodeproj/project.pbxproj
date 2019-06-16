@@ -45,6 +45,7 @@
 		6C5C56D522B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */; };
 		6C5C56D722B6841A00582BB9 /* PostsPersister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D622B6841A00582BB9 /* PostsPersister.swift */; };
 		6C5C56D922B6849900582BB9 /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D822B6849900582BB9 /* Factory.swift */; };
+		6C5C56E122B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56E022B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.swift */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
 		6C9313B522B03C7000387108 /* PostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B422B03C7000387108 /* PostItem.swift */; };
@@ -62,6 +63,7 @@
 		76895EDAA603A5477F183A9E /* Pods_PostsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AE0EC49208E0E3CE5E807BF /* Pods_PostsTests.framework */; };
 		7EE52B59B906DBF70F6DD8B0 /* Pods_PostsCacheIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE680FAD22062DC85162E65D /* Pods_PostsCacheIntegrationTests.framework */; };
 		954CD6DE46EF1D37C4437D37 /* Pods_Posts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40E853228AFCC463A7615EF1 /* Pods_Posts.framework */; };
+		97515963974D92A71ACEB687 /* Pods_RemotePostsLoaderWithLocalFallbackIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC411AD3D7F6BF6C032BB417 /* Pods_RemotePostsLoaderWithLocalFallbackIntegrationTests.framework */; };
 		C4A4727222B2606C0026C041 /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A4727122B2606B0026C041 /* URLSessionHTTPClientTests.swift */; };
 		C4E3701822B39684002A33E3 /* SingleEvent+TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3701722B39684002A33E3 /* SingleEvent+TestUtils.swift */; };
 		C4E3701B22B397E6002A33E3 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3701A22B397E6002A33E3 /* URLSessionHTTPClient.swift */; };
@@ -82,6 +84,13 @@
 			remoteGlobalIDString = 6C93137D22B039FC00387108;
 			remoteInfo = Posts;
 		};
+		6C5C56E322B686A400582BB9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C93137622B039FC00387108 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6C93137D22B039FC00387108;
+			remoteInfo = Posts;
+		};
 		6C93139622B039FD00387108 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6C93137622B039FC00387108 /* Project object */;
@@ -94,10 +103,12 @@
 /* Begin PBXFileReference section */
 		013D1D142011DE4BBD1BD8E6 /* Pods-Posts.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Posts.debug.xcconfig"; path = "Target Support Files/Pods-Posts/Pods-Posts.debug.xcconfig"; sourceTree = "<group>"; };
 		2B730DA6861C74D0E6FD26C2 /* Pods-PostsCacheIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsCacheIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-PostsCacheIntegrationTests/Pods-PostsCacheIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		306E8A4846D145DCE4491B84 /* Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests/Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		39E66508BE88AF395B2F0A41 /* Pods-PostsAPIEndToEndTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsAPIEndToEndTests.debug.xcconfig"; path = "Target Support Files/Pods-PostsAPIEndToEndTests/Pods-PostsAPIEndToEndTests.debug.xcconfig"; sourceTree = "<group>"; };
 		40E853228AFCC463A7615EF1 /* Pods_Posts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Posts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C4917DDE44603DEF82F5EE3 /* Pods-PostsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsTests.debug.xcconfig"; path = "Target Support Files/Pods-PostsTests/Pods-PostsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		52D0FABB317FE2ED48EE12C2 /* Pods_PostsAPIEndToEndTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostsAPIEndToEndTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		59BB034D2D0F8FDC208D46F4 /* Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests/Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6C1C4DA822B3FD2D00B63203 /* RemotePostsLoaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemotePostsLoaderTests.swift; sourceTree = "<group>"; };
 		6C1C4DAE22B4000700B63203 /* PostsAPIEndToEndTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostsAPIEndToEndTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C1C4DB022B4000700B63203 /* PostsAPIEndToEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsAPIEndToEndTests.swift; sourceTree = "<group>"; };
@@ -134,6 +145,9 @@
 		6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePostsLoaderWithLocalFallback.swift; sourceTree = "<group>"; };
 		6C5C56D622B6841A00582BB9 /* PostsPersister.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPersister.swift; sourceTree = "<group>"; };
 		6C5C56D822B6849900582BB9 /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
+		6C5C56DE22B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemotePostsLoaderWithLocalFallbackIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C5C56E022B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePostsLoaderWithLocalFallbackIntegrationTests.swift; sourceTree = "<group>"; };
+		6C5C56E222B686A400582BB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C93137E22B039FC00387108 /* Posts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Posts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C93138122B039FC00387108 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C93139022B039FD00387108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -161,6 +175,7 @@
 		C4E3701A22B397E6002A33E3 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		D1D4CDE10EBF258A01E2AD27 /* Pods-PostsAPIEndToEndTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsAPIEndToEndTests.release.xcconfig"; path = "Target Support Files/Pods-PostsAPIEndToEndTests/Pods-PostsAPIEndToEndTests.release.xcconfig"; sourceTree = "<group>"; };
 		EE680FAD22062DC85162E65D /* Pods_PostsCacheIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostsCacheIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC411AD3D7F6BF6C032BB417 /* Pods_RemotePostsLoaderWithLocalFallbackIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RemotePostsLoaderWithLocalFallbackIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +192,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7EE52B59B906DBF70F6DD8B0 /* Pods_PostsCacheIntegrationTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C5C56DB22B686A400582BB9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97515963974D92A71ACEB687 /* Pods_RemotePostsLoaderWithLocalFallbackIntegrationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,6 +324,15 @@
 			path = PostsCore;
 			sourceTree = "<group>";
 		};
+		6C5C56DF22B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				6C5C56E022B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.swift */,
+				6C5C56E222B686A400582BB9 /* Info.plist */,
+			);
+			path = RemotePostsLoaderWithLocalFallbackIntegrationTests;
+			sourceTree = "<group>";
+		};
 		6C93137522B039FC00387108 = {
 			isa = PBXGroup;
 			children = (
@@ -308,6 +340,7 @@
 				6C93139822B039FD00387108 /* PostsTests */,
 				6C1C4DAF22B4000700B63203 /* PostsAPIEndToEndTests */,
 				6C5C569D22B623CA00582BB9 /* PostsCacheIntegrationTests */,
+				6C5C56DF22B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests */,
 				6C93137F22B039FC00387108 /* Products */,
 				D7C1586180952416A450402E /* Pods */,
 				73D5D67CCE1A06827C8CAA61 /* Frameworks */,
@@ -321,6 +354,7 @@
 				6C93139522B039FD00387108 /* PostsTests.xctest */,
 				6C1C4DAE22B4000700B63203 /* PostsAPIEndToEndTests.xctest */,
 				6C5C569C22B623CA00582BB9 /* PostsCacheIntegrationTests.xctest */,
+				6C5C56DE22B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -427,6 +461,7 @@
 				9AE0EC49208E0E3CE5E807BF /* Pods_PostsTests.framework */,
 				52D0FABB317FE2ED48EE12C2 /* Pods_PostsAPIEndToEndTests.framework */,
 				EE680FAD22062DC85162E65D /* Pods_PostsCacheIntegrationTests.framework */,
+				FC411AD3D7F6BF6C032BB417 /* Pods_RemotePostsLoaderWithLocalFallbackIntegrationTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -454,6 +489,8 @@
 				D1D4CDE10EBF258A01E2AD27 /* Pods-PostsAPIEndToEndTests.release.xcconfig */,
 				2B730DA6861C74D0E6FD26C2 /* Pods-PostsCacheIntegrationTests.debug.xcconfig */,
 				8E83400B1AD3AA70F0D7D114 /* Pods-PostsCacheIntegrationTests.release.xcconfig */,
+				59BB034D2D0F8FDC208D46F4 /* Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.debug.xcconfig */,
+				306E8A4846D145DCE4491B84 /* Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -497,6 +534,25 @@
 			name = PostsCacheIntegrationTests;
 			productName = PostsCacheIntegrationTests;
 			productReference = 6C5C569C22B623CA00582BB9 /* PostsCacheIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		6C5C56DD22B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6C5C56E522B686A400582BB9 /* Build configuration list for PBXNativeTarget "RemotePostsLoaderWithLocalFallbackIntegrationTests" */;
+			buildPhases = (
+				C438BDECB7E421A1712FAAE9 /* [CP] Check Pods Manifest.lock */,
+				6C5C56DA22B686A400582BB9 /* Sources */,
+				6C5C56DB22B686A400582BB9 /* Frameworks */,
+				6C5C56DC22B686A400582BB9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6C5C56E422B686A400582BB9 /* PBXTargetDependency */,
+			);
+			name = RemotePostsLoaderWithLocalFallbackIntegrationTests;
+			productName = RemotePostsLoaderWithLocalFallbackIntegrationTests;
+			productReference = 6C5C56DE22B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		6C93137D22B039FC00387108 /* Posts */ = {
@@ -556,6 +612,10 @@
 						CreatedOnToolsVersion = 10.1;
 						TestTargetID = 6C93137D22B039FC00387108;
 					};
+					6C5C56DD22B686A400582BB9 = {
+						CreatedOnToolsVersion = 10.1;
+						TestTargetID = 6C93137D22B039FC00387108;
+					};
 					6C93137D22B039FC00387108 = {
 						CreatedOnToolsVersion = 10.1;
 					};
@@ -582,6 +642,7 @@
 				6C93139422B039FD00387108 /* PostsTests */,
 				6C1C4DAD22B4000700B63203 /* PostsAPIEndToEndTests */,
 				6C5C569B22B623CA00582BB9 /* PostsCacheIntegrationTests */,
+				6C5C56DD22B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests */,
 			);
 		};
 /* End PBXProject section */
@@ -595,6 +656,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6C5C569A22B623CA00582BB9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C5C56DC22B686A400582BB9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -708,6 +776,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		C438BDECB7E421A1712FAAE9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		D95AD4F0B8BDD8380079C2C4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -775,6 +865,14 @@
 				6C5C56A922B6279F00582BB9 /* CompletableEvent+TestUtils.swift in Sources */,
 				6C5C56A822B6278F00582BB9 /* ModelsFactory.swift in Sources */,
 				6C5C56A622B625B100582BB9 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C5C56DA22B686A400582BB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C5C56E122B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -851,6 +949,11 @@
 			isa = PBXTargetDependency;
 			target = 6C93137D22B039FC00387108 /* Posts */;
 			targetProxy = 6C5C56A122B623CA00582BB9 /* PBXContainerItemProxy */;
+		};
+		6C5C56E422B686A400582BB9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6C93137D22B039FC00387108 /* Posts */;
+			targetProxy = 6C5C56E322B686A400582BB9 /* PBXContainerItemProxy */;
 		};
 		6C93139722B039FD00387108 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -939,6 +1042,48 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = pgh.PostsCacheIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Posts.app/Posts";
+			};
+			name = Release;
+		};
+		6C5C56E622B686A400582BB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 59BB034D2D0F8FDC208D46F4 /* Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = S7Q3D7C8SW;
+				INFOPLIST_FILE = RemotePostsLoaderWithLocalFallbackIntegrationTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = pgh.RemotePostsLoaderWithLocalFallbackIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Posts.app/Posts";
+			};
+			name = Debug;
+		};
+		6C5C56E722B686A400582BB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 306E8A4846D145DCE4491B84 /* Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = S7Q3D7C8SW;
+				INFOPLIST_FILE = RemotePostsLoaderWithLocalFallbackIntegrationTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = pgh.RemotePostsLoaderWithLocalFallbackIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1161,6 +1306,15 @@
 			buildConfigurations = (
 				6C5C56A322B623CA00582BB9 /* Debug */,
 				6C5C56A422B623CA00582BB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6C5C56E522B686A400582BB9 /* Build configuration list for PBXNativeTarget "RemotePostsLoaderWithLocalFallbackIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C5C56E622B686A400582BB9 /* Debug */,
+				6C5C56E722B686A400582BB9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

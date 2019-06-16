@@ -59,6 +59,16 @@
                ReferencedContainer = "container:Posts.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6C5C56DD22B686A400582BB9"
+               BuildableName = "RemotePostsLoaderWithLocalFallbackIntegrationTests.xctest"
+               BlueprintName = "RemotePostsLoaderWithLocalFallbackIntegrationTests"
+               ReferencedContainer = "container:Posts.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

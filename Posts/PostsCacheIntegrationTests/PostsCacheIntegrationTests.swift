@@ -12,7 +12,6 @@ import RxSwift
 
 class PostsCacheIntegrationTests: XCTestCase {
     
-    
     let disposeBag = DisposeBag()
     
     override func setUp() {

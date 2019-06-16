@@ -11,8 +11,8 @@ import Foundation
 struct Factory {
     lazy var postsRepo = PostsRepo(postsLoader: remoteLoaderWithCacheFallaback)
     
-    lazy var remoteLoaderWithCacheFallaback = RemotePostsLoaderWithLocalFallback(remoteLoader: <#T##PostsLoader#>,
-                                                                                 localPostsLoader: <#T##PostsLoader & PostsPersister#>)
+    lazy var remoteLoaderWithCacheFallaback = RemotePostsLoaderWithLocalFallback(remoteLoader: remotePostsLoader,
+                                                                                 localPostsLoader: localPostsLoader)
     
     lazy var remotePostsLoader = RemotePostsLoader(url: remotePostsURL,
                                                    client: urlSessionHttpClient)

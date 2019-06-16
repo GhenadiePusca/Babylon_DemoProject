@@ -12,6 +12,7 @@ public final class RemotePostsLoaderWithLocalFallback: PostsLoader {
     
     private let remoteLoader: PostsLoader
     private let localPostsLoader: PostsLoader & PostsPersister
+    private let disposeBag = DisposeBag()
     
     public init(remoteLoader: PostsLoader, localPostsLoader: PostsLoader & PostsPersister) {
         self.remoteLoader = remoteLoader
@@ -23,7 +24,7 @@ public final class RemotePostsLoaderWithLocalFallback: PostsLoader {
     }
     
     private func cacheFetchedItems(items: [PostItem]) {
-        localPostsLoader.save(items).subscribe().dispose()
+        localPostsLoader.save(items).subscribe().disposed(by: disposeBag)
     }
     
     private func localCacheFallback(remoteLoadError: Error) -> Single<LoadResult> {
