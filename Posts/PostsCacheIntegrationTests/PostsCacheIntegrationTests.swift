@@ -41,6 +41,35 @@ class PostsCacheIntegrationTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
+    func test_load_canLoadDataStoredByAnotherStoreInstance() {
+        let saveSUT = makeSUT()
+        let loadSUT = makeSUT()
+        let itemsToCache = anyItems()
+        
+        let expectedSaveResut = CompletableEvent.completed
+        let saveExp = expectation(description: "Wait for save")
+        saveSUT.save(itemsToCache).subscribe { result in
+            XCTAssertTrue(result.isSameEventAs(expectedSaveResut),
+                          "Expected to save items, got \(result)")
+            
+            saveExp.fulfill()
+        }.disposed(by: disposeBag)
+        
+        wait(for: [saveExp], timeout: 1.0)
+        
+        let cachedItems = itemsToCache
+        let expectedLoadResut: SingleEvent<LocalPostsLoader.LoadResult> = .success(cachedItems)
+        let loadExp = expectation(description: "Wait for load")
+        loadSUT.load().subscribe { result in
+            XCTAssertTrue(result.isSameAs(expectedLoadResut),
+                          "Expected to load items, got \(result)")
+            
+            loadExp.fulfill()
+        }.disposed(by: disposeBag)
+        
+        wait(for: [loadExp], timeout: 1.0)
+    }
+
     // MARK: - Helpers
     
     private func makeSUT() -> LocalPostsLoader {
