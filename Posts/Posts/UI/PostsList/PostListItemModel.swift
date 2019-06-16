@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct PostListItemModel {
+public struct PostListItemModel: Equatable {
     public let postName: String
     
     public init(postName: String) {
