@@ -25,7 +25,9 @@ final public class AppCoordinator {
     }
     
     private func postListViewModel() -> PostsListViewModel {
-        let viewModel = PostsListViewModel(dataLoader: .just(.pending))
+        let item = PostListItemModel(postName: "abcd")
+        let testItems = [PostListItemModel](repeating: item, count: 10)
+        let viewModel = PostsListViewModel(dataLoader: .just(.loaded(testItems)))
         return viewModel
     }
 }
