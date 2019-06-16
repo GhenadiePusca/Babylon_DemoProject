@@ -49,6 +49,16 @@
                ReferencedContainer = "container:Posts.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6C5C569B22B623CA00582BB9"
+               BuildableName = "PostsCacheIntegrationTests.xctest"
+               BlueprintName = "PostsCacheIntegrationTests"
+               ReferencedContainer = "container:Posts.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

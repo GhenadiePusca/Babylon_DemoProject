@@ -18,4 +18,9 @@ target 'Posts' do
     # Pods for testing
   end
 
+  target 'PostsCacheIntegrationTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
 end
