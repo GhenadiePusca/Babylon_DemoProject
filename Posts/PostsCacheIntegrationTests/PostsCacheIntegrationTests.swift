@@ -46,6 +46,25 @@ class PostsCacheIntegrationTests: XCTestCase {
         let cachedItems = itemsToCache
         expectLoad(toCompleteWithResult: .success(cachedItems), sut: loadSUT)
     }
+    
+    func test_save_overridesItemsSaveByAnotherStoreInstance() {
+        let firstSaveSUT = makeSUT()
+        let secondSaveSUT = makeSUT()
+        let loadSUT = makeSUT()
+        let firstSavedItems = anyItems()
+        let latestSavedItems = [anyItem()]
+        
+        expectSave(toCompleteWithResult: .completed,
+                   sut: firstSaveSUT,
+                   itemsToSave: firstSavedItems)
+
+        expectSave(toCompleteWithResult: .completed,
+                   sut: secondSaveSUT,
+                   itemsToSave: latestSavedItems)
+
+        expectLoad(toCompleteWithResult: .success(latestSavedItems),
+                   sut: loadSUT)
+    }
 
     // MARK: - Helpers
     
