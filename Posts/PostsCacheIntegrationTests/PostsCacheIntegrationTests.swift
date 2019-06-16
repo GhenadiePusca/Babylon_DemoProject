@@ -31,14 +31,7 @@ class PostsCacheIntegrationTests: XCTestCase {
         let sut = makeSUT()
         let noItemsResult: SingleEvent<LocalPostsLoader.LoadResult> = .success([])
     
-        let exp = expectation(description: "Wait for load")
-        sut.load().subscribe { result in
-            XCTAssertTrue(result.isSameAs(noItemsResult),
-                          "Expected to load no items, got \(result)")
-            exp.fulfill()
-        }.disposed(by: disposeBag)
-        
-        wait(for: [exp], timeout: 1.0)
+        expectLoad(toCompleteWithResult: noItemsResult, sut: sut)
     }
     
     func test_load_canLoadDataStoredByAnotherStoreInstance() {
@@ -46,28 +39,12 @@ class PostsCacheIntegrationTests: XCTestCase {
         let loadSUT = makeSUT()
         let itemsToCache = anyItems()
         
-        let expectedSaveResut = CompletableEvent.completed
-        let saveExp = expectation(description: "Wait for save")
-        saveSUT.save(itemsToCache).subscribe { result in
-            XCTAssertTrue(result.isSameEventAs(expectedSaveResut),
-                          "Expected to save items, got \(result)")
-            
-            saveExp.fulfill()
-        }.disposed(by: disposeBag)
-        
-        wait(for: [saveExp], timeout: 1.0)
-        
+        expectSave(toCompleteWithResult: .completed,
+                   sut: saveSUT,
+                   itemsToSave: itemsToCache)
+
         let cachedItems = itemsToCache
-        let expectedLoadResut: SingleEvent<LocalPostsLoader.LoadResult> = .success(cachedItems)
-        let loadExp = expectation(description: "Wait for load")
-        loadSUT.load().subscribe { result in
-            XCTAssertTrue(result.isSameAs(expectedLoadResut),
-                          "Expected to load items, got \(result)")
-            
-            loadExp.fulfill()
-        }.disposed(by: disposeBag)
-        
-        wait(for: [loadExp], timeout: 1.0)
+        expectLoad(toCompleteWithResult: .success(cachedItems), sut: loadSUT)
     }
 
     // MARK: - Helpers
@@ -81,7 +58,38 @@ class PostsCacheIntegrationTests: XCTestCase {
         
         return sut
     }
-
+    
+    private func expectLoad(toCompleteWithResult expectedResult: SingleEvent<LocalPostsLoader.LoadResult>,
+                            sut: LocalPostsLoader,
+                            file: StaticString = #file,
+                            line: UInt = #line) {
+        let exp = expectation(description: "Wait for completion")
+        
+        sut.load().subscribe { result in
+            XCTAssertTrue(result.isSameAs(expectedResult),
+                          "expected \(expectedResult), got \(result)", file: file, line: line)
+            exp.fulfill()
+        }.disposed(by: disposeBag)
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
+    private func expectSave(toCompleteWithResult expectedResult: CompletableEvent,
+                            sut: LocalPostsLoader,
+                            itemsToSave: [PostItem],
+                            file: StaticString = #file,
+                            line: UInt = #line) {
+        let exp = expectation(description: "Wait for save")
+        sut.save(itemsToSave).subscribe { result in
+            XCTAssertTrue(result.isSameEventAs(expectedResult),
+                          "Expected to save items, got \(result)")
+            
+            exp.fulfill()
+        }.disposed(by: disposeBag)
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
     private func setEmptyCache() {
         deleteCached()
     }
