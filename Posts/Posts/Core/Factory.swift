@@ -39,8 +39,8 @@ public struct Factory: ServicesProvider {
     }
     
     private static var localRootURL: URL {
-        let rootURL = FileManager.default.urls(for: .applicationDirectory, in: .userDomainMask).first!.appendingPathComponent("PostsApp")
-        try? FileManager.default.createDirectory(at: rootURL,
+        let rootURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("PostsApp")
+        try! FileManager.default.createDirectory(at: rootURL,
                                             withIntermediateDirectories: true,
                                             attributes: nil)
         return rootURL
