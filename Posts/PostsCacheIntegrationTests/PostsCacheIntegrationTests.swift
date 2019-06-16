@@ -27,6 +27,18 @@ class PostsCacheIntegrationTests: XCTestCase {
         removeCachedItems()
     }
     
+    // MARK: - Helpers
+    
+    private func makeSUT() -> LocalPostsLoader {
+        let testURL = testStoreURL()
+        let fileSystemStore = FileSystemPostsStore(storeURL: testURL)
+        let sut = LocalPostsLoader(store: fileSystemStore)
+        trackForMemoryLeaks(fileSystemStore)
+        trackForMemoryLeaks(sut)
+        
+        return sut
+    }
+
     private func setEmptyCache() {
         deleteCached()
     }
