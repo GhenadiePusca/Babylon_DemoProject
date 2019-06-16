@@ -29,6 +29,7 @@
 		6C5C56B022B6341900582BB9 /* PostsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56AF22B6341900582BB9 /* PostsListViewController.swift */; };
 		6C5C56B322B6349100582BB9 /* AppCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56B222B6349100582BB9 /* AppCoordinatorTests.swift */; };
 		6C5C56B622B634D200582BB9 /* SynchronousNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56B522B634D200582BB9 /* SynchronousNavController.swift */; };
+		6C5C56B922B6365300582BB9 /* PostsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56B822B6365300582BB9 /* PostsListViewModel.swift */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
 		6C9313B522B03C7000387108 /* PostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B422B03C7000387108 /* PostItem.swift */; };
@@ -102,6 +103,7 @@
 		6C5C56AF22B6341900582BB9 /* PostsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsListViewController.swift; sourceTree = "<group>"; };
 		6C5C56B222B6349100582BB9 /* AppCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinatorTests.swift; sourceTree = "<group>"; };
 		6C5C56B522B634D200582BB9 /* SynchronousNavController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousNavController.swift; sourceTree = "<group>"; };
+		6C5C56B822B6365300582BB9 /* PostsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsListViewModel.swift; sourceTree = "<group>"; };
 		6C93137E22B039FC00387108 /* Posts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Posts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C93138122B039FC00387108 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C93139022B039FD00387108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 		6C5C56B122B6347C00582BB9 /* PostsUI */ = {
 			isa = PBXGroup;
 			children = (
+				6C5C56B722B6361200582BB9 /* PostsList */,
 				6C5C56B422B634C600582BB9 /* Helpers */,
 				6C5C56B222B6349100582BB9 /* AppCoordinatorTests.swift */,
 			);
@@ -234,6 +237,14 @@
 				6C5C56B522B634D200582BB9 /* SynchronousNavController.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		6C5C56B722B6361200582BB9 /* PostsList */ = {
+			isa = PBXGroup;
+			children = (
+				6C5C56B822B6365300582BB9 /* PostsListViewModel.swift */,
+			);
+			path = PostsList;
 			sourceTree = "<group>";
 		};
 		6C93137522B039FC00387108 = {
@@ -454,6 +465,7 @@
 				6C93139122B039FD00387108 /* Sources */,
 				6C93139222B039FD00387108 /* Frameworks */,
 				6C93139322B039FD00387108 /* Resources */,
+				DD9822CEB834AC49763DFDC6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -576,12 +588,14 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Posts/Pods-Posts-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -655,6 +669,30 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DD9822CEB834AC49763DFDC6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PostsTests/Pods-PostsTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/RxTest/RxTest.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxTest.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PostsTests/Pods-PostsTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -713,6 +751,7 @@
 				6CFBFD0A22B2D79700CC6E3B /* CachePostsUseCaseTests.swift in Sources */,
 				6C5C56B322B6349100582BB9 /* AppCoordinatorTests.swift in Sources */,
 				6C5C56B622B634D200582BB9 /* SynchronousNavController.swift in Sources */,
+				6C5C56B922B6365300582BB9 /* PostsListViewModel.swift in Sources */,
 				6CBF4FB222B3EE180056B55F /* ModelsFactory.swift in Sources */,
 				6C509D9522B41BCC00BC09AF /* LoadFromCacheUseCaseTests.swift in Sources */,
 				6CBF4FA822B2E3B20056B55F /* XCTestCase+MemoryLeakTracking.swift in Sources */,
