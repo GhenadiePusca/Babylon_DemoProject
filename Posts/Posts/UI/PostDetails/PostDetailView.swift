@@ -38,7 +38,7 @@ final class PostDetailView: UIView {
         stack.alignment = .leading
         stack.distribution = .fill
         
-        addSubviewAligned(stack)
+        addSubviewAligned(stack, horizontalSpacing: 8)
     }
     
     private func makeTitleLabel() -> UILabel {

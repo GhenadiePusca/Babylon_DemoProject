@@ -9,13 +9,14 @@
 import UIKit
 
 extension UIView {
-    func addSubviewAligned(_ subview: UIView) {
+    func addSubviewAligned(_ subview: UIView, horizontalSpacing: CGFloat = 0) {
+        subview.translatesAutoresizingMaskIntoConstraints = false
         addSubview(subview)
         if #available(iOS 11, *) {
             let guide = safeAreaLayoutGuide
             NSLayoutConstraint.activate([
-                subview.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-                subview.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
+                subview.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: horizontalSpacing),
+                subview.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: horizontalSpacing),
                 subview.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 1.0),
                 subview.bottomAnchor.constraint(equalTo: bottomAnchor)
                 ])

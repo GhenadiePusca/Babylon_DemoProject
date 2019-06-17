@@ -15,5 +15,19 @@ final class PostDetailsViewController: UIViewController {
         
         title = "Details"
         view.backgroundColor = .white
+        
+        let detailView = PostDetailView()
+        view.addSubview(detailView)
+        
+        detailView.translatesAutoresizingMaskIntoConstraints = false
+        
+        if #available(iOS 11, *) {
+            let guide = view.safeAreaLayoutGuide
+            NSLayoutConstraint.activate([
+                detailView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+                detailView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
+                detailView.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 1.0),
+                ])
+        }
     }
 }
