@@ -17,7 +17,8 @@ public struct Factory: ServicesProvider {
     
     public init() {
         postsDataRepo = PostsRepo(postsLoader: Factory.remotePostsLoaderWithCacheFallaback,
-                                  commentsLoader: Factory.remoteCommentsLoaderWithCacheFallaback)
+                                  commentsLoader: Factory.remoteCommentsLoaderWithCacheFallaback,
+                                  usersLoader: Factory.remoteUsersLoaderWithCacheFallaback)
     }
     
     // MARK: - Posts loader properties

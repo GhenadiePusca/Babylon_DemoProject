@@ -17,6 +17,7 @@ public protocol PostsDataProvider {
 public final class PostsRepo: PostsDataProvider {
     private let postsLoader: AnyItemsLoader<PostItem>
     private let commentsLoader: AnyItemsLoader<CommentItem>
+    private let usersLoader: AnyItemsLoader<UserItem>
 
     private let disposeBag = DisposeBag()
     
@@ -26,15 +27,17 @@ public final class PostsRepo: PostsDataProvider {
     private var loadedPostItems = [Int: PostItem]()
     
     public init(postsLoader: AnyItemsLoader<PostItem>,
-                commentsLoader: AnyItemsLoader<CommentItem>) {
+                commentsLoader: AnyItemsLoader<CommentItem>,
+                usersLoader: AnyItemsLoader<UserItem>) {
         self.postsLoader = postsLoader
         self.commentsLoader = commentsLoader
+        self.usersLoader = usersLoader
     }
     
     public func loadPosts() {
         postsLoaderSubject.onNext(.loading)
         postsLoader.load().subscribe(handlePostsResult).disposed(by: disposeBag)
-        commentsLoader.load().subscribe { result in
+        usersLoader.load().subscribe { result in
             switch result {
             case .success(let comments):
                 break
