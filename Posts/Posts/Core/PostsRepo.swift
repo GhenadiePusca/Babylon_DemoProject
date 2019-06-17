@@ -12,7 +12,7 @@ import RxSwift
 public protocol PostsDataProvider {
     var postItemsLoader: Observable<Loadable<[PostListItemModel]>> { get }
     func loadPosts()
-    func postDetailModel(postId: Int) -> PostDetailsModel
+    func postDetailModel(index: Int) -> PostDetailsModel
 }
 
 public struct PostDetailsModel {
@@ -58,15 +58,15 @@ public final class PostsRepo: PostsDataProvider {
         postsLoader.load().subscribe(handlePostsResult).disposed(by: disposeBag)
     }
     
-    public func postDetailModel(postId: Int) -> PostDetailsModel {
+    public func postDetailModel(index: Int) -> PostDetailsModel {
         guard let loadedData = try? postsLoaderSubject.value().loadedData,
-            let postItem = loadedData?.first(where: { $0.id == postId }) else {
+            let postItem = loadedData?[index] else {
             fatalError()
         }
         return PostDetailsModel(title: postItem.title,
                                 body: postItem.body,
-                                authorName: authorForPost(postId: postId).asObservable(),
-                                numberOfComments: numberOfComments(postId: postId).asObservable())
+                                authorName: authorForPost(postId: postItem.id).asObservable(),
+                                numberOfComments: numberOfComments(postId: postItem.id).asObservable())
     }
     
     private func loadUsers() {
@@ -81,7 +81,10 @@ public final class PostsRepo: PostsDataProvider {
 
     private func authorForPost(postId: Int) -> BehaviorSubject<Loadable<String>> {
         if try! usersLoaderSubject.value().shouldReload {
-            loadUsers()
+            usersLoaderSubject.onNext(.loading)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.loadUsers()
+            }
         }
 
         let authorName = BehaviorSubject<Loadable<String>>(value: .pending)

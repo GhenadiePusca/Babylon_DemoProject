@@ -9,14 +9,25 @@
 import UIKit
 
 final class PostDetailsViewController: UIViewController {
+
+    let viewModel: PostDetailViewModel
+    lazy var detailView = PostDetailView(viewModel: viewModel)
+
+    init(viewModel: PostDetailViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Details"
         view.backgroundColor = .white
-        
-        let detailView = PostDetailView()
+
         view.addSubview(detailView)
         
         detailView.translatesAutoresizingMaskIntoConstraints = false

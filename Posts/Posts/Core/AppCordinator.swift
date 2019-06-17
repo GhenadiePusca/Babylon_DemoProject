@@ -45,7 +45,9 @@ final public class AppCoordinator {
         guard let index = selectedIndex else {
             return
         }
-        navController.pushViewController(PostDetailsViewController(),
+        let dataModel = servicesProvider.postsDataRepo.postDetailModel(index: index.row)
+        let viewModel = PostDetailViewModel(model: dataModel)
+        navController.pushViewController(PostDetailsViewController(viewModel: viewModel),
                                          animated: true)
     }
 }
