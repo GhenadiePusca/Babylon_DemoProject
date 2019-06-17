@@ -14,10 +14,11 @@ public class FileSystemItemsStore<SavedItem, EncodedItem: Codable>: ItemsStore {
     
     public typealias SavedToEncodedMapper = ([SavedItem]) -> [EncodedItem]
     public typealias EcondedToSavedMapper = ([EncodedItem]) -> [SavedItem]
+
+    private lazy var sideEffectsScheduler = SerialDispatchQueueScheduler(internalSerialQueueName: "\(type(of: self))")
+
     private let savedToEncodedMapper: SavedToEncodedMapper
     private let econdedToSavedMapper: EcondedToSavedMapper
-    
-    private lazy var sideEffectsScheduler = SerialDispatchQueueScheduler.init(internalSerialQueueName: "\(type(of: self))")
     private let storeURL: URL
     
     public init(storeURL: URL,

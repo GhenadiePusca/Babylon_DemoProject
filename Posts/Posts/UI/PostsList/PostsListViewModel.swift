@@ -20,13 +20,17 @@ public final class PostsListViewModel {
     private let disposeBag = DisposeBag()
     
     let onItemSelection: BehaviorRelay<IndexPath?>
+    let onReload: BehaviorRelay<Bool>
     
     public init(dataLoader: Observable<Loadable<[PostListItemModel]>>,
-                onItemSelection: BehaviorRelay<IndexPath?>) {
+                onItemSelection: BehaviorRelay<IndexPath?>,
+                onReload: BehaviorRelay<Bool>) {
         postsModels = models.asDriver()
         isLoading = loading.asDriver()
         loadingFailed = loadingFail.asDriver()
+
         self.onItemSelection = onItemSelection
+        self.onReload = onReload
         
         bindToDataLoader(loader: dataLoader)
     }

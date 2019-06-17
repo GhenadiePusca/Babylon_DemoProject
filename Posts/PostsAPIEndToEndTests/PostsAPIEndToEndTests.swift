@@ -16,7 +16,8 @@ class PostsAPIEndToEndTests: XCTestCase {
         let testURL = URL(string: "https://poststestapi.free.beeceptor.com/")!
         
         let client = URLSessionHTTPClient()
-        let loader = RemotePostsLoader(url: testURL, client: client,
+        let loader = RemotePostsLoader(url: testURL,
+                                       client: client,
                                        mapper: Mapper.remotePostsToPost)
         trackForMemoryLeaks(client)
         trackForMemoryLeaks(loader)

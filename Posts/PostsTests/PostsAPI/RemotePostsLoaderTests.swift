@@ -92,12 +92,14 @@ class RemotePostsLoaderTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func makeSUT(url: URL = URL(string: "https://some-url.com")!) -> (sut: RemotePostsLoader<PostItem, RemotePostItem>, client: HTTPClientMock) {
+    private func makeSUT(url: URL = URL(string: "https://some-url.com")!,
+                         file: StaticString = #file,
+                         line: UInt = #line) -> (sut: RemotePostsLoader<PostItem, RemotePostItem>, client: HTTPClientMock) {
         let client = HTTPClientMock()
         let sut = RemotePostsLoader(url: url,
                                     client: client,
                                     mapper: Mapper.remotePostsToPost)
-        
+        trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, client)
     }
 

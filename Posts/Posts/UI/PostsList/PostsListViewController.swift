@@ -41,37 +41,37 @@ final public class PostsListViewController: UIViewController {
     }
     
     private func bindToViewModel() {
-//        postsTableView.rx.itemSelected.asDriver().drive(viewModel.onItemSelection)
-        
         postsTableView.rx.itemSelected.asDriver().drive(viewModel.onItemSelection).disposed(by: disposeBag)
 
         viewModel.postsModels
             .drive(postsTableView.rx.items(cellIdentifier: PostListItemTableViewCell.reuseIdentifier,
                                            cellType: PostListItemTableViewCell.self)) { _, vm, cell in
                 cell.update(viewModel: vm)
-            }
-            .disposed(by: disposeBag)
+            }.disposed(by: disposeBag)
         
-        viewModel.isLoading.distinctUntilChanged().drive(onNext: { isLoading in
-            isLoading ? self.setActivityIndicator() : self.removeActivityIndicator()
-        }).disposed(by: disposeBag)
-        
-        viewModel.loadingFailed.distinctUntilChanged().drive(onNext: { failed in
-            if failed {
-                self.setErrorState()
-            }
-        }).disposed(by: disposeBag)
+        viewModel.isLoading.distinctUntilChanged().drive(onNext: handleLoadingStatus).disposed(by: disposeBag)
+        viewModel.loadingFailed.distinctUntilChanged().drive(onNext: handleLoadFail).disposed(by: disposeBag)
     }
     
+    private func handleLoadingStatus(isLoading: Bool) {
+        isLoading ? self.setActivityIndicator() : self.removeActivityIndicator()
+    }
+    
+    private func handleLoadFail(failed: Bool) {
+        if failed {
+            setErrorState()
+        }
+    }
+
     private func setErrorState() {
         postsTableView.isHidden = true
         
         let errorStateView = ErrorStateView()
-        errorStateView.onActionTriggered = { [weak self] in
-//            self?.viewModel.onReload?()
-            errorStateView.removeFromSuperview()
-            self?.postsTableView.isHidden = false
-        }
+        errorStateView.reloadButton.rx.tap
+            .asDriver().do(onNext: {
+                errorStateView.removeFromSuperview()
+                self.postsTableView.isHidden = false
+            }).map { true }.drive(viewModel.onReload).disposed(by: disposeBag)
         
         errorStateView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviewAligned(errorStateView)

@@ -41,7 +41,7 @@ final public class RemotePostsLoader<Item, RemoteItem: Decodable>: ItemsLoader {
         guard result.response.statusCode == OK_HTTTP_RESPONSE,
             let resultContainer = try? JSONDecoder().decode(FailableDecodableArray<Item>.self,
                                                             from: result.data) else {
-                                                                throw RemotePostsLoaderError.invalidData
+                        throw RemotePostsLoaderError.invalidData
         }
         
         return resultContainer.elements

@@ -63,14 +63,15 @@ class RemotePostsLoaderWithLocalFallbackTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
-    private func makeSUT() -> (sut: AnyItemsLoader<PostItem>,
+    private func makeSUT(file: StaticString = #file,
+                         line: UInt = #line) -> (sut: AnyItemsLoader<PostItem>,
                                remote: RemotePostsLoaderMock,
                                local: LocalPostsLoaderMock) {
             let remoteLoader = RemotePostsLoaderMock()
             let localLoader = LocalPostsLoaderMock()
             let sut = RemotePostsLoaderWithLocalFallback(remoteLoader: AnyItemsLoader(remoteLoader),
                                                          localPostsLoader: AnyItemsStorageManager(localLoader))
-            trackForMemoryLeaks(sut)
+            trackForMemoryLeaks(sut, file: file, line: line)
             return (AnyItemsLoader(sut), remoteLoader, localLoader)
     }
     

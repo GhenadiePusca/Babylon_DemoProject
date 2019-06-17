@@ -26,7 +26,7 @@ final public class AppCoordinator {
     }
     
     public func start() {
-        servicesProvider.postsDataRepo.loadPosts()
+        servicesProvider.postsDataRepo.reloadBehavior.accept(true)
         navController.setViewControllers([postsListViewController()], animated: true)
     }
     
@@ -37,17 +37,18 @@ final public class AppCoordinator {
     
     private func postListViewModel() -> PostsListViewModel {
         let viewModel = PostsListViewModel(dataLoader: servicesProvider.postsDataRepo.postItemsLoader,
-                                           onItemSelection: onPostSelection)
+                                           onItemSelection: onPostSelection,
+                                           onReload: servicesProvider.postsDataRepo.reloadBehavior)
         return viewModel
     }
     
-    private func navigateToPostDetails(selectedIndex: IndexPath?) {
-        guard let index = selectedIndex else {
+    private lazy var navigateToPostDetails: (IndexPath?) -> Void = { [weak self] indexPath in
+        guard let self = self, let indexPath = indexPath else {
             return
         }
-        let dataModel = servicesProvider.postsDataRepo.postDetailModel(index: index.row)
+        let dataModel = self.servicesProvider.postsDataRepo.postDetailModel(index: indexPath.row)
         let viewModel = PostDetailViewModel(model: dataModel)
-        navController.pushViewController(PostDetailsViewController(viewModel: viewModel),
-                                         animated: true)
+        self.navController.pushViewController(PostDetailsViewController(viewModel: viewModel),
+                                              animated: true)
     }
 }

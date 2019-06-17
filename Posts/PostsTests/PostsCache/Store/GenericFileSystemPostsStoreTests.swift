@@ -177,7 +177,7 @@ class GenericFileSystemPostsStoreTests: XCTestCase, PostsStoreSpecs {
         let sut = FileSystemItemsStore<LocalPostItem, CodablePostItem>(storeURL: storeURL ?? testStoreURL(),
                                                                savedToEncodedMapper: Mapper.localPostsEncodable,
                                                                econdedToSavedMapper: Mapper.encodableToLocal)
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(sut, file: file, line: line)
         return AnyItemsStore(sut)
     }
     

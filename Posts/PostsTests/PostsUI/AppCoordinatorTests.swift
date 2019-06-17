@@ -8,6 +8,7 @@
 
 import XCTest
 import RxSwift
+import RxCocoa
 import Posts
 
 class AppCoordinatorTests: XCTestCase {
@@ -23,11 +24,12 @@ class AppCoordinatorTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT() -> (sut: AppCoordinator, nav: UINavigationController) {
+    private func makeSUT(file: StaticString = #file,
+                         line: UInt = #line) -> (sut: AppCoordinator, nav: UINavigationController) {
         let nav = SynchronousNavController()
         let sut = AppCoordinator(navController: nav,
                                  servicesProvider: ServicesProviderMock())
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(sut, file: file, line: line)
         
         return (sut, nav)
     }
@@ -37,7 +39,9 @@ class AppCoordinatorTests: XCTestCase {
     }
     
     private class PostsDataProviderMock: PostsDataProvider {
-        func postDetailModel(postId: Int) -> PostDetailsModel {
+        var reloadBehavior = BehaviorRelay<Bool>(value: false)
+        
+        func postDetailModel(index postId: Int) -> PostDetailsModel {
             return PostDetailsModel(title: "",
                                     body: "",
                                     authorName: .just(.pending),

@@ -19,7 +19,8 @@ public final class URLSessionHTTPClient: HTTPClient {
     private struct UnexpectedValueRepresentation: Error {}
 
     public func get(fromURL url: URL) -> Single<GetResult> {
-        return .create(subscribe: { single in
+        return .create(subscribe: { [weak self] single in
+            guard let self = self else { return Disposables.create() }
             self.session.dataTask(with: url, completionHandler: { (data, response, error) in
                 if let error = error {
                     single(.error(error))

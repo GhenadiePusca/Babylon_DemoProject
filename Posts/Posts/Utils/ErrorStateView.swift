@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import RxCocoa
 
 final class ErrorStateView: UIView {
     
     // MARK: - Action handler
     
-    var onActionTriggered: () -> () = { }
+    lazy var reloadButton: UIButton = makeButton()
     
     // MARK: - Initialisation
     init() {
@@ -27,23 +28,22 @@ final class ErrorStateView: UIView {
     // MARK: - Layout
     
     private func setupLayout() {
-        let button = makeButton()
         let messageLabel = makeMessageLabel()
         
-        addSubview(button)
+        addSubview(reloadButton)
         addSubview(messageLabel)
         
-        button.translatesAutoresizingMaskIntoConstraints = false
+        reloadButton.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            button.centerXAnchor.constraint(equalTo: centerXAnchor),
-            button.centerYAnchor.constraint(equalTo: centerYAnchor),
-            button.heightAnchor.constraint(equalToConstant: 50),
-            button.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.7),
+            reloadButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            reloadButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            reloadButton.heightAnchor.constraint(equalToConstant: 50),
+            reloadButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.7),
             messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            messageLabel.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -16)
+            messageLabel.bottomAnchor.constraint(equalTo: reloadButton.topAnchor, constant: -16)
             ])
     }
     
@@ -63,15 +63,9 @@ final class ErrorStateView: UIView {
         button.setTitle("Try again", for: .normal)
         button.backgroundColor = .purple
         button.setTitleColor(.white, for: .normal)
-        button.addTarget(self, action: #selector(actionTriggered), for: .touchUpInside)
         button.layer.cornerRadius = 5
         
         return button
-    }
-    
-    // MARK: - Action
-    @objc private func actionTriggered() {
-        onActionTriggered()
     }
 }
 

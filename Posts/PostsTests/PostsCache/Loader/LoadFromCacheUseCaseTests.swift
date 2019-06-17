@@ -86,13 +86,14 @@ class LoadFromCacheUseCaseTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func makeSUT() -> (sut: AnyItemsStorageManager<PostItem>, store: PostsStoreSpy<LocalPostItem>) {
+    private func makeSUT(file: StaticString = #file,
+                         line: UInt = #line) -> (sut: AnyItemsStorageManager<PostItem>, store: PostsStoreSpy<LocalPostItem>) {
         let store = PostsStoreSpy<LocalPostItem>()
         let sut = LocalItemsLoader<PostItem, LocalPostItem>.init(store: AnyItemsStore(store),
                                                                      localToItemMapper: Mapper.localPostsToPost,
                                                                      itemToLocalMapper: Mapper.postToLocalPosts)
-        trackForMemoryLeaks(store)
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(store, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
         return (AnyItemsStorageManager(sut), store)
     }
     

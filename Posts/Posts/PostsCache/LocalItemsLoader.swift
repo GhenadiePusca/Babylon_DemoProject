@@ -12,14 +12,17 @@ import RxSwift
 public class LocalItemsLoader<Item, LocalItem>: ItemsLoader, ItemsStorageManager {
     private let disposeBag = DisposeBag()
     
+    public typealias LocalToItemMapper = ([LocalItem]) -> [Item]
+    public typealias ItemToLocalMapper = ([Item]) -> [LocalItem]
     public typealias ItemType = Item
+
     private let store: AnyItemsStore<LocalItem>
-    private let localToItemMapper: ([LocalItem]) -> [Item]
-    private let itemToLocalMapper: ([Item]) -> [LocalItem]
+    private let localToItemMapper: LocalToItemMapper
+    private let itemToLocalMapper: ItemToLocalMapper
     
     public init(store: AnyItemsStore<LocalItem>,
-                localToItemMapper: @escaping ([LocalItem]) -> [Item],
-                itemToLocalMapper: @escaping ([Item]) -> [LocalItem]) {
+                localToItemMapper: @escaping LocalToItemMapper,
+                itemToLocalMapper: @escaping ItemToLocalMapper) {
         self.store = store
         self.localToItemMapper = localToItemMapper
         self.itemToLocalMapper = itemToLocalMapper

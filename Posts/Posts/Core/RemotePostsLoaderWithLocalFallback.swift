@@ -35,6 +35,7 @@ public final class RemotePostsLoaderWithLocalFallback<Item>: ItemsLoader {
     private func validateCachedItems(items: [Item]) -> Single<[Item]> {
         return .create { single in
             if items.isEmpty {
+                // Just a generic error
                 single(.error(NSError(domain: "Failed to load data", code: 1)))
             } else {
                 single(.success(items))

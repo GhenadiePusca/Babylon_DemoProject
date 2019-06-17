@@ -73,8 +73,8 @@ class PostsCacheIntegrationTests: XCTestCase {
         let sut = LocalItemsLoader(store: AnyItemsStore(store),
                                        localToItemMapper: Mapper.localPostsToPost,
                                        itemToLocalMapper: Mapper.postToLocalPosts)
-        trackForMemoryLeaks(store)
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(store, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
         return AnyItemsStorageManager(sut)
     }
     

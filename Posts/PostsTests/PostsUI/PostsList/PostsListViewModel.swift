@@ -82,7 +82,11 @@ class PostsListViewModelTests: XCTestCase {
     private func makeSUT(dataLoader: Observable<Loadable<[PostListItemModel]>>,
                          file: StaticString = #file,
                          line: UInt = #line) -> PostsListViewModel {
-        let sut = PostsListViewModel(dataLoader: dataLoader)
+        let onSelection = BehaviorRelay<IndexPath?>(value: nil)
+        let onReload = BehaviorRelay<Bool>(value: false)
+        let sut = PostsListViewModel(dataLoader: dataLoader,
+                                     onItemSelection: onSelection,
+                                     onReload: onReload)
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
     }

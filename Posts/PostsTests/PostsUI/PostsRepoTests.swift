@@ -69,7 +69,7 @@ class PostsRepoTests: XCTestCase {
         }.disposed(by: disposeBag)
         wait(for: [exp], timeout: 1.0)
         
-        let appDetail = sut.postDetailModel(postId: testPostItem.id)
+        let appDetail = sut.postDetailModel(index: 0)
         XCTAssertEqual(appDetail.title, testPostItem.title)
         XCTAssertEqual(appDetail.body, testPostItem.body)
     }
@@ -95,7 +95,7 @@ class PostsRepoTests: XCTestCase {
     
         wait(for: [exp], timeout: 1.0)
         
-        let appDetail = sut.postDetailModel(postId: testPostItem.id)
+        let appDetail = sut.postDetailModel(index: 0)
         
         let authorExp = expectation(description: "get author")
         appDetail.authorName.subscribe(onNext: { nameLoadable in

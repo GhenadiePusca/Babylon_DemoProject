@@ -8,31 +8,10 @@
 
 import Foundation
 import RxSwift
-
-public protocol PostsDataProvider {
-    var postItemsLoader: Observable<Loadable<[PostListItemModel]>> { get }
-    func loadPosts()
-    func postDetailModel(index: Int) -> PostDetailsModel
-}
-
-public struct PostDetailsModel {
-    public let title: String
-    public let body: String
-    public let authorName: Observable<Loadable<String>>
-    public let numberOfComments: Observable<Loadable<Int>>
-    
-    public init(title: String,
-                body: String,
-                authorName: Observable<Loadable<String>>,
-                numberOfComments: Observable<Loadable<Int>>) {
-        self.title = title
-        self.body = body
-        self.authorName = authorName
-        self.numberOfComments = numberOfComments
-    }
-}
+import RxCocoa
 
 public final class PostsRepo: PostsDataProvider {
+    
     private let postsLoader: AnyItemsLoader<PostItem>
     private let commentsLoader: AnyItemsLoader<CommentItem>
     private let usersLoader: AnyItemsLoader<UserItem>
@@ -44,6 +23,7 @@ public final class PostsRepo: PostsDataProvider {
     private let commentsLoaderSubject = BehaviorSubject<Loadable<[CommentItem]>>(value: .pending)
 
     public lazy var postItemsLoader = postsLoaderSubject.map { $0.transform { items in items.toPostListItems } }.asObservable()
+    public let reloadBehavior = BehaviorRelay<Bool>(value: false)
     
     public init(postsLoader: AnyItemsLoader<PostItem>,
                 commentsLoader: AnyItemsLoader<CommentItem>,
@@ -51,6 +31,10 @@ public final class PostsRepo: PostsDataProvider {
         self.postsLoader = postsLoader
         self.commentsLoader = commentsLoader
         self.usersLoader = usersLoader
+        
+        reloadBehavior.filter { $0 == true }.subscribe(onNext: { [weak self] _ in
+            self?.loadPosts()
+        }).disposed(by: disposeBag)
     }
     
     public func loadPosts() {
@@ -80,11 +64,8 @@ public final class PostsRepo: PostsDataProvider {
     }
 
     private func authorForPost(postId: Int) -> BehaviorSubject<Loadable<String>> {
-        if try! usersLoaderSubject.value().shouldReload {
-            usersLoaderSubject.onNext(.loading)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                self.loadUsers()
-            }
+        if (try? usersLoaderSubject.value().shouldReload) == true {
+            self.loadUsers()
         }
 
         let authorName = BehaviorSubject<Loadable<String>>(value: .pending)
@@ -101,9 +82,10 @@ public final class PostsRepo: PostsDataProvider {
     }
     
     private func numberOfComments(postId: Int) -> BehaviorSubject<Loadable<Int>> {
-        if try! commentsLoaderSubject.value().shouldReload {
+        if (try? commentsLoaderSubject.value().shouldReload) == true {
             loadComments()
         }
+    
         let numberOfComments = BehaviorSubject<Loadable<Int>>(value: .pending)
         
         commentsLoaderSubject.map { commentsLoadable in
@@ -117,30 +99,33 @@ public final class PostsRepo: PostsDataProvider {
         return numberOfComments
     }
     
-    private func handleUsersResult(result: SingleEvent<[UserItem]>) {
+    private lazy var handleUsersResult: (SingleEvent<[UserItem]>) -> Void = { [weak self] result in
+        guard let self = self else { return }
         switch result {
         case .success(let items):
             self.usersLoaderSubject.onNext(.loaded(items))
         default:
-            self.usersLoaderSubject.onNext(.failed(NSError(domain: "failed to loadd", code: 1)))
+            self.usersLoaderSubject.onNext(.failed(NSError(domain: "failed to load", code: 1)))
         }
     }
     
-    private func handleCommentsResult(result: SingleEvent<[CommentItem]>) {
+    private lazy var handleCommentsResult: (SingleEvent<[CommentItem]>) -> Void = { [weak self] result in
+        guard let self = self else { return }
         switch result {
         case .success(let items):
             self.commentsLoaderSubject.onNext(.loaded(items))
         default:
-            self.commentsLoaderSubject.onNext(.failed(NSError(domain: "failed to loadd", code: 1)))
+            self.commentsLoaderSubject.onNext(.failed(NSError(domain: "failed to load", code: 1)))
         }
     }
 
-    private func handlePostsResult(result: SingleEvent<[PostItem]>) {
+    private lazy var  handlePostsResult: (SingleEvent<[PostItem]>) -> Void = { [weak self] result in
+        guard let self = self else { return }
         switch result {
         case .success(let items):
             self.postsLoaderSubject.onNext(.loaded(items))
         default:
-            self.postsLoaderSubject.onNext(.failed(NSError(domain: "failed to loadd", code: 1)))
+            self.postsLoaderSubject.onNext(.failed(NSError(domain: "failed to load", code: 1)))
         }
     }
 }

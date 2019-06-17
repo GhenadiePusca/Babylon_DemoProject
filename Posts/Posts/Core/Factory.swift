@@ -6,10 +6,17 @@
 //  Copyright © 2019 Pusca Ghenadie. All rights reserved.
 //
 
-import Foundation
+import RxSwift
+import RxCocoa
 
 public protocol ServicesProvider {
     var postsDataRepo: PostsDataProvider { get }
+}
+
+public protocol PostsDataProvider {
+    var postItemsLoader: Observable<Loadable<[PostListItemModel]>> { get }
+    var reloadBehavior: BehaviorRelay<Bool> { get }
+    func postDetailModel(index: Int) -> PostDetailsModel
 }
 
 public struct Factory: ServicesProvider {

@@ -63,6 +63,7 @@
 		6C66EBBD22B7E60D00FE8331 /* PostDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBBC22B7E60D00FE8331 /* PostDetailsViewController.swift */; };
 		6C66EBBF22B7EEE600FE8331 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBBE22B7EEE600FE8331 /* PostDetailView.swift */; };
 		6C66EBC122B7F16C00FE8331 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBC022B7F16C00FE8331 /* PostDetailViewModel.swift */; };
+		6C66EBC322B8054800FE8331 /* PostDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBC222B8054800FE8331 /* PostDetailModel.swift */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
 		6C9313B522B03C7000387108 /* PostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B422B03C7000387108 /* PostItem.swift */; };
@@ -179,6 +180,7 @@
 		6C66EBBC22B7E60D00FE8331 /* PostDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsViewController.swift; sourceTree = "<group>"; };
 		6C66EBBE22B7EEE600FE8331 /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
 		6C66EBC022B7F16C00FE8331 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
+		6C66EBC222B8054800FE8331 /* PostDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailModel.swift; sourceTree = "<group>"; };
 		6C93137E22B039FC00387108 /* Posts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Posts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C93138122B039FC00387108 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C93139022B039FD00387108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 				6C66EBBC22B7E60D00FE8331 /* PostDetailsViewController.swift */,
 				6C66EBBE22B7EEE600FE8331 /* PostDetailView.swift */,
 				6C66EBC022B7F16C00FE8331 /* PostDetailViewModel.swift */,
+				6C66EBC222B8054800FE8331 /* PostDetailModel.swift */,
 			);
 			path = PostDetails;
 			sourceTree = "<group>";
@@ -483,7 +486,7 @@
 				6C5C56AB22B6334900582BB9 /* UI */,
 				6CBF4FA922B2E5DE0056B55F /* PostsCache */,
 				C4E3701922B3977E002A33E3 /* PostsAPI */,
-				6CFBFD0822B21B4400CC6E3B /* PostsFeature */,
+				6CFBFD0822B21B4400CC6E3B /* PostsDomain */,
 				6CFBFD0122B216AC00CC6E3B /* Utils */,
 				6C1C4DB922B40B1700B63203 /* Main */,
 				6C93139022B039FD00387108 /* Info.plist */,
@@ -557,14 +560,14 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		6CFBFD0822B21B4400CC6E3B /* PostsFeature */ = {
+		6CFBFD0822B21B4400CC6E3B /* PostsDomain */ = {
 			isa = PBXGroup;
 			children = (
 				6C9313B422B03C7000387108 /* PostItem.swift */,
 				6C66EBAB22B77D7500FE8331 /* CommentItem.swift */,
 				6C66EBB322B786BC00FE8331 /* UserItem.swift */,
 			);
-			path = PostsFeature;
+			path = PostsDomain;
 			sourceTree = "<group>";
 		};
 		73D5D67CCE1A06827C8CAA61 /* Frameworks */ = {
@@ -1017,6 +1020,7 @@
 				6C66EBAF22B77E8300FE8331 /* LocalCommentItem.swift in Sources */,
 				6C5C56C522B6594500582BB9 /* UIViewController+Loading.swift in Sources */,
 				6C66EBBA22B78A2300FE8331 /* CodableUserItem.swift in Sources */,
+				6C66EBC322B8054800FE8331 /* PostDetailModel.swift in Sources */,
 				6C5C56C322B654E900582BB9 /* PostListItemTableViewCell.swift in Sources */,
 				6C9313BB22B0419200387108 /* RemotePostsLoader.swift in Sources */,
 				6C9313BD22B041BF00387108 /* HTTPClient.swift in Sources */,
