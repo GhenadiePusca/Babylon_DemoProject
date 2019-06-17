@@ -39,14 +39,14 @@ public struct Factory: ServicesProvider {
     private static var remoteCommentsLoaderWithCacheFallaback: AnyItemsLoader<CommentItem> { return AnyItemsLoader(RemotePostsLoaderWithLocalFallback(remoteLoader: remoteCommentsLoader,
                                                                                                                                                       localPostsLoader: localCommentsLoader)) }
     
-    private static var remoteCommentsLoader: AnyItemsLoader<CommentItem> { return AnyItemsLoader(RemotePostsLoader(url: remotePostsURL,
+    private static var remoteCommentsLoader: AnyItemsLoader<CommentItem> { return AnyItemsLoader(RemotePostsLoader(url: remoteCommentsURL,
                                                                                                                    client: urlSessionHttpClient,
                                                                                                                    mapper: Mapper.remoteCommentsToComments)) }
     private static var localCommentsLoader: AnyItemsStorageManager<CommentItem> { return AnyItemsStorageManager(LocalItemsLoader(store: fileSystemCommentsStore,
                                                                                                                                  localToItemMapper: Mapper.localCommentsToComments,
                                                                                                                                  itemToLocalMapper: Mapper.commentsToLocalComments)) }
     
-    private static var fileSystemCommentsStore: AnyItemsStore<LocalCommentItem> { return AnyItemsStore(FileSystemItemsStore(storeURL: localPostsURL,
+    private static var fileSystemCommentsStore: AnyItemsStore<LocalCommentItem> { return AnyItemsStore(FileSystemItemsStore(storeURL: localCommentsURL,
                                                                                                                             savedToEncodedMapper: Mapper.localCommentsToEncodable,
                                                                                                                             econdedToSavedMapper: Mapper.encodableCommentsToLocalComments))}
     

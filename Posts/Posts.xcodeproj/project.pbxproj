@@ -56,6 +56,10 @@
 		6C66EBAC22B77D7500FE8331 /* CommentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBAB22B77D7500FE8331 /* CommentItem.swift */; };
 		6C66EBAF22B77E8300FE8331 /* LocalCommentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBAE22B77E8300FE8331 /* LocalCommentItem.swift */; };
 		6C66EBB222B77F0A00FE8331 /* CodableCommentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBB122B77F0A00FE8331 /* CodableCommentItem.swift */; };
+		6C66EBB422B786BC00FE8331 /* UserItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBB322B786BC00FE8331 /* UserItem.swift */; };
+		6C66EBB622B7893F00FE8331 /* RemoteUserItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBB522B7893F00FE8331 /* RemoteUserItem.swift */; };
+		6C66EBB822B789CB00FE8331 /* LocalUserItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBB722B789CB00FE8331 /* LocalUserItem.swift */; };
+		6C66EBBA22B78A2300FE8331 /* CodableUserItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBB922B78A2300FE8331 /* CodableUserItem.swift */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
 		6C9313B522B03C7000387108 /* PostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B422B03C7000387108 /* PostItem.swift */; };
@@ -165,6 +169,10 @@
 		6C66EBAB22B77D7500FE8331 /* CommentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentItem.swift; sourceTree = "<group>"; };
 		6C66EBAE22B77E8300FE8331 /* LocalCommentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCommentItem.swift; sourceTree = "<group>"; };
 		6C66EBB122B77F0A00FE8331 /* CodableCommentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableCommentItem.swift; sourceTree = "<group>"; };
+		6C66EBB322B786BC00FE8331 /* UserItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserItem.swift; sourceTree = "<group>"; };
+		6C66EBB522B7893F00FE8331 /* RemoteUserItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUserItem.swift; sourceTree = "<group>"; };
+		6C66EBB722B789CB00FE8331 /* LocalUserItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalUserItem.swift; sourceTree = "<group>"; };
+		6C66EBB922B78A2300FE8331 /* CodableUserItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableUserItem.swift; sourceTree = "<group>"; };
 		6C93137E22B039FC00387108 /* Posts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Posts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C93138122B039FC00387108 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C93139022B039FD00387108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -400,6 +408,7 @@
 			children = (
 				6C509D9222B41ADF00BC09AF /* RemotePostItem.swift */,
 				6C66EBA922B77D1D00FE8331 /* RemoteCommentItem.swift */,
+				6C66EBB522B7893F00FE8331 /* RemoteUserItem.swift */,
 			);
 			path = RemoteItems;
 			sourceTree = "<group>";
@@ -409,6 +418,7 @@
 			children = (
 				6C509D9022B4190100BC09AF /* LocalPostItem.swift */,
 				6C66EBAE22B77E8300FE8331 /* LocalCommentItem.swift */,
+				6C66EBB722B789CB00FE8331 /* LocalUserItem.swift */,
 			);
 			path = LocalModels;
 			sourceTree = "<group>";
@@ -418,6 +428,7 @@
 			children = (
 				6C66EB9D22B767F000FE8331 /* CodablePostItem.swift */,
 				6C66EBB122B77F0A00FE8331 /* CodableCommentItem.swift */,
+				6C66EBB922B78A2300FE8331 /* CodableUserItem.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -534,6 +545,7 @@
 			children = (
 				6C9313B422B03C7000387108 /* PostItem.swift */,
 				6C66EBAB22B77D7500FE8331 /* CommentItem.swift */,
+				6C66EBB322B786BC00FE8331 /* UserItem.swift */,
 			);
 			path = PostsFeature;
 			sourceTree = "<group>";
@@ -965,6 +977,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C66EBAA22B77D1D00FE8331 /* RemoteCommentItem.swift in Sources */,
+				6C66EBB822B789CB00FE8331 /* LocalUserItem.swift in Sources */,
 				6C66EB9222B6C35700FE8331 /* LocalItemsLoader.swift in Sources */,
 				C4E3701B22B397E6002A33E3 /* URLSessionHTTPClient.swift in Sources */,
 				6C5C56AD22B6335B00582BB9 /* AppCordinator.swift in Sources */,
@@ -975,6 +988,7 @@
 				6CFBFD0522B2172D00CC6E3B /* FailableDecodableArray.swift in Sources */,
 				6C5C56C122B651B700582BB9 /* PostsListViewModel.swift in Sources */,
 				6C5C56D522B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift in Sources */,
+				6C66EBB622B7893F00FE8331 /* RemoteUserItem.swift in Sources */,
 				6C66EBB222B77F0A00FE8331 /* CodableCommentItem.swift in Sources */,
 				6C5C56C922B65AC400582BB9 /* UIView+Constraints.swift in Sources */,
 				6C5C56BD22B6517000582BB9 /* PostListItemModel.swift in Sources */,
@@ -982,11 +996,13 @@
 				6C509D9322B41ADF00BC09AF /* RemotePostItem.swift in Sources */,
 				6C66EBAF22B77E8300FE8331 /* LocalCommentItem.swift in Sources */,
 				6C5C56C522B6594500582BB9 /* UIViewController+Loading.swift in Sources */,
+				6C66EBBA22B78A2300FE8331 /* CodableUserItem.swift in Sources */,
 				6C5C56C322B654E900582BB9 /* PostListItemTableViewCell.swift in Sources */,
 				6C9313BB22B0419200387108 /* RemotePostsLoader.swift in Sources */,
 				6C9313BD22B041BF00387108 /* HTTPClient.swift in Sources */,
 				6C9313B522B03C7000387108 /* PostItem.swift in Sources */,
 				6C5C56BB22B6515800582BB9 /* Loadable.swift in Sources */,
+				6C66EBB422B786BC00FE8331 /* UserItem.swift in Sources */,
 				6CFBFD0322B216D600CC6E3B /* FailableDecodable.swift in Sources */,
 				6C66EBAC22B77D7500FE8331 /* CommentItem.swift in Sources */,
 				6C9313B322B03A3900387108 /* main.swift in Sources */,

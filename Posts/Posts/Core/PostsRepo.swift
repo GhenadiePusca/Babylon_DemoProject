@@ -34,6 +34,14 @@ public final class PostsRepo: PostsDataProvider {
     public func loadPosts() {
         postsLoaderSubject.onNext(.loading)
         postsLoader.load().subscribe(handlePostsResult).disposed(by: disposeBag)
+        commentsLoader.load().subscribe { result in
+            switch result {
+            case .success(let comments):
+                break
+            case .error(let err):
+                break
+            }
+        }
     }
     
     private func handlePostsResult(result: SingleEvent<[PostItem]>) {
