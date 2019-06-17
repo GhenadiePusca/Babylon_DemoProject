@@ -15,7 +15,7 @@ public protocol PostsDataProvider {
 }
 
 public final class PostsRepo: PostsDataProvider {
-    private let postsLoader: PostsLoader
+    private let postsLoader: AnyItemsLoader<PostItem>
     private let disposeBag = DisposeBag()
     
     private let postsLoaderSubject = BehaviorSubject<Loadable<[PostListItemModel]>>(value: .pending)
@@ -23,7 +23,7 @@ public final class PostsRepo: PostsDataProvider {
 
     private var loadedPostItems = [Int: PostItem]()
     
-    public init(postsLoader: PostsLoader) {
+    public init(postsLoader: AnyItemsLoader<PostItem>) {
         self.postsLoader = postsLoader
     }
     

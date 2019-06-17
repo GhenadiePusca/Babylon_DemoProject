@@ -8,9 +8,9 @@
 
 import Foundation
 
-internal struct RemotePostItem: Decodable {
-    internal let id: Int
-    internal let userId: Int
-    internal let title: String
-    internal let body: String
+public struct RemotePostItem: Decodable {
+    public let id: Int
+    public let userId: Int
+    public let title: String
+    public let body: String
 }

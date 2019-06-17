@@ -20,15 +20,20 @@ public struct Factory: ServicesProvider {
     }
     
     // MARK: - Factory properties
-    private static var remoteLoaderWithCacheFallaback: RemotePostsLoaderWithLocalFallback { return RemotePostsLoaderWithLocalFallback(remoteLoader: remotePostsLoader,
-                                                                                    localPostsLoader: localPostsLoader) }
+    private static var remoteLoaderWithCacheFallaback: AnyItemsLoader<PostItem> { return AnyItemsLoader(RemotePostsLoaderWithLocalFallback(remoteLoader: remotePostsLoader,
+                                                                                    localPostsLoader: localPostsLoader)) }
     
-    private static var remotePostsLoader: PostsLoader { return RemotePostsLoader(url: remotePostsURL,
-                                                      client: urlSessionHttpClient) }
-    private static var localPostsLoader: PostsLoader & PostsPersister { return LocalPostsLoader(store: fileSystemPostsStore) }
+    private static var remotePostsLoader: AnyItemsLoader<PostItem> { return AnyItemsLoader(RemotePostsLoader(url: remotePostsURL,
+                                                                                                             client: urlSessionHttpClient,
+                                                                                                             mapper: Mapper.remotePostsToPost)) }
+    private static var localPostsLoader: AnyItemsStorageManager<PostItem> { return AnyItemsStorageManager(LocalItemsLoader(store: fileSystemPostsStore,
+                                                                                                         localToItemMapper: Mapper.localPostsToPost,
+                                                                                                         itemToLocalMapper: Mapper.postToLocalPosts)) }
 
     private static var urlSessionHttpClient: HTTPClient { return URLSessionHTTPClient() }
-    private static var fileSystemPostsStore: PostsStore { return FileSystemPostsStore(storeURL: localPostsURL) }
+    private static var fileSystemPostsStore: AnyItemsStore<LocalPostItem> { return AnyItemsStore(FileSystemItemsStore(storeURL: localPostsURL,
+                                                                                               savedToEncodedMapper: Mapper.localPostsEncodable,
+                                                                                               econdedToSavedMapper: Mapper.encodableToLocal))}
     
     private static var remotePostsURL: URL {
         return URL(string: "https://jsonplaceholder.typicode.com/posts")!

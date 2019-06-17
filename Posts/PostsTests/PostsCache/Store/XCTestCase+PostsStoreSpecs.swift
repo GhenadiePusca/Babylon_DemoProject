@@ -12,8 +12,8 @@ import RxSwift
 
 extension PostsStoreSpecs where Self: XCTestCase {
     
-    func expectRetrieval(toCompleteWithResult expectedResult: SingleEvent<PostsStore.RetrieveResult>,
-                         sut: PostsStore,
+    func expectRetrieval<T: Equatable>(toCompleteWithResult expectedResult: SingleEvent<[T]>,
+                         sut: AnyItemsStore<T>,
                          file: StaticString = #file,
                          line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
@@ -35,9 +35,9 @@ extension PostsStoreSpecs where Self: XCTestCase {
         disp.dispose()
     }
     
-    func expectInsertion(toCompleteWithResult expectedResult: CompletableEvent,
-                         sut: PostsStore,
-                         itemsToCache: [LocalPostItem],
+    func expectInsertion<T>(toCompleteWithResult expectedResult: CompletableEvent,
+                         sut: AnyItemsStore<T>,
+                         itemsToCache: [T],
                          file: StaticString = #file,
                          line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
@@ -51,13 +51,13 @@ extension PostsStoreSpecs where Self: XCTestCase {
         disp.dispose()
     }
     
-    func expectDeletion(toCompleteWithResult expectedResult: CompletableEvent,
-                        sut: PostsStore,
+    func expectDeletion<T>(toCompleteWithResult expectedResult: CompletableEvent,
+                        sut: AnyItemsStore<T>,
                         file: StaticString = #file,
                         line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval")
         
-        let disp = sut.deleteCachedPosts().subscribe { result in
+        let disp = sut.deleteItems().subscribe { result in
             XCTAssertTrue(result.isSameEventAs(expectedResult), "expected \(expectedResult), got \(result)", file: file, line: line)
             exp.fulfill()
         }

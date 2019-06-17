@@ -91,15 +91,17 @@ class CachePostsUseCaseTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT() -> (sut: LocalPostsLoader, store: PostsStoreSpy) {
-        let store = PostsStoreSpy()
-        let sut = LocalPostsLoader(store: store)
+    private func makeSUT() -> (sut: AnyItemsStorageManager<PostItem>, store: PostsStoreSpy<LocalPostItem>) {
+        let store = PostsStoreSpy<LocalPostItem>()
+        let sut = LocalItemsLoader<PostItem, LocalPostItem>.init(store: AnyItemsStore(store),
+                                                                     localToItemMapper: Mapper.localPostsToPost,
+                                                                     itemToLocalMapper: Mapper.postToLocalPosts)
         trackForMemoryLeaks(store)
         trackForMemoryLeaks(sut)
-        return (sut, store)
+        return (AnyItemsStorageManager(sut), store)
     }
     
-    private func expect(_ sut: LocalPostsLoader,
+    private func expect(_ sut: AnyItemsStorageManager<PostItem>,
                         toCompleteWithResult expectedResult: CompletableEvent,
                         withStub stub: () -> Void,
                         file: StaticString = #file,

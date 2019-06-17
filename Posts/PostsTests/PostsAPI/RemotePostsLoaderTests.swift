@@ -30,7 +30,7 @@ class RemotePostsLoaderTests: XCTestCase {
     func test_load_deliversErrorOnClientGetError() {
         let (sut, client) = makeSUT()
 
-        expectLoad(toCompleteWithResult: .error(RemotePostsLoader.Error.connectivity),
+        expectLoad(toCompleteWithResult: .error(RemotePostsLoaderError.connectivity),
                    sut: sut,
                    stub: {
                     client.loadResult = .error(NSError(domain: "test", code: 500, userInfo: nil))
@@ -42,7 +42,7 @@ class RemotePostsLoaderTests: XCTestCase {
 
         let invalidStatusCodes = [190, 199, 201, 299, 300, 301, 399, 400, 401, 499, 500]
         invalidStatusCodes.forEach { code in
-            expectLoad(toCompleteWithResult: .error(RemotePostsLoader.Error.invalidData),
+            expectLoad(toCompleteWithResult: .error(RemotePostsLoaderError.invalidData),
                        sut: sut,
                        stub: {
                         let emptyData = Data()
@@ -55,7 +55,7 @@ class RemotePostsLoaderTests: XCTestCase {
     func test_load_deliversErrorOn200StatusCodeWithInvalidResponse() {
         let (sut, client) = makeSUT()
 
-        expectLoad(toCompleteWithResult: .error(RemotePostsLoader.Error.invalidData),
+        expectLoad(toCompleteWithResult: .error(RemotePostsLoaderError.invalidData),
                    sut: sut,
                    stub: {
                     let invalidData = Data(bytes: "invalidData".utf8)
@@ -92,15 +92,17 @@ class RemotePostsLoaderTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func makeSUT(url: URL = URL(string: "https://some-url.com")!) -> (sut: RemotePostsLoader, client: HTTPClientMock) {
+    private func makeSUT(url: URL = URL(string: "https://some-url.com")!) -> (sut: RemotePostsLoader<PostItem, RemotePostItem>, client: HTTPClientMock) {
         let client = HTTPClientMock()
-        let sut = RemotePostsLoader(url: url, client: client)
+        let sut = RemotePostsLoader(url: url,
+                                    client: client,
+                                    mapper: Mapper.remotePostsToPost)
         
         return (sut, client)
     }
 
     private func expectLoad(toCompleteWithResult expectedResult: SingleEvent<[PostItem]>,
-                            sut: RemotePostsLoader,
+                            sut: RemotePostsLoader<PostItem, RemotePostItem>,
                             file: StaticString = #file,
                             line: UInt = #line,
                             stub: @escaping () -> Void) {
@@ -114,8 +116,8 @@ class RemotePostsLoaderTests: XCTestCase {
             case let (.success(receivedItems), .success(expectedItems)):
                 XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
             case let (.error(receivedError), .error(expectedError)):
-                XCTAssertEqual(receivedError as? RemotePostsLoader.Error,
-                               expectedError as? RemotePostsLoader.Error,
+                XCTAssertEqual(receivedError as? RemotePostsLoaderError,
+                               expectedError as? RemotePostsLoaderError,
                                file: file,
                                line: line)
             default:

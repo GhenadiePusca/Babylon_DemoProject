@@ -22,7 +22,7 @@ class CacheValidationUseCaseTests: XCTestCase {
         let retrievalEror = anyNSError()
         
         store.onRetrieveResult = .error(retrievalEror)
-        sut.validateCache()
+        sut.validatePersistedItems()
         
         XCTAssertEqual(store.receivedCommands, [.retrieve, .delete])
     }
@@ -32,18 +32,21 @@ class CacheValidationUseCaseTests: XCTestCase {
         let cachedItems = anyItems().map { $0.toLocal }
         
         store.onRetrieveResult = .success(cachedItems)
-        sut.validateCache()
+        sut.validatePersistedItems()
         
         XCTAssertEqual(store.receivedCommands, [.retrieve])
     }
     
     // MARK: - Helpers
 
-    private func makeSUT() -> (sut: LocalPostsLoader, store: PostsStoreSpy) {
-        let store = PostsStoreSpy()
-        let sut = LocalPostsLoader(store: store)
-        trackForMemoryLeaks(store)
-        trackForMemoryLeaks(sut)
-        return (sut, store)
+    private func makeSUT(file: StaticString = #file,
+                         line: UInt = #line) -> (sut: AnyItemsStorageManager<PostItem>, store: PostsStoreSpy<LocalPostItem>) {
+        let store = PostsStoreSpy<LocalPostItem>()
+        let sut = LocalItemsLoader<PostItem, LocalPostItem>.init(store: AnyItemsStore(store),
+                                                                     localToItemMapper: Mapper.localPostsToPost,
+                                                                     itemToLocalMapper: Mapper.postToLocalPosts)
+        trackForMemoryLeaks(store, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
+        return (AnyItemsStorageManager(sut), store)
     }
 }

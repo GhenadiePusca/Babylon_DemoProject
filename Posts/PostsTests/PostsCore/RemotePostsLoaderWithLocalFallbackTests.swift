@@ -63,22 +63,24 @@ class RemotePostsLoaderWithLocalFallbackTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
-    private func makeSUT() -> (sut: PostsLoader,
+    private func makeSUT() -> (sut: AnyItemsLoader<PostItem>,
                                remote: RemotePostsLoaderMock,
                                local: LocalPostsLoaderMock) {
             let remoteLoader = RemotePostsLoaderMock()
             let localLoader = LocalPostsLoaderMock()
-            let sut = RemotePostsLoaderWithLocalFallback(remoteLoader: remoteLoader,
-                                                         localPostsLoader: localLoader)
+            let sut = RemotePostsLoaderWithLocalFallback(remoteLoader: AnyItemsLoader(remoteLoader),
+                                                         localPostsLoader: AnyItemsStorageManager(localLoader))
             trackForMemoryLeaks(sut)
-            return (sut, remoteLoader, localLoader)
+            return (AnyItemsLoader(sut), remoteLoader, localLoader)
     }
     
-    private class RemotePostsLoaderMock: PostsLoader {
+    private class RemotePostsLoaderMock: ItemsLoader {
+        typealias Item = PostItem
+        
         var loadRequestsCount = 0
-        var loadResult: SingleEvent<LoadResult> = .error(anyNSError())
+        var loadResult: SingleEvent<[Item]> = .error(anyNSError())
 
-        func load() -> Single<LoadResult> {
+        func load() -> Single<[Item]> {
             loadRequestsCount += 1
             return .create { single in
                 single(self.loadResult)
@@ -87,12 +89,14 @@ class RemotePostsLoaderWithLocalFallbackTests: XCTestCase {
         }
     }
     
-    private class LocalPostsLoaderMock: PostsLoader & PostsPersister {
+    private class LocalPostsLoaderMock: ItemsLoader & ItemsStorageManager {
+        typealias Item = PostItem
+        
         var loadRequestsCount = 0
         var saveRequests = [[PostItem]]()
-        var loadResult: SingleEvent<LoadResult> = .error(anyNSError())
+        var loadResult: SingleEvent<[Item]> = .error(anyNSError())
 
-        func load() -> Single<LoadResult> {
+        func load() -> Single<[Item]> {
             loadRequestsCount += 1
             return .create { single in
                 single(self.loadResult)
@@ -100,12 +104,14 @@ class RemotePostsLoaderWithLocalFallbackTests: XCTestCase {
             }
         }
         
-        func save(_ items: [PostItem]) -> Completable {
+        func save(_ items: [Item]) -> Completable {
             saveRequests.append(items)
             return .create { completable in
                 completable(.completed)
                 return Disposables.create()
             }
         }
+
+        func validatePersistedItems() {}
     }
 }

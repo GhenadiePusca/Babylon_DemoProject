@@ -1,66 +1,59 @@
 //
-//  FileSystemPostsStore.swift
+//  GenericStore.swift
 //  Posts
 //
-//  Created by Pusca Ghenadie on 15/06/2019.
+//  Created by Pusca Ghenadie on 16/06/2019.
 //  Copyright © 2019 Pusca Ghenadie. All rights reserved.
 //
 
 import Foundation
 import RxSwift
 
-public class FileSystemPostsStore: PostsStore {
+public class FileSystemItemsStore<SavedItem, EncodedItem: Codable>: ItemsStore {
+    public typealias ItemType = SavedItem
     
-    private struct CodablePostItem: Codable {
-        let id: Int
-        let userId: Int
-        let title: String
-        let body: String
-        
-        init(localPostItem: LocalPostItem) {
-            self.id = localPostItem.id
-            self.title = localPostItem.title
-            self.userId = localPostItem.userId
-            self.body = localPostItem.body
-        }
-        
-        var toLocal: LocalPostItem {
-            return LocalPostItem(id: id,
-                                 userId: userId,
-                                 title: title,
-                                 body: body)
-        }
-    }
+    public typealias SavedToEncodedMapper = ([SavedItem]) -> [EncodedItem]
+    public typealias EcondedToSavedMapper = ([EncodedItem]) -> [SavedItem]
+    private let savedToEncodedMapper: SavedToEncodedMapper
+    private let econdedToSavedMapper: EcondedToSavedMapper
     
-    private let storeURL: URL
     private lazy var sideEffectsScheduler = SerialDispatchQueueScheduler.init(internalSerialQueueName: "\(type(of: self))")
+    private let storeURL: URL
     
-    public init(storeURL: URL) {
+    public init(storeURL: URL,
+                savedToEncodedMapper: @escaping SavedToEncodedMapper,
+                econdedToSavedMapper: @escaping EcondedToSavedMapper) {
         self.storeURL = storeURL
+        self.savedToEncodedMapper = savedToEncodedMapper
+        self.econdedToSavedMapper = econdedToSavedMapper
     }
     
-    public func deleteCachedPosts() -> Completable {
+    public func deleteItems() -> Completable {
         let url = self.storeURL
-        return FileSystemPostsStore.deleteCache(url).subscribeOn(sideEffectsScheduler)
+        return FileSystemItemsStore.deleteCache(url).subscribeOn(sideEffectsScheduler)
     }
+    
+    public func savePosts(_ items: [SavedItem]) -> Completable {
+        let url = self.storeURL
+        let mapper = savedToEncodedMapper
+        return FileSystemItemsStore.encodeItems(mapper(items))
+            .flatMapCompletable { FileSystemItemsStore.writeEncodedData($0, url) }
+            .subscribeOn(sideEffectsScheduler)
+    }
+    
+    public func retrieve() -> Single<[SavedItem]> {
+        let url = self.storeURL
+        let mapper = econdedToSavedMapper
+        return FileSystemItemsStore.getCachedData(url)
+            .flatMap(FileSystemItemsStore.decodeCachedData)
+            .map { mapper($0) }
+            .ifEmpty(default: [])
+            .subscribeOn(ConcurrentDispatchQueueScheduler(queue: .global()))
 
-    public func savePosts(_ items: [LocalPostItem]) -> Completable {
-        let url = self.storeURL
-        return FileSystemPostsStore.encodeItems(items)
-                                   .flatMapCompletable { FileSystemPostsStore.writeEncodedData($0, url) }
-                                   .subscribeOn(sideEffectsScheduler)
-    }
-    
-    public func retrieve() -> Single<RetrieveResult> {
-        let url = self.storeURL
-        return FileSystemPostsStore.getCachedData(url)
-                                   .flatMap(FileSystemPostsStore.decodeCachedData)
-                                   .ifEmpty(default: [])
-                                   .subscribeOn(ConcurrentDispatchQueueScheduler(queue: .global()))
     }
     
     // MARK: - Deletion helpers
-
+    
     private static func deleteCache(_ url: URL) -> Completable {
         return .create(subscribe: { completable in
             if FileManager.default.fileExists(atPath: url.path) {
@@ -93,12 +86,12 @@ public class FileSystemPostsStore: PostsStore {
         })
     }
     
-    private static func decodeCachedData(_ data: Data) -> Maybe<RetrieveResult> {
+    private static func decodeCachedData(_ data: Data) -> Maybe<[EncodedItem]> {
         return .create(subscribe: { maybe in
             do {
                 let decoder = JSONDecoder()
-                let decoded = try decoder.decode(FailableDecodableArray<CodablePostItem>.self, from: data)
-                maybe(.success(decoded.elements.map { $0.toLocal }))
+                let decoded = try decoder.decode(FailableDecodableArray<EncodedItem>.self, from: data)
+                maybe(.success(decoded.elements))
             } catch {
                 maybe(.error(error))
             }
@@ -109,11 +102,11 @@ public class FileSystemPostsStore: PostsStore {
     
     // MARK: - Save helpers
     
-    private static func encodeItems(_ items: [LocalPostItem]) -> Single<Data> {
+    private static func encodeItems<Item: Encodable>(_ items: [Item]) -> Single<Data> {
         return .create(subscribe: { single in
             do {
                 let encoder = JSONEncoder()
-                let encoded = try encoder.encode(items.map { CodablePostItem(localPostItem: $0) })
+                let encoded = try encoder.encode(items)
                 single(.success(encoded))
             } catch {
                 single(.error(error))

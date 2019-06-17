@@ -27,10 +27,8 @@ class PostsCacheIntegrationTests: XCTestCase {
     }
     
     func test_load_deliversNoItemsOnEmptyCache() {
-        let sut = makeSUT()
-        let noItemsResult: SingleEvent<LocalPostsLoader.LoadResult> = .success([])
-    
-        expectLoad(toCompleteWithResult: noItemsResult, sut: sut)
+        let sut = makeSUT()    
+        expectLoad(toCompleteWithResult: .success([]), sut: sut)
     }
     
     func test_load_canLoadDataStoredByAnotherStoreInstance() {
@@ -68,18 +66,20 @@ class PostsCacheIntegrationTests: XCTestCase {
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #file,
-                         line: UInt = #line) -> LocalPostsLoader {
-        let testURL = testStoreURL()
-        let fileSystemStore = FileSystemPostsStore(storeURL: testURL)
-        let sut = LocalPostsLoader(store: fileSystemStore)
-        trackForMemoryLeaks(fileSystemStore, file: file, line: line)
-        trackForMemoryLeaks(sut, file: file, line: line)
-        
-        return sut
+                         line: UInt = #line) -> AnyItemsStorageManager<PostItem> {
+        let store = FileSystemItemsStore(storeURL: testStoreURL(),
+                                 savedToEncodedMapper: Mapper.localPostsEncodable,
+                                 econdedToSavedMapper: Mapper.encodableToLocal)
+        let sut = LocalItemsLoader(store: AnyItemsStore(store),
+                                       localToItemMapper: Mapper.localPostsToPost,
+                                       itemToLocalMapper: Mapper.postToLocalPosts)
+        trackForMemoryLeaks(store)
+        trackForMemoryLeaks(sut)
+        return AnyItemsStorageManager(sut)
     }
     
-    private func expectLoad(toCompleteWithResult expectedResult: SingleEvent<LocalPostsLoader.LoadResult>,
-                            sut: LocalPostsLoader,
+    private func expectLoad(toCompleteWithResult expectedResult: SingleEvent<[PostItem]>,
+                            sut: AnyItemsStorageManager<PostItem>,
                             file: StaticString = #file,
                             line: UInt = #line) {
         let exp = expectation(description: "Wait for completion")
@@ -94,7 +94,7 @@ class PostsCacheIntegrationTests: XCTestCase {
     }
     
     private func expectSave(toCompleteWithResult expectedResult: CompletableEvent,
-                            sut: LocalPostsLoader,
+                            sut: AnyItemsStorageManager<PostItem>,
                             itemsToSave: [PostItem],
                             file: StaticString = #file,
                             line: UInt = #line) {

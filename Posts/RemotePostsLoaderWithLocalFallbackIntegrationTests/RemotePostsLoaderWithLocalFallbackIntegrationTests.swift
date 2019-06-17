@@ -69,20 +69,25 @@ class RemotePostsLoaderWithLocalFallbackIntegrationTests: XCTestCase {
     
     private func makeSUT(remoteURL: URL? = nil,
                          file: StaticString = #file,
-                         line: UInt = #line) -> (sut: RemotePostsLoaderWithLocalFallback, local: LocalPostsLoader) {
+                         line: UInt = #line) -> (sut: AnyItemsLoader<PostItem>, local: AnyItemsLoader<PostItem>) {
         let testURL = remoteURL ?? testRemoteURL()
         let remoteLoader = RemotePostsLoader(url: testURL,
-                                             client: URLSessionHTTPClient())
-        let fileSystemStore = FileSystemPostsStore(storeURL: testStoreURL())
-        let localLoder = LocalPostsLoader(store: fileSystemStore)
+                                             client: URLSessionHTTPClient(),
+                                             mapper: Mapper.remotePostsToPost)
+        let fileSystemStore = FileSystemItemsStore(storeURL: testStoreURL(),
+                                                   savedToEncodedMapper: Mapper.localPostsEncodable,
+                                                   econdedToSavedMapper: Mapper.encodableToLocal)
+        let localLoder = LocalItemsLoader(store: AnyItemsStore(fileSystemStore),
+                                          localToItemMapper: Mapper.localPostsToPost,
+                                          itemToLocalMapper: Mapper.postToLocalPosts)
         
-        let sut = RemotePostsLoaderWithLocalFallback(remoteLoader: remoteLoader,
-                                                     localPostsLoader: localLoder)
+        let sut = RemotePostsLoaderWithLocalFallback(remoteLoader: AnyItemsLoader(remoteLoader),
+                                                     localPostsLoader: AnyItemsStorageManager(localLoder))
         trackForMemoryLeaks(sut, file: file, line: line)
         trackForMemoryLeaks(fileSystemStore, file: file, line: line)
         trackForMemoryLeaks(remoteLoader, file: file, line: line)
         trackForMemoryLeaks(localLoder, file: file, line: line)
-        return (sut, localLoder)
+        return (AnyItemsLoader(sut), AnyItemsLoader(localLoder))
     }
     
     private func expectedFixedPostItems() -> [PostItem] {

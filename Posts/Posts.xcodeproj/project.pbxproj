@@ -16,8 +16,6 @@
 		6C509D9522B41BCC00BC09AF /* LoadFromCacheUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C509D9422B41BCC00BC09AF /* LoadFromCacheUseCaseTests.swift */; };
 		6C509D9822B41C8A00BC09AF /* PostsStoreSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C509D9722B41C8A00BC09AF /* PostsStoreSpy.swift */; };
 		6C509D9A22B4270800BC09AF /* CacheValidationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C509D9922B4270800BC09AF /* CacheValidationUseCaseTests.swift */; };
-		6C509D9C22B42C9C00BC09AF /* FileSystemPostsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C509D9B22B42C9C00BC09AF /* FileSystemPostsStoreTests.swift */; };
-		6C509D9E22B524FA00BC09AF /* FileSystemPostsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C509D9D22B524FA00BC09AF /* FileSystemPostsStore.swift */; };
 		6C509DA022B5386B00BC09AF /* XCTestCase+PostsStoreSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C509D9F22B5386B00BC09AF /* XCTestCase+PostsStoreSpecs.swift */; };
 		6C509DA222B55E8800BC09AF /* CompletableEvent+TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C509DA122B55E8800BC09AF /* CompletableEvent+TestUtils.swift */; };
 		6C5C569F22B623CA00582BB9 /* PostsCacheIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C569E22B623CA00582BB9 /* PostsCacheIntegrationTests.swift */; };
@@ -43,9 +41,17 @@
 		6C5C56CF22B66C7F00582BB9 /* Loadable+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56CE22B66C7F00582BB9 /* Loadable+Equatable.swift */; };
 		6C5C56D322B66E3700582BB9 /* RemotePostsLoaderWithLocalFallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D222B66E3700582BB9 /* RemotePostsLoaderWithLocalFallbackTests.swift */; };
 		6C5C56D522B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */; };
-		6C5C56D722B6841A00582BB9 /* PostsPersister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D622B6841A00582BB9 /* PostsPersister.swift */; };
 		6C5C56D922B6849900582BB9 /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56D822B6849900582BB9 /* Factory.swift */; };
 		6C5C56E122B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C56E022B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.swift */; };
+		6C66EB9022B6C28F00FE8331 /* FileSystemItemsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EB8F22B6C28F00FE8331 /* FileSystemItemsStore.swift */; };
+		6C66EB9222B6C35700FE8331 /* LocalItemsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EB9122B6C35700FE8331 /* LocalItemsLoader.swift */; };
+		6C66EB9422B6CC6E00FE8331 /* GenericFileSystemPostsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EB9322B6CC6E00FE8331 /* GenericFileSystemPostsStoreTests.swift */; };
+		6C66EB9622B6D22C00FE8331 /* PostsStoreSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EB9522B6D22C00FE8331 /* PostsStoreSpecs.swift */; };
+		6C66EB9C22B7678E00FE8331 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EB9B22B7678E00FE8331 /* Mapper.swift */; };
+		6C66EB9E22B767F000FE8331 /* CodablePostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EB9D22B767F000FE8331 /* CodablePostItem.swift */; };
+		6C66EBA322B7689A00FE8331 /* ItemsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBA222B7689A00FE8331 /* ItemsLoader.swift */; };
+		6C66EBA522B768D600FE8331 /* ItemsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBA422B768D600FE8331 /* ItemsStore.swift */; };
+		6C66EBA722B7690F00FE8331 /* ItemsStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C66EBA622B7690F00FE8331 /* ItemsStorageManager.swift */; };
 		6C93138222B039FC00387108 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C93138122B039FC00387108 /* AppDelegate.swift */; };
 		6C9313B322B03A3900387108 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B222B03A3900387108 /* main.swift */; };
 		6C9313B522B03C7000387108 /* PostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313B422B03C7000387108 /* PostItem.swift */; };
@@ -53,13 +59,11 @@
 		6C9313BB22B0419200387108 /* RemotePostsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313BA22B0419200387108 /* RemotePostsLoader.swift */; };
 		6C9313BD22B041BF00387108 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9313BC22B041BF00387108 /* HTTPClient.swift */; };
 		6CBF4FA822B2E3B20056B55F /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBF4FA722B2E3B20056B55F /* XCTestCase+MemoryLeakTracking.swift */; };
-		6CBF4FAB22B2E5EC0056B55F /* LocalPostsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBF4FAA22B2E5EC0056B55F /* LocalPostsLoader.swift */; };
 		6CBF4FAD22B2E64A0056B55F /* PostsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBF4FAC22B2E64A0056B55F /* PostsStore.swift */; };
 		6CBF4FB222B3EE180056B55F /* ModelsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBF4FB122B3EE180056B55F /* ModelsFactory.swift */; };
 		6CF682B922B6910B000075C0 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBF4FA722B2E3B20056B55F /* XCTestCase+MemoryLeakTracking.swift */; };
 		6CFBFD0322B216D600CC6E3B /* FailableDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFBFD0222B216D600CC6E3B /* FailableDecodable.swift */; };
 		6CFBFD0522B2172D00CC6E3B /* FailableDecodableArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFBFD0422B2172D00CC6E3B /* FailableDecodableArray.swift */; };
-		6CFBFD0722B218AA00CC6E3B /* PostsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFBFD0622B218AA00CC6E3B /* PostsMapper.swift */; };
 		6CFBFD0A22B2D79700CC6E3B /* CachePostsUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFBFD0922B2D79700CC6E3B /* CachePostsUseCaseTests.swift */; };
 		76895EDAA603A5477F183A9E /* Pods_PostsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AE0EC49208E0E3CE5E807BF /* Pods_PostsTests.framework */; };
 		7EE52B59B906DBF70F6DD8B0 /* Pods_PostsCacheIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE680FAD22062DC85162E65D /* Pods_PostsCacheIntegrationTests.framework */; };
@@ -119,8 +123,6 @@
 		6C509D9422B41BCC00BC09AF /* LoadFromCacheUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadFromCacheUseCaseTests.swift; sourceTree = "<group>"; };
 		6C509D9722B41C8A00BC09AF /* PostsStoreSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsStoreSpy.swift; sourceTree = "<group>"; };
 		6C509D9922B4270800BC09AF /* CacheValidationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheValidationUseCaseTests.swift; sourceTree = "<group>"; };
-		6C509D9B22B42C9C00BC09AF /* FileSystemPostsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemPostsStoreTests.swift; sourceTree = "<group>"; };
-		6C509D9D22B524FA00BC09AF /* FileSystemPostsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemPostsStore.swift; sourceTree = "<group>"; };
 		6C509D9F22B5386B00BC09AF /* XCTestCase+PostsStoreSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+PostsStoreSpecs.swift"; sourceTree = "<group>"; };
 		6C509DA122B55E8800BC09AF /* CompletableEvent+TestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompletableEvent+TestUtils.swift"; sourceTree = "<group>"; };
 		6C5C569C22B623CA00582BB9 /* PostsCacheIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostsCacheIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,11 +146,19 @@
 		6C5C56CE22B66C7F00582BB9 /* Loadable+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Loadable+Equatable.swift"; sourceTree = "<group>"; };
 		6C5C56D222B66E3700582BB9 /* RemotePostsLoaderWithLocalFallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePostsLoaderWithLocalFallbackTests.swift; sourceTree = "<group>"; };
 		6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePostsLoaderWithLocalFallback.swift; sourceTree = "<group>"; };
-		6C5C56D622B6841A00582BB9 /* PostsPersister.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPersister.swift; sourceTree = "<group>"; };
 		6C5C56D822B6849900582BB9 /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
 		6C5C56DE22B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemotePostsLoaderWithLocalFallbackIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C5C56E022B686A400582BB9 /* RemotePostsLoaderWithLocalFallbackIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePostsLoaderWithLocalFallbackIntegrationTests.swift; sourceTree = "<group>"; };
 		6C5C56E222B686A400582BB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6C66EB8F22B6C28F00FE8331 /* FileSystemItemsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemItemsStore.swift; sourceTree = "<group>"; };
+		6C66EB9122B6C35700FE8331 /* LocalItemsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalItemsLoader.swift; sourceTree = "<group>"; };
+		6C66EB9322B6CC6E00FE8331 /* GenericFileSystemPostsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFileSystemPostsStoreTests.swift; sourceTree = "<group>"; };
+		6C66EB9522B6D22C00FE8331 /* PostsStoreSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsStoreSpecs.swift; sourceTree = "<group>"; };
+		6C66EB9B22B7678E00FE8331 /* Mapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
+		6C66EB9D22B767F000FE8331 /* CodablePostItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodablePostItem.swift; sourceTree = "<group>"; };
+		6C66EBA222B7689A00FE8331 /* ItemsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsLoader.swift; sourceTree = "<group>"; };
+		6C66EBA422B768D600FE8331 /* ItemsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsStore.swift; sourceTree = "<group>"; };
+		6C66EBA622B7690F00FE8331 /* ItemsStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsStorageManager.swift; sourceTree = "<group>"; };
 		6C93137E22B039FC00387108 /* Posts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Posts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C93138122B039FC00387108 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C93139022B039FD00387108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -160,12 +170,10 @@
 		6C9313BA22B0419200387108 /* RemotePostsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePostsLoader.swift; sourceTree = "<group>"; };
 		6C9313BC22B041BF00387108 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		6CBF4FA722B2E3B20056B55F /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
-		6CBF4FAA22B2E5EC0056B55F /* LocalPostsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPostsLoader.swift; sourceTree = "<group>"; };
 		6CBF4FAC22B2E64A0056B55F /* PostsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsStore.swift; sourceTree = "<group>"; };
 		6CBF4FB122B3EE180056B55F /* ModelsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsFactory.swift; sourceTree = "<group>"; };
 		6CFBFD0222B216D600CC6E3B /* FailableDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailableDecodable.swift; sourceTree = "<group>"; };
 		6CFBFD0422B2172D00CC6E3B /* FailableDecodableArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailableDecodableArray.swift; sourceTree = "<group>"; };
-		6CFBFD0622B218AA00CC6E3B /* PostsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsMapper.swift; sourceTree = "<group>"; };
 		6CFBFD0922B2D79700CC6E3B /* CachePostsUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachePostsUseCaseTests.swift; sourceTree = "<group>"; };
 		7844DA6726E3B169038E10CE /* Pods-PostsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsTests.release.xcconfig"; path = "Target Support Files/Pods-PostsTests/Pods-PostsTests.release.xcconfig"; sourceTree = "<group>"; };
 		8E83400B1AD3AA70F0D7D114 /* Pods-PostsCacheIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsCacheIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-PostsCacheIntegrationTests/Pods-PostsCacheIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -309,10 +317,12 @@
 		6C5C56D022B66E0F00582BB9 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				6C66EBA122B7688500FE8331 /* BoundaryAbstraction */,
 				6C5C56AC22B6335B00582BB9 /* AppCordinator.swift */,
 				6C5C56CA22B65DA800582BB9 /* PostsRepo.swift */,
 				6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */,
 				6C5C56D822B6849900582BB9 /* Factory.swift */,
+				6C66EB9B22B7678E00FE8331 /* Mapper.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -332,6 +342,53 @@
 				6C5C56E222B686A400582BB9 /* Info.plist */,
 			);
 			path = RemotePostsLoaderWithLocalFallbackIntegrationTests;
+			sourceTree = "<group>";
+		};
+		6C66EB9922B75A7800FE8331 /* Loader */ = {
+			isa = PBXGroup;
+			children = (
+				6CFBFD0922B2D79700CC6E3B /* CachePostsUseCaseTests.swift */,
+				6C509D9422B41BCC00BC09AF /* LoadFromCacheUseCaseTests.swift */,
+				6C509D9922B4270800BC09AF /* CacheValidationUseCaseTests.swift */,
+			);
+			path = Loader;
+			sourceTree = "<group>";
+		};
+		6C66EB9A22B75A8600FE8331 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				6C509D9F22B5386B00BC09AF /* XCTestCase+PostsStoreSpecs.swift */,
+				6C66EB9322B6CC6E00FE8331 /* GenericFileSystemPostsStoreTests.swift */,
+				6C66EB9522B6D22C00FE8331 /* PostsStoreSpecs.swift */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		6C66EB9F22B7680700FE8331 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				6C66EBA022B7682C00FE8331 /* FileSystemStore */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		6C66EBA022B7682C00FE8331 /* FileSystemStore */ = {
+			isa = PBXGroup;
+			children = (
+				6C66EB8F22B6C28F00FE8331 /* FileSystemItemsStore.swift */,
+				6C66EB9D22B767F000FE8331 /* CodablePostItem.swift */,
+			);
+			path = FileSystemStore;
+			sourceTree = "<group>";
+		};
+		6C66EBA122B7688500FE8331 /* BoundaryAbstraction */ = {
+			isa = PBXGroup;
+			children = (
+				6C66EBA222B7689A00FE8331 /* ItemsLoader.swift */,
+				6C66EBA422B768D600FE8331 /* ItemsStore.swift */,
+				6C66EBA622B7690F00FE8331 /* ItemsStorageManager.swift */,
+			);
+			path = BoundaryAbstraction;
 			sourceTree = "<group>";
 		};
 		6C93137522B039FC00387108 = {
@@ -391,11 +448,10 @@
 		6CBF4FA922B2E5DE0056B55F /* PostsCache */ = {
 			isa = PBXGroup;
 			children = (
-				6CBF4FAA22B2E5EC0056B55F /* LocalPostsLoader.swift */,
+				6C66EB9F22B7680700FE8331 /* Infrastructure */,
 				6CBF4FAC22B2E64A0056B55F /* PostsStore.swift */,
 				6C509D9022B4190100BC09AF /* LocalPostItem.swift */,
-				6C509D9D22B524FA00BC09AF /* FileSystemPostsStore.swift */,
-				6C5C56D622B6841A00582BB9 /* PostsPersister.swift */,
+				6C66EB9122B6C35700FE8331 /* LocalItemsLoader.swift */,
 			);
 			path = PostsCache;
 			sourceTree = "<group>";
@@ -414,12 +470,9 @@
 		6CBF4FAF22B3EDEF0056B55F /* PostsCache */ = {
 			isa = PBXGroup;
 			children = (
+				6C66EB9A22B75A8600FE8331 /* Store */,
+				6C66EB9922B75A7800FE8331 /* Loader */,
 				6C509D9622B41C8000BC09AF /* Helpers */,
-				6CFBFD0922B2D79700CC6E3B /* CachePostsUseCaseTests.swift */,
-				6C509D9422B41BCC00BC09AF /* LoadFromCacheUseCaseTests.swift */,
-				6C509D9922B4270800BC09AF /* CacheValidationUseCaseTests.swift */,
-				6C509D9B22B42C9C00BC09AF /* FileSystemPostsStoreTests.swift */,
-				6C509D9F22B5386B00BC09AF /* XCTestCase+PostsStoreSpecs.swift */,
 			);
 			path = PostsCache;
 			sourceTree = "<group>";
@@ -472,7 +525,6 @@
 			children = (
 				6C9313BC22B041BF00387108 /* HTTPClient.swift */,
 				6C9313BA22B0419200387108 /* RemotePostsLoader.swift */,
-				6CFBFD0622B218AA00CC6E3B /* PostsMapper.swift */,
 				C4E3701A22B397E6002A33E3 /* URLSessionHTTPClient.swift */,
 				6C509D9222B41ADF00BC09AF /* RemotePostItem.swift */,
 			);
@@ -882,13 +934,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6C509D9E22B524FA00BC09AF /* FileSystemPostsStore.swift in Sources */,
-				6CBF4FAB22B2E5EC0056B55F /* LocalPostsLoader.swift in Sources */,
+				6C66EB9222B6C35700FE8331 /* LocalItemsLoader.swift in Sources */,
 				6C9313B722B03D3600387108 /* PostsLoader.swift in Sources */,
 				C4E3701B22B397E6002A33E3 /* URLSessionHTTPClient.swift in Sources */,
 				6C5C56AD22B6335B00582BB9 /* AppCordinator.swift in Sources */,
 				6C5C56D922B6849900582BB9 /* Factory.swift in Sources */,
 				6C5C56CB22B65DA800582BB9 /* PostsRepo.swift in Sources */,
+				6C66EBA722B7690F00FE8331 /* ItemsStorageManager.swift in Sources */,
+				6C66EB9C22B7678E00FE8331 /* Mapper.swift in Sources */,
 				6CFBFD0522B2172D00CC6E3B /* FailableDecodableArray.swift in Sources */,
 				6C5C56C122B651B700582BB9 /* PostsListViewModel.swift in Sources */,
 				6C5C56D522B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift in Sources */,
@@ -905,12 +958,14 @@
 				6C5C56BB22B6515800582BB9 /* Loadable.swift in Sources */,
 				6CFBFD0322B216D600CC6E3B /* FailableDecodable.swift in Sources */,
 				6C9313B322B03A3900387108 /* main.swift in Sources */,
-				6CFBFD0722B218AA00CC6E3B /* PostsMapper.swift in Sources */,
+				6C66EBA322B7689A00FE8331 /* ItemsLoader.swift in Sources */,
+				6C66EB9022B6C28F00FE8331 /* FileSystemItemsStore.swift in Sources */,
 				6C509D9122B4190100BC09AF /* LocalPostItem.swift in Sources */,
 				6C5C56C722B6598400582BB9 /* ErrorStateView.swift in Sources */,
-				6C5C56D722B6841A00582BB9 /* PostsPersister.swift in Sources */,
+				6C66EB9E22B767F000FE8331 /* CodablePostItem.swift in Sources */,
 				6C93138222B039FC00387108 /* AppDelegate.swift in Sources */,
 				6C5C56B022B6341900582BB9 /* PostsListViewController.swift in Sources */,
+				6C66EBA522B768D600FE8331 /* ItemsStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -922,6 +977,7 @@
 				6C5C56CD22B65DBA00582BB9 /* PostsRepoTests.swift in Sources */,
 				6C509D9822B41C8A00BC09AF /* PostsStoreSpy.swift in Sources */,
 				6C509DA222B55E8800BC09AF /* CompletableEvent+TestUtils.swift in Sources */,
+				6C66EB9422B6CC6E00FE8331 /* GenericFileSystemPostsStoreTests.swift in Sources */,
 				6CFBFD0A22B2D79700CC6E3B /* CachePostsUseCaseTests.swift in Sources */,
 				6C5C56B322B6349100582BB9 /* AppCoordinatorTests.swift in Sources */,
 				6C5C56B622B634D200582BB9 /* SynchronousNavController.swift in Sources */,
@@ -929,9 +985,9 @@
 				6CBF4FB222B3EE180056B55F /* ModelsFactory.swift in Sources */,
 				6C509D9522B41BCC00BC09AF /* LoadFromCacheUseCaseTests.swift in Sources */,
 				6CBF4FA822B2E3B20056B55F /* XCTestCase+MemoryLeakTracking.swift in Sources */,
+				6C66EB9622B6D22C00FE8331 /* PostsStoreSpecs.swift in Sources */,
 				6C5C56CF22B66C7F00582BB9 /* Loadable+Equatable.swift in Sources */,
 				6C5C56D322B66E3700582BB9 /* RemotePostsLoaderWithLocalFallbackTests.swift in Sources */,
-				6C509D9C22B42C9C00BC09AF /* FileSystemPostsStoreTests.swift in Sources */,
 				6C509DA022B5386B00BC09AF /* XCTestCase+PostsStoreSpecs.swift in Sources */,
 				C4E3701822B39684002A33E3 /* SingleEvent+TestUtils.swift in Sources */,
 				C4A4727222B2606C0026C041 /* URLSessionHTTPClientTests.swift in Sources */,
