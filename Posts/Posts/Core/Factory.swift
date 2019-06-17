@@ -50,6 +50,21 @@ public struct Factory: ServicesProvider {
                                                                                                                             savedToEncodedMapper: Mapper.localCommentsToEncodable,
                                                                                                                             econdedToSavedMapper: Mapper.encodableCommentsToLocalComments))}
     
+    // MARK: - Users loader properties
+    private static var remoteUsersLoaderWithCacheFallaback: AnyItemsLoader<UserItem> { return AnyItemsLoader(RemotePostsLoaderWithLocalFallback(remoteLoader: remoteUsersLoader,
+                                                                                                                                                localPostsLoader: localUsersLoader)) }
+    
+    private static var remoteUsersLoader: AnyItemsLoader<UserItem> { return AnyItemsLoader(RemotePostsLoader(url: remoteUsersURL,
+                                                                                                             client: urlSessionHttpClient,
+                                                                                                             mapper: Mapper.remoteUsersToUsers)) }
+    private static var localUsersLoader: AnyItemsStorageManager<UserItem> { return AnyItemsStorageManager(LocalItemsLoader(store: fileSystemUsersStore,
+                                                                                                                           localToItemMapper: Mapper.localUsersToUers,
+                                                                                                                           itemToLocalMapper: Mapper.usersToLocalUsers)) }
+    
+    private static var fileSystemUsersStore: AnyItemsStore<LocalUserItem> { return AnyItemsStore(FileSystemItemsStore(storeURL: localUsersURL,
+                                                                                                                      savedToEncodedMapper: Mapper.localUsersToCodableUsers,
+                                                                                                                      econdedToSavedMapper: Mapper.codableUsersToLocalUsers))}
+
     // MARK: - Factory helpers
     private static var remotePostsURL: URL {
         return URL(string: "https://jsonplaceholder.typicode.com/posts")!
@@ -59,12 +74,20 @@ public struct Factory: ServicesProvider {
         return URL(string: "https://jsonplaceholder.typicode.com/comments")!
     }
     
+    private static var remoteUsersURL: URL {
+        return URL(string: "https://jsonplaceholder.typicode.com/users")!
+    }
+    
     private static var localPostsURL: URL {
         return localRootURL.appendingPathComponent("PostItems")
     }
     
     private static var localCommentsURL: URL {
         return localRootURL.appendingPathComponent("Comments")
+    }
+    
+    private static var localUsersURL: URL {
+        return localRootURL.appendingPathComponent("Users")
     }
     
     private static var localRootURL: URL {
