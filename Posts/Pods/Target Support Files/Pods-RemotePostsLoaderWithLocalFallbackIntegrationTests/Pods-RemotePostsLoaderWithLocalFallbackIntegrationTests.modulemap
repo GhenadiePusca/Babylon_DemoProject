@@ -1,0 +1,6 @@
+framework module Pods_RemotePostsLoaderWithLocalFallbackIntegrationTests {
+  umbrella header "Pods-RemotePostsLoaderWithLocalFallbackIntegrationTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
