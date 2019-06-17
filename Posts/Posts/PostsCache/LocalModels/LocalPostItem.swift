@@ -23,11 +23,4 @@ public struct LocalPostItem: Equatable {
         self.userId = userId
         self.body = body
     }
-    
-    var toItem: PostItem {
-        return PostItem(id: id,
-                        userId: userId,
-                        title: title,
-                        body: body)
-    }
 }

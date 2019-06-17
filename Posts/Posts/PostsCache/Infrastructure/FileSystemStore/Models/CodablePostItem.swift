@@ -20,11 +20,4 @@ public struct CodablePostItem: Codable {
         self.userId = localPostItem.userId
         self.body = localPostItem.body
     }
-    
-    public var toLocal: LocalPostItem {
-        return LocalPostItem(id: id,
-                             userId: userId,
-                             title: title,
-                             body: body)
-    }
 }
