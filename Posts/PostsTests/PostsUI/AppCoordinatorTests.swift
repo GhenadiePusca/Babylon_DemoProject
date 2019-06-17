@@ -7,27 +7,41 @@
 //
 
 import XCTest
+import RxSwift
 import Posts
 
 class AppCoordinatorTests: XCTestCase {
-//    
-//    func test_start_postsListViewControllerIsShown() {
-//        let (sut, nav) = makeSUT()
-//        
-//        sut.start()
-//        
-//        XCTAssertTrue(nav.visibleViewController is PostsListViewController,
-//                      "Expected to have PostsListViewController show, but \(nav.visibleViewController) is shown")
-//    }
-//    
-//    // MARK: - Helpers
-//    
-//    private func makeSUT() -> (sut: AppCoordinator, nav: UINavigationController) {
-//        let nav = SynchronousNavController()
-//        let sut = AppCoordinator(navController: nav)
-//        trackForMemoryLeaks(sut)
-//        
-//        return (sut, nav)
-//    }
+    
+    func test_start_postsListViewControllerIsShown() {
+        let (sut, nav) = makeSUT()
+        
+        sut.start()
+        
+        XCTAssertTrue(nav.visibleViewController is PostsListViewController,
+                      "Expected to have PostsListViewController show, but \(nav.visibleViewController) is shown")
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT() -> (sut: AppCoordinator, nav: UINavigationController) {
+        let nav = SynchronousNavController()
+        let sut = AppCoordinator(navController: nav,
+                                 servicesProvider: ServicesProviderMock())
+        trackForMemoryLeaks(sut)
+        
+        return (sut, nav)
+    }
+    
+    private class ServicesProviderMock: ServicesProvider {
+        var postsDataRepo: PostsDataProvider = PostsDataProviderMock()
+    }
+    
+    private class PostsDataProviderMock: PostsDataProvider {
+        var postItemsLoader: Observable<Loadable<[PostListItemModel]>> = .just(.pending)
+        
+        func loadPosts() {
+            
+        }
+    }
 }
 
