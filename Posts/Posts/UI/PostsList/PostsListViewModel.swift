@@ -19,10 +19,14 @@ public final class PostsListViewModel {
     private let loadingFail = BehaviorRelay<Bool>(value: false)
     private let disposeBag = DisposeBag()
     
-    public init(dataLoader: Observable<Loadable<[PostListItemModel]>>) {
+    let onItemSelection: BehaviorRelay<IndexPath?>
+    
+    public init(dataLoader: Observable<Loadable<[PostListItemModel]>>,
+                onItemSelection: BehaviorRelay<IndexPath?>) {
         postsModels = models.asDriver()
         isLoading = loading.asDriver()
         loadingFailed = loadingFail.asDriver()
+        self.onItemSelection = onItemSelection
         
         bindToDataLoader(loader: dataLoader)
     }

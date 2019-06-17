@@ -8,15 +8,21 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 final public class AppCoordinator {
     private let navController: UINavigationController
     private let servicesProvider: ServicesProvider
     
+    let disposeBag = DisposeBag()
+    private let onPostSelection = BehaviorRelay<IndexPath?>(value: nil)
+    
     public init(navController: UINavigationController,
                 servicesProvider: ServicesProvider) {
         self.navController = navController
         self.servicesProvider = servicesProvider
+        
+        onPostSelection.asDriver().drive(onNext: navigateToPostDetails).disposed(by: disposeBag)
     }
     
     public func start() {
@@ -30,8 +36,16 @@ final public class AppCoordinator {
     }
     
     private func postListViewModel() -> PostsListViewModel {
-        let viewModel = PostsListViewModel(dataLoader: servicesProvider.postsDataRepo.postItemsLoader)
-        
+        let viewModel = PostsListViewModel(dataLoader: servicesProvider.postsDataRepo.postItemsLoader,
+                                           onItemSelection: onPostSelection)
         return viewModel
+    }
+    
+    private func navigateToPostDetails(selectedIndex: IndexPath?) {
+        guard let index = selectedIndex else {
+            return
+        }
+        navController.pushViewController(PostDetailsViewController(),
+                                         animated: true)
     }
 }

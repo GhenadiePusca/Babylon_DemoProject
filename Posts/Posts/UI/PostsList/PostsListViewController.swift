@@ -41,6 +41,10 @@ final public class PostsListViewController: UIViewController {
     }
     
     private func bindToViewModel() {
+//        postsTableView.rx.itemSelected.asDriver().drive(viewModel.onItemSelection)
+        
+        postsTableView.rx.itemSelected.asDriver().drive(viewModel.onItemSelection).disposed(by: disposeBag)
+
         viewModel.postsModels
             .drive(postsTableView.rx.items(cellIdentifier: PostListItemTableViewCell.reuseIdentifier,
                                            cellType: PostListItemTableViewCell.self)) { _, vm, cell in
