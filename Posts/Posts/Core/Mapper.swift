@@ -70,4 +70,12 @@ public struct Mapper {
                                        authorEmail: $0.authorEmail,
                                        body: $0.body) }
     }
+    
+    public static func commentsToLocalComments(_ local: [CommentItem]) -> [LocalCommentItem] {
+        return local.map { LocalCommentItem(id: $0.id,
+                                            postId: $0.postId,
+                                            authorName: $0.authorName,
+                                            authorEmail: $0.authorEmail,
+                                            body: $0.body) }
+    }
 }

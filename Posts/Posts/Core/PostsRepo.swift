@@ -16,6 +16,8 @@ public protocol PostsDataProvider {
 
 public final class PostsRepo: PostsDataProvider {
     private let postsLoader: AnyItemsLoader<PostItem>
+    private let commentsLoader: AnyItemsLoader<CommentItem>
+
     private let disposeBag = DisposeBag()
     
     private let postsLoaderSubject = BehaviorSubject<Loadable<[PostListItemModel]>>(value: .pending)
@@ -23,8 +25,10 @@ public final class PostsRepo: PostsDataProvider {
 
     private var loadedPostItems = [Int: PostItem]()
     
-    public init(postsLoader: AnyItemsLoader<PostItem>) {
+    public init(postsLoader: AnyItemsLoader<PostItem>,
+                commentsLoader: AnyItemsLoader<CommentItem>) {
         self.postsLoader = postsLoader
+        self.commentsLoader = commentsLoader
     }
     
     public func loadPosts() {
