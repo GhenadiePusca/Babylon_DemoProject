@@ -11,11 +11,11 @@ import RxSwift
 import RxCocoa
 
 final public class AppCoordinator {
+    private let disposeBag = DisposeBag()
+    private let onPostSelection = BehaviorRelay<IndexPath?>(value: nil)
+    
     private let navController: UINavigationController
     private let servicesProvider: ServicesProvider
-    
-    let disposeBag = DisposeBag()
-    private let onPostSelection = BehaviorRelay<IndexPath?>(value: nil)
     
     public init(navController: UINavigationController,
                 servicesProvider: ServicesProvider) {

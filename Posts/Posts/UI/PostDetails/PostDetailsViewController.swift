@@ -10,11 +10,10 @@ import UIKit
 
 final class PostDetailsViewController: UIViewController {
 
-    let viewModel: PostDetailViewModel
-    lazy var detailView = PostDetailView(viewModel: viewModel)
-
+    private let detailView: PostDetailView
+    
     init(viewModel: PostDetailViewModel) {
-        self.viewModel = viewModel
+        self.detailView = PostDetailView(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -27,7 +26,10 @@ final class PostDetailsViewController: UIViewController {
         
         title = "Details"
         view.backgroundColor = .white
-
+        setupLayout()
+    }
+    
+    private func setupLayout() {
         view.addSubview(detailView)
         
         detailView.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +40,12 @@ final class PostDetailsViewController: UIViewController {
                 detailView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
                 detailView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
                 detailView.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 1.0),
+                ])
+        } else {
+            NSLayoutConstraint.activate([
+                detailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                detailView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                detailView.topAnchor.constraint(equalToSystemSpacingBelow: view.topAnchor, multiplier: 1.0),
                 ])
         }
     }

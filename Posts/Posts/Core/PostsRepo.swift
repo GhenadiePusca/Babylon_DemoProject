@@ -10,8 +10,13 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+enum DataLoadingError: Error {
+    case failedToLoadPosts
+    case failedToLoadUsers
+    case failedToLoadComments
+}
+
 public final class PostsRepo: PostsDataProvider {
-    
     private let postsLoader: AnyItemsLoader<PostItem>
     private let commentsLoader: AnyItemsLoader<CommentItem>
     private let usersLoader: AnyItemsLoader<UserItem>
@@ -72,9 +77,9 @@ public final class PostsRepo: PostsDataProvider {
         
         Observable.combineLatest(postsLoaderSubject, usersLoaderSubject) { postsLoadable, usersLoadable in
             return postsLoadable.transform { items in
-                return items.first { $0.id == postId }!.userId
+                return items.first { $0.id == postId }?.userId
             }.combine(usersLoadable).transform { userId, users in
-                return users.first { $0.id == userId }!.name
+                return users.first { $0.id == userId }?.name ?? ""
             }
         }.bind(to: authorName).disposed(by: disposeBag)
         
@@ -105,7 +110,7 @@ public final class PostsRepo: PostsDataProvider {
         case .success(let items):
             self.usersLoaderSubject.onNext(.loaded(items))
         default:
-            self.usersLoaderSubject.onNext(.failed(NSError(domain: "failed to load", code: 1)))
+            self.usersLoaderSubject.onNext(.failed(DataLoadingError.failedToLoadUsers))
         }
     }
     
@@ -115,7 +120,7 @@ public final class PostsRepo: PostsDataProvider {
         case .success(let items):
             self.commentsLoaderSubject.onNext(.loaded(items))
         default:
-            self.commentsLoaderSubject.onNext(.failed(NSError(domain: "failed to load", code: 1)))
+            self.commentsLoaderSubject.onNext(.failed(DataLoadingError.failedToLoadComments))
         }
     }
 
@@ -125,7 +130,7 @@ public final class PostsRepo: PostsDataProvider {
         case .success(let items):
             self.postsLoaderSubject.onNext(.loaded(items))
         default:
-            self.postsLoaderSubject.onNext(.failed(NSError(domain: "failed to load", code: 1)))
+            self.postsLoaderSubject.onNext(.failed(DataLoadingError.failedToLoadPosts))
         }
     }
 }

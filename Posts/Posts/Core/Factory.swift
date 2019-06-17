@@ -28,6 +28,8 @@ public struct Factory: ServicesProvider {
                                   usersLoader: Factory.remoteUsersLoaderWithCacheFallaback)
     }
     
+    private static var urlSessionHttpClient: HTTPClient { return URLSessionHTTPClient() }
+
     // MARK: - Posts loader properties
     private static var remotePostsLoaderWithCacheFallaback: AnyItemsLoader<PostItem> { return AnyItemsLoader(RemotePostsLoaderWithLocalFallback(remoteLoader: remotePostsLoader,
                                                                                     localPostsLoader: localPostsLoader)) }
@@ -39,7 +41,6 @@ public struct Factory: ServicesProvider {
                                                                                                          localToItemMapper: Mapper.localPostsToPost,
                                                                                                          itemToLocalMapper: Mapper.postToLocalPosts)) }
 
-    private static var urlSessionHttpClient: HTTPClient { return URLSessionHTTPClient() }
     private static var fileSystemPostsStore: AnyItemsStore<LocalPostItem> { return AnyItemsStore(FileSystemItemsStore(storeURL: localPostsURL,
                                                                                                savedToEncodedMapper: Mapper.localPostsEncodable,
                                                                                                econdedToSavedMapper: Mapper.encodableToLocal))}
@@ -99,10 +100,12 @@ public struct Factory: ServicesProvider {
     }
     
     private static var localRootURL: URL {
-        let rootURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("PostsApp")
+        // For now assume the url directory exists, and FM creates the directory
+        let rootURL = FileManager.default.urls(for: .documentDirectory,
+                                               in: .userDomainMask).first!.appendingPathComponent("PostsApp")
         try! FileManager.default.createDirectory(at: rootURL,
-                                            withIntermediateDirectories: true,
-                                            attributes: nil)
+                                                 withIntermediateDirectories: true,
+                                                 attributes: nil)
         return rootURL
     }
 }
