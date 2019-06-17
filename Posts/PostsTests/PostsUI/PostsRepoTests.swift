@@ -52,9 +52,72 @@ class PostsRepoTests: XCTestCase {
         XCTAssertEqual(loaderObs.events, expectedLoadingEvents)
     }
     
+    func test_postDetail_correctModelLoadedOnRequest() {
+        let (sut, postsLoader, _, _) = makeSUT()
+        
+        let testPostItem = PostItem(id: 1,
+                                    userId: 2,
+                                    title: "any title",
+                                    body: "any body")
+        postsLoader.loadResult = .success([testPostItem])
+        
+        sut.loadPosts()
+        
+        let exp = expectation(description: "wait for loading")
+        sut.postItemsLoader.subscribe { _ in
+            exp.fulfill()
+        }.disposed(by: disposeBag)
+        wait(for: [exp], timeout: 1.0)
+        
+        let appDetail = sut.postDetailModel(postId: testPostItem.id)
+        XCTAssertEqual(appDetail.title, testPostItem.title)
+        XCTAssertEqual(appDetail.body, testPostItem.body)
+    }
+    
+    func test_postDetail_authorAndCommentsAreCorrectlySet() {
+        let (sut, postsLoader, commentsLoader, usersLoader) = makeSUT()
+        
+        let testPostItem = PostItem(id: 1,
+                                    userId: 2,
+                                    title: "any title",
+                                    body: "any body")
+        
+        let testUser = user(userId: testPostItem.userId)
+        postsLoader.loadResult = .success([testPostItem])
+        usersLoader.loadResult = .success([testUser])
+        commentsLoader.loadResult = .success([comment(postId: testPostItem.id)])
+        
+        sut.loadPosts()
+        let exp = expectation(description: "wait for loading")
+        sut.postItemsLoader.subscribe { _ in
+            exp.fulfill()
+        }.disposed(by: disposeBag)
+    
+        wait(for: [exp], timeout: 1.0)
+        
+        let appDetail = sut.postDetailModel(postId: testPostItem.id)
+        
+        let authorExp = expectation(description: "get author")
+        appDetail.authorName.subscribe(onNext: { nameLoadable in
+            XCTAssertEqual(nameLoadable, .loaded(testUser.name))
+            authorExp.fulfill()
+        }).disposed(by: disposeBag)
+
+        wait(for: [authorExp], timeout: 1.0)
+        
+        let commentsExp = expectation(description: "get author")
+        appDetail.numberOfComments.subscribe(onNext: { nameLoadable in
+            XCTAssertEqual(nameLoadable, .loaded(1))
+            commentsExp.fulfill()
+        }).disposed(by: disposeBag)
+        
+        wait(for: [commentsExp], timeout: 1.0)
+    }
+    
     // MARK: - Helpers
 
-    private func makeSUT() -> (sut: PostsRepo,
+    private func makeSUT(file: StaticString = #file,
+                         line: UInt = #line) -> (sut: PostsRepo,
                                postsLoader: LoaderMock<PostItem>,
                                commentsLoader: LoaderMock<CommentItem>,
                                usersLoader: LoaderMock<UserItem>) {
@@ -65,7 +128,7 @@ class PostsRepoTests: XCTestCase {
                             commentsLoader: AnyItemsLoader(commentsLoader),
                             usersLoader: AnyItemsLoader(usersLoader))
 
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(sut, file: file, line: line)
         
         return (sut, postsLoader, commentsLoader, usersLoader)
     }
@@ -83,5 +146,31 @@ class PostsRepoTests: XCTestCase {
                 return Disposables.create()
             }
         }
+    }
+    
+    private func comment(postId: Int) -> CommentItem {
+        return CommentItem(id: 1,
+                           postId: postId,
+                           authorName: "",
+                           authorEmail: "",
+                           body: "")
+    }
+
+    private func user(userId: Int) -> UserItem {
+        return UserItem(id: userId,
+                        name: "A name",
+                        userName: "",
+                        emailAddress: "",
+                        address: Address(street: "",
+                                         suite: "",
+                                         city: "",
+                                         zipcode: "",
+                                         coordinates: Coordinates(latitude: "",
+                                                                  longitute: "")),
+                        phoneNumber: "",
+                        websiteURL: "",
+                        company: Company(name: "",
+                                         catchPhrase: "",
+                                         bussinesScope: ""))
     }
 }

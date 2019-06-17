@@ -12,13 +12,24 @@ import RxSwift
 public protocol PostsDataProvider {
     var postItemsLoader: Observable<Loadable<[PostListItemModel]>> { get }
     func loadPosts()
+    func postDetailModel(postId: Int) -> PostDetailsModel
 }
 
-struct PostDetailsModel {
-    let title: String
-    let body: String
-    let authorName: Observable<Loadable<String>>
-    let numberOfComments: Observable<Loadable<Int>>
+public struct PostDetailsModel {
+    public let title: String
+    public let body: String
+    public let authorName: Observable<Loadable<String>>
+    public let numberOfComments: Observable<Loadable<Int>>
+    
+    public init(title: String,
+                body: String,
+                authorName: Observable<Loadable<String>>,
+                numberOfComments: Observable<Loadable<Int>>) {
+        self.title = title
+        self.body = body
+        self.authorName = authorName
+        self.numberOfComments = numberOfComments
+    }
 }
 
 public final class PostsRepo: PostsDataProvider {
@@ -33,8 +44,6 @@ public final class PostsRepo: PostsDataProvider {
     private let commentsLoaderSubject = BehaviorSubject<Loadable<[CommentItem]>>(value: .pending)
 
     public lazy var postItemsLoader = postsLoaderSubject.map { $0.transform { items in items.toPostListItems } }.asObservable()
-
-    private var loadedPostItems = [Int: PostItem]()
     
     public init(postsLoader: AnyItemsLoader<PostItem>,
                 commentsLoader: AnyItemsLoader<CommentItem>,
@@ -49,24 +58,28 @@ public final class PostsRepo: PostsDataProvider {
         postsLoader.load().subscribe(handlePostsResult).disposed(by: disposeBag)
     }
     
-    func postDetailModel(postId: Int) -> PostDetailsModel {
-        return PostDetailsModel(title: loadedPostItems[postId]!.title,
-                         body: loadedPostItems[postId]!.body,
-                         authorName: authorForPost(postId: postId).asObservable(),
-                         numberOfComments: numberOfComments(postId: postId).asObservable())
+    public func postDetailModel(postId: Int) -> PostDetailsModel {
+        guard let loadedData = try? postsLoaderSubject.value().loadedData,
+            let postItem = loadedData?.first(where: { $0.id == postId }) else {
+            fatalError()
+        }
+        return PostDetailsModel(title: postItem.title,
+                                body: postItem.body,
+                                authorName: authorForPost(postId: postId).asObservable(),
+                                numberOfComments: numberOfComments(postId: postId).asObservable())
     }
     
-    func loadUsers() {
+    private func loadUsers() {
         usersLoaderSubject.onNext(.loading)
         usersLoader.load().subscribe(handleUsersResult).disposed(by: disposeBag)
     }
     
-    func loadComments() {
+    private func loadComments() {
         commentsLoaderSubject.onNext(.loading)
         commentsLoader.load().subscribe(handleCommentsResult).disposed(by: disposeBag)
     }
 
-    func authorForPost(postId: Int) -> BehaviorSubject<Loadable<String>> {
+    private func authorForPost(postId: Int) -> BehaviorSubject<Loadable<String>> {
         if try! usersLoaderSubject.value().shouldReload {
             loadUsers()
         }
@@ -84,7 +97,7 @@ public final class PostsRepo: PostsDataProvider {
         return authorName
     }
     
-    func numberOfComments(postId: Int) -> BehaviorSubject<Loadable<Int>> {
+    private func numberOfComments(postId: Int) -> BehaviorSubject<Loadable<Int>> {
         if try! commentsLoaderSubject.value().shouldReload {
             loadComments()
         }

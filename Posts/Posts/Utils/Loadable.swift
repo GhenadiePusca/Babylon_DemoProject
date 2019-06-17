@@ -14,6 +14,14 @@ public enum Loadable<Value> {
     case loaded(Value)
     case failed(Error)
     
+    public var loadedData: Value? {
+        guard case .loaded(let data) = self else {
+            return nil
+        }
+        
+        return data
+    }
+
     var shouldReload: Bool {
         switch self {
         case .pending, .failed:

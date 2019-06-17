@@ -37,6 +37,13 @@ class AppCoordinatorTests: XCTestCase {
     }
     
     private class PostsDataProviderMock: PostsDataProvider {
+        func postDetailModel(postId: Int) -> PostDetailsModel {
+            return PostDetailsModel(title: "",
+                                    body: "",
+                                    authorName: .just(.pending),
+                                    numberOfComments: .just(.pending))
+        }
+        
         var postItemsLoader: Observable<Loadable<[PostListItemModel]>> = .just(.pending)
         
         func loadPosts() {
