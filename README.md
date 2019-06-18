@@ -28,7 +28,23 @@ The demo project for Babylon Health
   - Apps always tries to get the lastest data from the endpoint, if the retrieval fails,
     only then app will return the cached data
   
- ### Tehnical analysys
- 
+ ### High level tehnical analysys
+   There are 4 main components to be developed:
+      1. The remote with local cache fallback mechanism:
+           - When asked for data fetches the data from the remote endpoint or from the local cache if remote fetch failed
+           - Stores the feetched data to the local storage
+      2. The UI component:
+           - Shows the posts list and the detail for each post - layout, navigation
+           - Defines the UI models for each screens.
+      3. The repository:
+           - Currently only one main repo, as the app is small.
+           - Responsible for asking for the data the remote with local cache fallback mechanism
+           - Applies any business logic over the received data and transforms to the apropriate models
+             to be consumed by the UI component.
+      4. The assembler:
+           - Responsible for assembling all the components
+           - Currently only one assembler as the app is small.
+           
+  ### Per Item tehnical details
 
   
