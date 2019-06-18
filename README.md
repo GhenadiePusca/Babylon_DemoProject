@@ -29,9 +29,9 @@ The demo project for Babylon Health
     only then app will return the cached data
   
  ### High level tehnical analysys
-   There are 4 main components to be developed:
+   There are 4 main functiional components to be developed:
   
-      1. The remote with local cache fallback mechanism:
+      1. The remote with local cache fallback:
            - When asked for data fetches the data from the remote endpoint or from the local cache if remote fetch failed
            - Stores the feetched data to the local storage
       2. The UI component:
@@ -39,7 +39,7 @@ The demo project for Babylon Health
            - Defines the UI models for each screens.
       3. The repository:
            - Currently only one main repo, as the app is small.
-           - Responsible for asking for the data the remote with local cache fallback mechanism
+           - Responsible for asking for the data the remote with local cache fallback component
            - Applies any business logic over the received data and transforms to the apropriate models
              to be consumed by the UI component.
       4. The assembler:
@@ -47,5 +47,152 @@ The demo project for Babylon Health
            - Currently only one assembler as the app is small.
            
   ### Per Item tehnical details
-
+    1. Remote with local cache fallback
+       
+       Key points considered:
+         - This should be a generic mechanism that can be applied to any domain model on need.
+         - Loading from the remote source or the local source should not have any conceptual difference, in order 
+           to keep things consistent. Thus loading from the cache should have similar look and feel,
+           as loading from the remote source. This means that even though the models do have a logical connection 
+           between them, like the post have a relation to the user model, those are not connected by any relation
+           in the local storage => no relational db. The response from the server is just cached
+           without assuming any relations. Any relation maping between models will be done at the Repository level,
+           in a centralized place, so there is one place for the possible changes!
+         - The component should asure a good decoupling between the possible modules.
+         
+      There are 3 core modules:
+         - Domain -> defines the domain models and domain functionality.
+         - API -> defines the interaction with the remote source
+         - Cache -> defines the interaction with the cache source
+      
+      DTOs are heavily used in this component in order to minimize the coupling between different modules.
   
+      A generic mechanism is put in place a reusable component to applied to any item, the core players are:
+      
+      -------------------------------------------------------------------------------------------------------
+      public protocol ItemsLoader {
+            associatedtype Item
+            func load() -> Single<[Item]>
+      }
+      
+      Defines the loading functionality for any item type.
+       -------------------------------------------------------------------------------------------------------
+       
+      final public class RemotePostsLoader<Item, RemoteItem: Decodable>: ItemsLoader {
+          private let url: URL
+          private let client: HTTPClient
+    
+          public typealias RemoteToPostsMapper = ([RemoteItem]) -> [Item]
+          private let remoteToPostsMapper: RemoteToPostsMapper
+    
+          public init(url: URL,
+                      client: HTTPClient,
+                      mapper: @escaping RemoteToPostsMapper) {
+              self.url = url
+              self.client = client
+              self.remoteToPostsMapper = mapper
+        }....
+      
+      Loads any Item type from the remote source. The RemoteItem is the API module representation of the loaded item,
+      a mapper is passed in order to solve the mapping.
+       -------------------------------------------------------------------------------------------------------
+       
+       public class LocalItemsLoader<Item, LocalItem>: ItemsLoader, ItemsStorageManager {
+          private let disposeBag = DisposeBag()
+    
+          public typealias LocalToItemMapper = ([LocalItem]) -> [Item]
+          public typealias ItemToLocalMapper = ([Item]) -> [LocalItem]
+          public typealias ItemType = Item
+
+          private let store: AnyItemsStore<LocalItem>
+          private let localToItemMapper: LocalToItemMapper
+          private let itemToLocalMapper: ItemToLocalMapper
+    
+          public init(store: AnyItemsStore<LocalItem>,
+                      localToItemMapper: @escaping LocalToItemMapper,
+                      itemToLocalMapper: @escaping ItemToLocalMapper) {
+                self.store = store
+                self.localToItemMapper = localToItemMapper
+               self.itemToLocalMapper = itemToLocalMapper
+           }....
+    
+        Loads any Item type from the local source. The LocalItem is the Cache module representation of the loaded item,
+        a mapper is passed in order to solve the mapping. Also a local item store is injected, defined below.
+       -------------------------------------------------------------------------------------------------------
+       
+         public protocol ItemsStore {
+              associatedtype ItemType
+              func deleteItems() -> Completable
+              func savePosts(_ items: [ItemType]) -> Completable
+              func retrieve() -> Single<[ItemType]>
+          }
+       
+        Same as ItemLoader protocol, defines the storage functionality for any item type
+        -------------------------------------------------------------------------------------------------------
+
+        public class FileSystemItemsStore<SavedItem, EncodedItem: Codable>: ItemsStore {
+          public typealias ItemType = SavedItem
+    
+          public typealias SavedToEncodedMapper = ([SavedItem]) -> [EncodedItem]
+          public typealias EcondedToSavedMapper = ([EncodedItem]) -> [SavedItem]
+
+          private let savedToEncodedMapper: SavedToEncodedMapper
+          private let econdedToSavedMapper: EcondedToSavedMapper
+          private let storeURL: URL
+    
+          public init(storeURL: URL,
+                    savedToEncodedMapper: @escaping SavedToEncodedMapper,
+                    econdedToSavedMapper: @escaping EcondedToSavedMapper) {
+                    ....
+        
+        Defines a generic file system storage for any item. The EncodedItem represents an encoded represenation 
+        for the Saved Item, a mapper is passed in order to solve the mapping.
+        --------------------------------------------------------------------------------------------------------
+         
+       By making use of the generics and mappers, two things were achieved:
+          - The functionality can be applied to any item.
+          - Ensures a robust separation between the modules, by enforcing the creation of the specific dtos - it
+            is unwanted to have the core business items defined in domain module, to be deeply coupled with the
+            remote or cache module, or even whorse with the infrastructure components.
+            
+            
+       A high level components dependency diagram can visualized below:
+         
+              ---------- Diagram
+        
+         
+   2. UI:
+ 
+          - The application uses MVVM-C design pattern to structure the UI layer. The
+          coordinators are used handle the app navigation and to solve the
+          dependencies for the MVVM stack. Also, the coordinators allow to
+          perform unit testing for the app navigation.
+          - The VM does not handle the actual API calls or any other core business
+          logic, it’s meant to be as dumb as possible, it only cares about the
+          handling of the data representation in the view; thus the data loading and
+          other core business logic is embedded in the Repository, this allows
+          developing the MVVM stack completely in separation from the API
+          response or any other business logic. It is implemented with the idea that
+          at the moment when the MVVM stack is about to be created the only
+          available info is the UI screen itself, no other info. Thus the repository also
+          acts as an adapter to map the API response and apply any business logic
+          to the MVVM stack needs.
+          - Example - In the Post Detail, from the page standpoint there is a title, a description
+            an author name and the number of comments displayed. Thus the VM will be implemented
+            to request this info basically as strings, it will not make any mapping between
+            the selected post, list of users and list comments to determine it's info, it cares
+            only for showing the strings above.
+            
+   3. Repository:
+        
+        This component is meant to interact with the loading mechanism, get the raw business data, apply any other business
+        operation over the data, and compose from those the models that should be shown to the UI. Basically this a source
+        from which the ViewModels get their DataModel representation to work with. An example is the list of posts,
+        even though for each post the id, userId, title and body is returned, the repository will expose to PostListViewModel
+        a list of models that do contain only a title, as the PostListViewModel only want to show a list of titles.
+        
+   4. Assembler:
+       
+        Assembles all the components toghether as a heavy use of DI is made. A long with the composing components, it also
+        maps the different module DTOs.
+
