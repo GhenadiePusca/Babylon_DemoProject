@@ -30,6 +30,7 @@ The demo project for Babylon Health
   
  ### High level tehnical analysys
    There are 4 main components to be developed:
+  
       1. The remote with local cache fallback mechanism:
            - When asked for data fetches the data from the remote endpoint or from the local cache if remote fetch failed
            - Stores the feetched data to the local storage
