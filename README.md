@@ -160,7 +160,7 @@ The demo project for Babylon Health
             
        A high level components dependency diagram can visualized below: 
          
-         ![Scheme](https://github.com/PuscaGhenadie/Babylon_DemoProject/blob/master/Scheme.png)
+ ![scheme](posts.png)
          
      2. UI:
  
