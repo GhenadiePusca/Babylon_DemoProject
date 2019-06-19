@@ -160,6 +160,8 @@ The demo project for Babylon Health
             
        A high level components dependency diagram can visualized below: 
          
+         ![Scheme](scheme.png)
+         
      2. UI:
  
         - The application uses MVVM-C design pattern to structure the UI layer.
