@@ -32,7 +32,8 @@ The demo project for Babylon Health
    There are 4 main functiional components to be developed:
   
       1. The remote with local cache fallback:
-           - When asked for data fetches the data from the remote endpoint or from the local cache if remote fetch failed
+           - When asked for data fetches the data from the remote endpoint or from the local cache
+             if remote fetch failed
            - Stores the feetched data to the local storage
       2. The UI component:
            - Shows the posts list and the detail for each post - layout, navigation
@@ -93,8 +94,8 @@ The demo project for Babylon Health
               self.remoteToPostsMapper = mapper
         }....
       
-      Loads any Item type from the remote source. The RemoteItem is the API module representation of the loaded item,
-      a mapper is passed in order to solve the mapping.
+      Loads any Item type from the remote source. The RemoteItem is the API module
+      representation of the loaded item, a mapper is passed in order to solve the mapping.
        -------------------------------------------------------------------------------------------------------
        
        public class LocalItemsLoader<Item, LocalItem>: ItemsLoader, ItemsStorageManager {
@@ -116,8 +117,9 @@ The demo project for Babylon Health
                self.itemToLocalMapper = itemToLocalMapper
            }....
     
-        Loads any Item type from the local source. The LocalItem is the Cache module representation of the loaded item,
-        a mapper is passed in order to solve the mapping. Also a local item store is injected, defined below.
+        Loads any Item type from the local source. The LocalItem is the Cache module
+        representation of the loaded item, a mapper is passed in order to solve the mapping.
+        Also a local item store is injected, defined below.
        -------------------------------------------------------------------------------------------------------
        
          public protocol ItemsStore {
@@ -145,8 +147,8 @@ The demo project for Babylon Health
                     econdedToSavedMapper: @escaping EcondedToSavedMapper) {
                     ....
         
-        Defines a generic file system storage for any item. The EncodedItem represents an encoded represenation 
-        for the Saved Item, a mapper is passed in order to solve the mapping.
+        Defines a generic file system storage for any item. The EncodedItem represents an 
+        encoded represenation for the Saved Item, a mapper is passed in order to solve the mapping.
         --------------------------------------------------------------------------------------------------------
          
        By making use of the generics and mappers, two things were achieved:
@@ -163,36 +165,45 @@ The demo project for Babylon Health
          
    2. UI:
  
-          - The application uses MVVM-C design pattern to structure the UI layer. The
-          coordinators are used handle the app navigation and to solve the
-          dependencies for the MVVM stack. Also, the coordinators allow to
-          perform unit testing for the app navigation.
-          - The VM does not handle the actual API calls or any other core business
-          logic, it’s meant to be as dumb as possible, it only cares about the
-          handling of the data representation in the view; thus the data loading and
-          other core business logic is embedded in the Repository, this allows
-          developing the MVVM stack completely in separation from the API
-          response or any other business logic. It is implemented with the idea that
-          at the moment when the MVVM stack is about to be created the only
-          available info is the UI screen itself, no other info. Thus the repository also
-          acts as an adapter to map the API response and apply any business logic
-          to the MVVM stack needs.
-          - Example - In the Post Detail, from the page standpoint there is a title, a description
-            an author name and the number of comments displayed. Thus the VM will be implemented
-            to request this info basically as strings, it will not make any mapping between
-            the selected post, list of users and list comments to determine it's info, it cares
-            only for showing the strings above.
+        - The application uses MVVM-C design pattern to structure the UI layer.
+          Each MVVM stack is a completely standalone component, without any knowledge
+          of other stacks. An example - The post list does not know a thing of the post details,
+          it does just display a list of titles, and triggers an event when a post is selected.
+          It is the job of the coordinator to react to the event and take further action.
+          Along with handling the UI navigation events, the coordinator handles the dependencies
+          of the MVVM stack, and links it to the repository. Thus the MVVM stack does not know
+          from where the data will come from, and repository does not know who will consumed the data,
+          the coordinator decides.
+          
+       - So as result ViewModel does not handle the actual API calls or any other core business 
+         logic, it’s meant to be as dumb as possible, it only cares about the
+         handling of the data representation in the view; thus the data loading and
+         other core business logic is embedded in the Repository, this allows
+         developing the MVVM stack completely in separation from the API
+         response or any other business logic. It is implemented with the idea that
+         at the moment when the MVVM stack is about to be created the only
+         available info is the UI screen itself, no other info. This allows developing developing the
+         core business logic, and the MVVM stack in paralel, then those are linked toghether usin the
+         repository and coordinator
+       
+       - Example - In the Post Detail, from the page standpoint there is a title, a description
+         an author name and the number of comments displayed. Thus the VM will be implemented
+         to request this info basically as strings, it will not make any mapping between
+         the selected post, list of users and list comments to determine it's info, it cares
+         only for showing the strings specified above.
             
    3. Repository:
         
-        This component is meant to interact with the loading mechanism, get the raw business data, apply any other business
-        operation over the data, and compose from those the models that should be shown to the UI. Basically this a source
-        from which the ViewModels get their DataModel representation to work with. An example is the list of posts,
-        even though for each post the id, userId, title and body is returned, the repository will expose to PostListViewModel
-        a list of models that do contain only a title, as the PostListViewModel only want to show a list of titles.
+        This component is meant to interact with the loading mechanism, get the raw business data,
+        apply any other business operation over the data, and compose the models that should be shown 
+        to the UI. Basically this a source from which the ViewModels get their DataModel representation 
+        to work with. An example is the list of posts, even though for each post the id, userId, title and body
+        is returned, the repository will expose to PostListViewModel a list of models that do contain only a title,
+        as the PostListViewModel only want to show a list of titles.
         
    4. Assembler:
        
-        Assembles all the components toghether as a heavy use of DI is made. A long with the composing components, it also
-        maps the different module DTOs.
+        Basically a factory that is meant to tie toghether different components and expose the necesary services
+        to be used in the app. It will be injected in any component that does need to access the services, thus it
+        is not a globally shared resource, it should be injected.
 
