@@ -338,7 +338,6 @@
 		6C5C56D022B66E0F00582BB9 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				6C66EBA122B7688500FE8331 /* BoundaryAbstraction */,
 				6C5C56AC22B6335B00582BB9 /* AppCordinator.swift */,
 				6C5C56CA22B65DA800582BB9 /* PostsRepo.swift */,
 				6C5C56D422B683EF00582BB9 /* RemotePostsLoaderWithLocalFallback.swift */,
@@ -388,6 +387,7 @@
 		6C66EB9F22B7680700FE8331 /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				6C66EBA422B768D600FE8331 /* ItemsStore.swift */,
 				6C66EBA022B7682C00FE8331 /* FileSystemStore */,
 			);
 			path = Infrastructure;
@@ -400,16 +400,6 @@
 				6C66EB8F22B6C28F00FE8331 /* FileSystemItemsStore.swift */,
 			);
 			path = FileSystemStore;
-			sourceTree = "<group>";
-		};
-		6C66EBA122B7688500FE8331 /* BoundaryAbstraction */ = {
-			isa = PBXGroup;
-			children = (
-				6C66EBA222B7689A00FE8331 /* ItemsLoader.swift */,
-				6C66EBA422B768D600FE8331 /* ItemsStore.swift */,
-				6C66EBA622B7690F00FE8331 /* ItemsStorageManager.swift */,
-			);
-			path = BoundaryAbstraction;
 			sourceTree = "<group>";
 		};
 		6C66EBA822B77D0100FE8331 /* RemoteItems */ = {
@@ -513,6 +503,7 @@
 				6C66EBAD22B77E6C00FE8331 /* LocalModels */,
 				6C66EB9F22B7680700FE8331 /* Infrastructure */,
 				6C66EB9122B6C35700FE8331 /* LocalItemsLoader.swift */,
+				6C66EBA622B7690F00FE8331 /* ItemsStorageManager.swift */,
 			);
 			path = PostsCache;
 			sourceTree = "<group>";
@@ -563,6 +554,7 @@
 		6CFBFD0822B21B4400CC6E3B /* PostsDomain */ = {
 			isa = PBXGroup;
 			children = (
+				6C66EBA222B7689A00FE8331 /* ItemsLoader.swift */,
 				6C9313B422B03C7000387108 /* PostItem.swift */,
 				6C66EBAB22B77D7500FE8331 /* CommentItem.swift */,
 				6C66EBB322B786BC00FE8331 /* UserItem.swift */,
