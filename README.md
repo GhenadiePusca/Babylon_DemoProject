@@ -158,12 +158,9 @@ The demo project for Babylon Health
             remote or cache module, or even whorse with the infrastructure components.
             
             
-       A high level components dependency diagram can visualized below:
+       A high level components dependency diagram can visualized below: 
          
-              ---------- Diagram
-        
-         
-   2. UI:
+     2. UI:
  
         - The application uses MVVM-C design pattern to structure the UI layer.
           Each MVVM stack is a completely standalone component, without any knowledge
@@ -192,7 +189,7 @@ The demo project for Babylon Health
          the selected post, list of users and list comments to determine it's info, it cares
          only for showing the strings specified above.
             
-   3. Repository:
+    3. Repository:
         
         This component is meant to interact with the loading mechanism, get the raw business data,
         apply any other business operation over the data, and compose the models that should be shown 
@@ -201,7 +198,7 @@ The demo project for Babylon Health
         is returned, the repository will expose to PostListViewModel a list of models that do contain only a title,
         as the PostListViewModel only want to show a list of titles.
         
-   4. Assembler:
+    4. Assembler:
        
         Basically a factory that is meant to tie toghether different components and expose the necesary services
         to be used in the app. It will be injected in any component that does need to access the services, thus it
